@@ -75,13 +75,13 @@ void Rect::Update()
 	clips->Update(AniRepeatType_Loop);
 
 	tempTrans[0]->Interpolate(this->tempTrans[0],
-		transform, Frame::Get()->GetFrameDeltaSec() * 10.0f);
+		transform, FRAME->GetElapsedTime() * 10.0f);
 	for (int i = 1; i < TEMPSIZE; i++) {
 		tempTrans[i]->Interpolate(
 			this->tempTrans[i],
 			tempTrans[i - 1],
 			// 이 값이 1에 가까우면 붙어서 움직임
-			Frame::Get()->GetFrameDeltaSec() * 10.0f);
+			FRAME->GetElapsedTime() * 10.0f);
 	}
 
 	Vector2 mouse;

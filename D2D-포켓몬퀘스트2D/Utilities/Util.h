@@ -32,6 +32,5 @@ public:
 	static float Clamp(float value, float min, float max);
 	// value값 무조건 0, 1 사이
 	static float Clamp01(float value);
-
 };
 

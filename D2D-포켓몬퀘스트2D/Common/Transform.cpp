@@ -420,7 +420,7 @@ void Transform::Interpolate(Transform * from, Transform * to, float t)
 
 void Transform::DefaultControl2()
 {
-	float deltaTime = (float)Frame::Get()->GetFrameDeltaSec();
+	float deltaTime = FRAME->GetElapsedTime();
 	float deltaMove = 1000.0f * deltaTime; // c++ 에선 10.f 이렇게 써도 됨
 	float deltaAngle = 90.0f * D3DX_PI / 180.0f * deltaTime;
 

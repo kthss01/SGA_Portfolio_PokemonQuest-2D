@@ -39,7 +39,7 @@ void Particle::Update()
 	if (fDeltaLiveTime > fTotalLiveTime)
 		bLive = false;
 
-	float deltaTime = (float)Frame::Get()->GetFrameDeltaSec();
+	float deltaTime = FRAME->GetElapsedTime();
 
 	fDeltaLiveTime += deltaTime;
 

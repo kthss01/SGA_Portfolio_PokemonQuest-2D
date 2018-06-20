@@ -64,7 +64,7 @@ void ParticleEmitter::Init(DWORD particleNum, float emission, float liveTimeMin,
 void ParticleEmitter::Update()
 {
 	if (bEmission) {
-		float delta = Frame::Get()->GetFrameDeltaSec();
+		float delta = FRAME->GetElapsedTime();
 		fEmissionDeltaTime += delta;
 		while (fEmissionDeltaTime > fEmissionIntervalTime) {
 			fEmissionDeltaTime -= fEmissionIntervalTime;

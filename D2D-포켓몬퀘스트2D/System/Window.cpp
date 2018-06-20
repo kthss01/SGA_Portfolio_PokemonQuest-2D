@@ -18,7 +18,9 @@ WPARAM Window::Run()
 
 	// 게임용 루프 이렇게 되있는데
 	// 나중에 FPS 적용 할꺼
+	FRAME->Init();
 	program = new Program();
+
 	while (true)
 	{
 		if (PeekMessage(&msg, NULL, 0, 0, PM_REMOVE))
@@ -43,7 +45,7 @@ WPARAM Window::Run()
 			}
 			ImGui::EndFrame();
 #else
-			Frame::Get()->UpdateTime(60.0f);
+			FRAME->Update(60.0f);
 			program->Update();
 #endif // IMGUI_USE
 
@@ -65,6 +67,7 @@ WPARAM Window::Run()
 	ImGui_ImplDX9_Shutdown();
 #endif // IMGUI_USE
 
+	FRAME->Release();
 	SAFE_DELETE(program);
 
 	// static이라 바로 함수 쓴거

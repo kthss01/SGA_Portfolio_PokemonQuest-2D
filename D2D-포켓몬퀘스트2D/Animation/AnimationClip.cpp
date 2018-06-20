@@ -20,12 +20,12 @@ void AnimationClip::Play()
 		isPlay = true;
 
 	// 현재 시간을 받아서 사용
-	PlayTime = Frame::Get()->GetNowRealTimeSec();
+	PlayTime = FRAME->GetWorldTime();
 }
 
 void AnimationClip::Update(AniRepeatType playType)
 {
-	float currentTime = Frame::Get()->GetNowRealTimeSec();
+	float currentTime = FRAME->GetWorldTime();
 	AnimationData clip = aniClip[index];
 
 	if (currentTime - PlayTime > clip.time) {
@@ -53,7 +53,7 @@ void AnimationClip::Update(AniRepeatType playType)
 			}
 			break;
 		}
-		PlayTime = Frame::Get()->GetNowRealTimeSec();
+		PlayTime = FRAME->GetWorldTime();
 	}
 }
 

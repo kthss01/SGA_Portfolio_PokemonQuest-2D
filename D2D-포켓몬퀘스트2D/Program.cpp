@@ -55,7 +55,7 @@ Program::Program()
 	{
 		root = new Json::Value();
 		readJson = new Json::Value();
-		float time = FRAME->GetNowRealTimeSec();
+		float time = FRAME->GetElapsedTime();
 		Json::SetValue(*root, "test", time);
 
 		WriteJsonData(L"Test.Json", root);
@@ -143,6 +143,8 @@ void Program::Render()
 	//);
 
 	particle->Render();
+
+	FRAME->Render();
 
 	if (isDebug) {
 
