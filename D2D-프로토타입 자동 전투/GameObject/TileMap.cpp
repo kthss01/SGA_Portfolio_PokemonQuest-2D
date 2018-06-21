@@ -22,6 +22,9 @@ void TileMap::Init(wstring shaderFile, const Vector2 uv, const Vector2 size, con
 	transform->UpdateTransform();
 
 	pTex = NULL;
+
+	curTile.x = 0;
+	curTile.y = 0;
 }
 
 void TileMap::Release()
@@ -35,6 +38,18 @@ void TileMap::Release()
 
 void TileMap::Update()
 {
+	this->transform->DefaultControl2();
+
+	if (INPUT->GetKeyDown(VK_UP) && curTile.y > 0)
+		curTile.y -= 1.0f;
+	if (INPUT->GetKeyDown(VK_DOWN) && curTile.y < TILE_MAXFRAME_Y) 
+		curTile.y += 1.0f;
+	if (INPUT->GetKeyDown(VK_LEFT) && curTile.x > 0) 
+		curTile.x -= 1.0f;
+	if (INPUT->GetKeyDown(VK_RIGHT) && curTile.x < TILE_MAXFRAME_X)
+		curTile.x += 1.0f;
+
+	UpdateUV();
 }
 
 void TileMap::Render()
@@ -139,25 +154,36 @@ void TileMap::InitVertex(Vector2 size, Vector2 uv, Vector2 pivot)
 {
 	vertices = new Vertex[VERTEX_SIZE];
 
+
+	uv.x = (TILE_INITFRAME_X + 1.0f - TILE_PADDING) / TILE_MAXFRAME_X;
+	uv.y = (TILE_INITFRAME_Y + 1.0f - TILE_PADDING) / TILE_MAXFRAME_Y;
+
+	Vector2 temp = Vector2(
+		TILE_INITFRAME_X / TILE_MAXFRAME_X,
+		TILE_INITFRAME_Y / TILE_MAXFRAME_Y);
+
 	for (int i = 0; i < TILE_ROW; i++) {
 		for (int j = 0; j < TILE_COL; j++) {
 			for (int k = 0; k < 4; k++) {
 				vertices[(i * TILE_COL + j) * 4 + k].position =
 					Vector2(
-						j * size.y + (k % 2) * size.y + pivot.x,
-						i * size.x + (k / 2) * size.x + pivot.y);
+						j * size.y + (k % 2) * size.y + pivot.y,
+						i * size.x + (k / 2) * size.x + pivot.x);
+
+				vertices[(i * TILE_COL + j) * 4 + k].color = 0xffffffff;
+
 				switch (k) {
 				case 0:
 					// 좌상단
-					vertices[(i * TILE_COL + j) * 4 + k].uv = Vector2(0, 0);
+					vertices[(i * TILE_COL + j) * 4 + k].uv = temp;
 					break;
 				case 1:
 					// 우상단
-					vertices[(i * TILE_COL + j) * 4 + k].uv = Vector2(0, uv.y);
+					vertices[(i * TILE_COL + j) * 4 + k].uv = Vector2(uv.x, temp.y);
 					break;
 				case 2:
 					// 좌하단
-					vertices[(i * TILE_COL + j) * 4 + k].uv = Vector2(uv.x, 0);
+					vertices[(i * TILE_COL + j) * 4 + k].uv = Vector2(temp.x, uv.y);
 					break;
 				case 3:
 					// 우하단
@@ -231,5 +257,48 @@ void TileMap::InitBuffer()
 	assert(SUCCEEDED(hr));
 	memcpy(pIndex, indices, sizeof(DWORD) * INDEX_SIZE);
 	hr = ib->Unlock();
+	assert(SUCCEEDED(hr));
+}
+
+void TileMap::UpdateUV()
+{
+	Vector2 uv;
+	uv.x = (curTile.x + 1.0f - TILE_PADDING) / TILE_MAXFRAME_X;
+	uv.y = (curTile.y + 1.0f - TILE_PADDING) / TILE_MAXFRAME_Y;
+
+	Vector2 temp = Vector2(
+		curTile.x / TILE_MAXFRAME_X,
+		curTile.y / TILE_MAXFRAME_Y);
+
+	for (int i = 0; i < TILE_ROW; i++) {
+		for (int j = 0; j < TILE_COL; j++) {
+			for (int k = 0; k < 4; k++) {
+				switch (k) {
+				case 0:
+					// 좌상단
+					vertices[(i * TILE_COL + j) * 4 + k].uv = temp;
+					break;
+				case 1:
+					// 우상단
+					vertices[(i * TILE_COL + j) * 4 + k].uv = Vector2(uv.x, temp.y);
+					break;
+				case 2:
+					// 좌하단
+					vertices[(i * TILE_COL + j) * 4 + k].uv = Vector2(temp.x, uv.y);
+					break;
+				case 3:
+					// 우하단
+					vertices[(i * TILE_COL + j) * 4 + k].uv = uv;
+					break;
+				}
+			}
+		}
+	}
+
+	Vertex * pVertex = NULL;
+	HRESULT hr = vb->Lock(0, 0, (void**)&pVertex, 0);
+	assert(SUCCEEDED(hr));
+	memcpy(pVertex, vertices, stride * VERTEX_SIZE);
+	hr = vb->Unlock();
 	assert(SUCCEEDED(hr));
 }

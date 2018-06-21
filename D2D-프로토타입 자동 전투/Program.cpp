@@ -20,11 +20,11 @@ Program::Program()
 
 	// SOUND Setting
 	{
-		SOUND->AddSound("Test", "sounds/영전3.wav", true, true);
+		//SOUND->AddSound("Test", "sounds/영전3.wav", true, true);
 	}
 	// TEXTURE Setting
 	{
-		TEXTURE->AddTexture(L"Tile", L"Textures/Tile_Forest.png");
+		TEXTURE->AddTexture(L"tile_forest", L"Textures/tile_Forest.png");
 	}
 
 	// SPRITE Setting

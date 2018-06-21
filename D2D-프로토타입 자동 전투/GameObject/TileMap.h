@@ -13,6 +13,16 @@
 #define VERTEX_SIZE (TILE_SIZE * 4)
 #define INDEX_SIZE (TILE_SIZE * 2 * 6) 
 
+// 총 타일 갯수
+#define TILE_MAXFRAME_X 27.0f
+#define TILE_MAXFRAME_Y 24.0f
+
+// 시작으로 쓸 타일 
+#define TILE_INITFRAME_X 0.0f
+#define TILE_INITFRAME_Y 0.0f
+
+// 타일 간의 패딩 -> 프레임으로 나눌때 제외시킬 크기
+#define TILE_PADDING 0.05f
 
 struct tagTile {
 	// 현재 타일 번호
@@ -37,6 +47,8 @@ private:
 	class Camera* camera;
 
 	tagTile tiles[TILE_ROW][TILE_COL];
+
+	Vector2 curTile;
 public:
 	TileMap();
 	~TileMap();
@@ -55,4 +67,6 @@ public:
 
 	void SetCamera(Camera* camera) { this->camera = camera; }
 	void SetTexture(LPDIRECT3DTEXTURE9 tex) { pTex = tex; }
+
+	void UpdateUV();
 };

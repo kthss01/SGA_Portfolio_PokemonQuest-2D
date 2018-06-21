@@ -16,7 +16,7 @@ void ExploreScene::Init()
 {
 	mainCamera = new Camera;
 	
-	LPDIRECT3DTEXTURE9 tileTex = TEXTURE->GetTexture(L"Tile");
+	LPDIRECT3DTEXTURE9 tileTex = TEXTURE->GetTexture(L"tile_forest");
 
 	tile = new TileMap;
 	tile->Init(L"./Shader/ColorTexture.fx", Vector2(1, 1),
@@ -39,7 +39,7 @@ void ExploreScene::Release()
 void ExploreScene::Update()
 {
 	mainCamera->UpdateCamToDevice();
-	tile->GetTransform()->DefaultControl2();
+	tile->Update();
 }
 
 void ExploreScene::Render()
