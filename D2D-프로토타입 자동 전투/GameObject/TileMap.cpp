@@ -1,18 +1,17 @@
 #include "stdafx.h"
-#include "Rect.h"
+#include "TileMap.h"
+
 #include "Common\Camera.h"
-#include "./Animation/AnimationClip.h"
 
-Rect::Rect() {
-
+TileMap::TileMap()
+{
 }
 
-Rect::~Rect() {
-
+TileMap::~TileMap()
+{
 }
 
-void Rect::Init(wstring shaderFile, const Vector2 uv,
-	const Vector2 size, const Vector2 pivot)
+void TileMap::Init(wstring shaderFile, const Vector2 uv, const Vector2 size, const Vector2 pivot)
 {
 	InitShader(shaderFile);
 
@@ -22,59 +21,23 @@ void Rect::Init(wstring shaderFile, const Vector2 uv,
 
 	transform->UpdateTransform();
 
-	Vector2 center = Vector2(0, 0);
-	Vector2 halfSize = center - (vertice[1].position - pivot);
-
-	this->collider = new RectCollider;
-	this->collider->SetBound(&center, &halfSize);
-
 	pTex = NULL;
-
-	deltaTime = 0.0f;
-
-	AnimationData data;
-	clips = new AnimationClip;
-
-	//for (int i = 0; i < 4; i++) {
-	//	data.keyName = L"run_" + to_wstring(i);
-	//	data.maxFrame = Vector2(8.0f, 4.0f);
-	//	data.currentFrame = Vector2(float(i), 0.0f);
-	//	clips->PushAnimationData(data);
-	//}
-
-	isObject = false;
 }
 
-void Rect::Release()
+void TileMap::Release()
 {
 	SAFE_RELEASE(ib);
 	SAFE_RELEASE(vb);
 	SAFE_RELEASE(pEffect);
 
-	SAFE_DELETE(clips);
-
 	SAFE_DELETE(collider);
 }
 
-void Rect::Update()
+void TileMap::Update()
 {
-	this->transform->DefaultControl2();
-	//this->DrawInterface();
-	if(isObject)
-		clips->Update(AniRepeatType_Loop);
-
-	//Vector2 mouse;
-	//Util::GetMousePos(&mouse);
-	//check = Collision::IntersectTri(
-	//	vertice[0].position,
-	//	vertice[1].position,
-	//	vertice[2].position,
-	//	this->transform,
-	//	mouse
-	//);
 }
 
-void Rect::Render()
+void TileMap::Render()
 {
 	// 알파값 제거
 	D2D::GetDevice()->SetRenderState(D3DRS_ALPHABLENDENABLE, TRUE);
@@ -84,45 +47,26 @@ void Rect::Render()
 	this->pEffect->SetMatrix("matView", &camera->GetViewMatrix().ToDXMatrix());
 	this->pEffect->SetMatrix("matProjection", &camera->GetProjection().ToDXMatrix());
 
-	if (isObject) {
-		this->pEffect->SetVector("maxFrame",
-			&D3DXVECTOR4(
-				clips->GetCurrentData().maxFrame.x,
-				clips->GetCurrentData().maxFrame.y,
-				0.0f, 0.0f));
-		this->pEffect->SetVector("currentFrame",
-			&D3DXVECTOR4(
-				clips->GetCurrentData().currentFrame.x,
-				clips->GetCurrentData().currentFrame.y,
-				0.0f, 0.0f));
-	}
-	else {
-		this->pEffect->SetVector("maxFrame",
-			&D3DXVECTOR4(
-				1.0f, 1.0f,
-				0.0f, 0.0f));
-		this->pEffect->SetVector("currentFrame",
-			&D3DXVECTOR4(
-				0.0f, 0.0f,
-				0.0f, 0.0f));
-	}
+	this->pEffect->SetVector("maxFrame",
+		&D3DXVECTOR4(
+			1.0f, 1.0f,
+			0.0f, 0.0f));
+	this->pEffect->SetVector("currentFrame",
+		&D3DXVECTOR4(
+			0.0f, 0.0f,
+			0.0f, 0.0f));
 
 	this->pEffect->SetTexture("tex", pTex);
 
 	this->pEffect->SetTechnique("MyShader");
-	
+
 	this->pEffect->SetMatrix("matWorld", &transform->GetFinalMatrix().ToDXMatrix());
 	this->RenderRect();
 
 	D2D::GetDevice()->SetRenderState(D3DRS_ALPHABLENDENABLE, false);
-
-	if (isObject) {
-		transform->RenderGizmo(true);
-		collider->RenderGizmo(transform);
-	}
 }
 
-void Rect::RenderRect()
+void TileMap::RenderRect()
 {
 	// 셰이더로 렌더
 	UINT iPassNum = 0;
@@ -138,12 +82,10 @@ void Rect::RenderRect()
 				D2D::GetDevice()->SetStreamSource(0, vb, 0, stride);
 				D2D::GetDevice()->SetIndices(ib);
 				D2D::GetDevice()->SetFVF(FVF);
-				// 만약에 텍스처 렌더하는 방식이면 pEffect->setTexture로
-				//D2D::GetDevice()->SetTexture(0, pTex);
 
 				D2D::GetDevice()->DrawIndexedPrimitive(
 					D3DPT_TRIANGLELIST,
-					0, 0, 4, 0, 2);
+					0, 0, VERTEX_SIZE, 0, TILE_SIZE * 2);
 			}
 			this->pEffect->EndPass();
 		}
@@ -152,7 +94,7 @@ void Rect::RenderRect()
 	this->pEffect->End();
 }
 
-void Rect::InitShader(wstring shaderFile)
+void TileMap::InitShader(wstring shaderFile)
 {
 	// 쉐이더 초기화
 	// 에러값 확인이 어려우므로 
@@ -193,32 +135,72 @@ void Rect::InitShader(wstring shaderFile)
 	}
 }
 
-void Rect::InitVertex(Vector2 size, Vector2 uv, Vector2 pivot)
+void TileMap::InitVertex(Vector2 size, Vector2 uv, Vector2 pivot)
 {
-	vertice[0].position = Vector2(-size.x + pivot.x,  size.y + pivot.y);
-	vertice[1].position = Vector2(-size.x + pivot.x, -size.y + pivot.y);
-	vertice[2].position = Vector2( size.x + pivot.x, -size.y + pivot.y);
-	vertice[3].position = Vector2( size.x + pivot.x,  size.y + pivot.y);
+	vertices = new Vertex[VERTEX_SIZE];
 
-	vertice[0].color = 0xffffffff;
-	vertice[1].color = 0xffffffff;
-	vertice[2].color = 0xffffffff;
-	vertice[3].color = 0xffffffff;
+	for (int i = 0; i < TILE_ROW; i++) {
+		for (int j = 0; j < TILE_COL; j++) {
+			for (int k = 0; k < 4; k++) {
+				vertices[(i * TILE_COL + j) * 4 + k].position =
+					Vector2(
+						j * size.y + (k % 2) * size.y + pivot.x,
+						i * size.x + (k / 2) * size.x + pivot.y);
+				switch (k) {
+				case 0:
+					// 좌상단
+					vertices[(i * TILE_COL + j) * 4 + k].uv = Vector2(0, 0);
+					break;
+				case 1:
+					// 우상단
+					vertices[(i * TILE_COL + j) * 4 + k].uv = Vector2(0, uv.y);
+					break;
+				case 2:
+					// 좌하단
+					vertices[(i * TILE_COL + j) * 4 + k].uv = Vector2(uv.x, 0);
+					break;
+				case 3:
+					// 우하단
+					vertices[(i * TILE_COL + j) * 4 + k].uv = uv;
+					break;
+				}
+			}
+		}
+	}
 
-	vertice[0].uv = Vector2(0, uv.y);
-	vertice[1].uv = Vector2(0, 0);
-	vertice[2].uv = Vector2(uv.x, 0);
-	vertice[3].uv = uv;
+	indices = new DWORD[INDEX_SIZE];
+	int count = 0;
+	for (int i = 0; i < TILE_ROW; i++) {
+		for (int j = 0; j < TILE_COL; j++) {
+			indices[count++] = (i * TILE_COL + j) * 4;
+			indices[count++] = (i * TILE_COL + j) * 4 + 1;
+			indices[count++] = (i * TILE_COL + j) * 4 + 2;
+
+			indices[count++] = (i * TILE_COL + j) * 4 + 1;
+			indices[count++] = (i * TILE_COL + j) * 4 + 3;
+			indices[count++] = (i * TILE_COL + j) * 4 + 2;
+
+			//tiles[i][j].x = i;
+			//tiles[i][j].y = j;
+			//
+			//tiles[i][j].position[0] = vertices[(i * TILE_COL + j) * 4].position;
+			//tiles[i][j].position[1] = vertices[(i * TILE_COL + j) * 4 + 1].position;
+			//tiles[i][j].position[2] = vertices[(i * TILE_COL + j) * 4 + 2].position;
+			//
+			//tiles[i][j].position[3] = vertices[(i * TILE_COL + j) * 4 + 1].position;
+			//tiles[i][j].position[4] = vertices[(i * TILE_COL + j) * 4 + 3].position;
+			//tiles[i][j].position[5] = vertices[(i * TILE_COL + j) * 4 + 2].position;
+		}
+	}
 
 	stride = sizeof(Vertex);
-	//FVF = D3DFVF_XYZ | D3DFVF_DIFFUSE;
 	FVF = D3DFVF_XYZ | D3DFVF_DIFFUSE | D3DFVF_TEX1;
 }
 
-void Rect::InitBuffer()
+void TileMap::InitBuffer()
 {
 	HRESULT hr = D2D::GetDevice()->CreateVertexBuffer(
-		stride * 4,
+		stride * VERTEX_SIZE,
 		D3DUSAGE_WRITEONLY,		// dynamic 쓰게 되면
 		FVF,
 		D3DPOOL_MANAGED,		// 이걸로 해줘야함 default 해주면 data 남아있지 않음
@@ -230,17 +212,12 @@ void Rect::InitBuffer()
 	Vertex * pVertex = NULL;
 	hr = vb->Lock(0, 0, (void**)&pVertex, 0);
 	assert(SUCCEEDED(hr));
-	memcpy(pVertex, vertice, stride * 4);
+	memcpy(pVertex, vertices, stride * VERTEX_SIZE);
 	hr = vb->Unlock();
 	assert(SUCCEEDED(hr));
 
-	DWORD indices[] = {
-		0,1,2,
-		0,2,3,
-	};
-
 	hr = D2D::GetDevice()->CreateIndexBuffer(
-		sizeof(DWORD) * 6,
+		sizeof(DWORD) * INDEX_SIZE,
 		D3DUSAGE_WRITEONLY,
 		D3DFMT_INDEX32,
 		D3DPOOL_DEFAULT,
@@ -252,32 +229,7 @@ void Rect::InitBuffer()
 	void* pIndex;
 	hr = ib->Lock(0, 0, &pIndex, 0);
 	assert(SUCCEEDED(hr));
-	memcpy(pIndex, indices, sizeof(DWORD) * 6);
+	memcpy(pIndex, indices, sizeof(DWORD) * INDEX_SIZE);
 	hr = ib->Unlock();
 	assert(SUCCEEDED(hr));
-}
-
-void Rect::DrawInterface()
-{
-#ifdef IMGUI_USE
-	ImGui::Begin("Interface");
-	{
-		if (check) {
-			ImGui::Text("Mouse Check True");
-		}
-		else {
-			ImGui::Text("Mouse Check False");
-		}
-
-		if (colliderCheck) {
-			ImGui::Text("Collider Check True");
-		}
-		else {
-			ImGui::Text("Collider Check False");
-		}
-
-		transform->DrawInterface();
-	}
-	ImGui::End();
-#endif // IMGUI_USE
 }

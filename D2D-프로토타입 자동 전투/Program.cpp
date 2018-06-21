@@ -2,6 +2,7 @@
 #include "Program.h"
 
 #include "Scene\TestScene.h"
+#include "Scene\ExploreScene\ExploreScene.h"
 
 #include "GameObject\Rect.h"
 #include "./Common/Camera.h"
@@ -23,8 +24,7 @@ Program::Program()
 	}
 	// TEXTURE Setting
 	{
-		TEXTURE->AddTexture(L"Mario", L"Textures/mario_all.png");
-		TEXTURE->AddTexture(L"Snow", L"./Textures/Snow.png");
+		TEXTURE->AddTexture(L"Tile", L"Textures/Tile_Forest.png");
 	}
 
 	// SPRITE Setting
@@ -36,18 +36,15 @@ Program::Program()
 	{
 		TestScene * test = new TestScene;
 		SCENE->AddScene("Test", test);
+		ExploreScene * explore = new ExploreScene;
+		SCENE->AddScene("Explore", explore);
 	}
 	
 	// 기타 Setting
 	{
-		//mainCamera = new Camera;
-		//rect = new Rect;
-		//rect->Init(L"./Shader/ColorTexture.fx", Vector2(1, 1));
-		//rect->SetTexture(TEXTURE->GetTexture(L"Mario"));
-		//rect->SetCamera(mainCamera);
-		
 		//SOUND->Play("Test");
-		SCENE->ChangeScene("Test");
+		//SCENE->ChangeScene("Test");
+		SCENE->ChangeScene("Explore");
 
 		isDebug = false;
 	}
@@ -64,39 +61,10 @@ Program::Program()
 		float temp;
 		Json::GetValue(*readJson, "test", temp);
 	}
-
-	// Particle Setting
-	{
-		particle = new ParticleEmitter;
-
-		VEC_COLOR colors;
-		colors.push_back(D3DXCOLOR(1.0f, 0.0f, 0.0f, 1.0f));
-		colors.push_back(D3DXCOLOR(0.0f, 0.0f, 1.0f, 1.0f));
-		colors.push_back(D3DXCOLOR(0.0f, 1.0f, 0.0f, 1.0f));
-		colors.push_back(D3DXCOLOR(1.0f, 1.0f, 1.0f, 0.0f));
-
-		VEC_SCALE scales;
-		scales.push_back(1.0f);
-		scales.push_back(5.0f);
-
-		particle->Init(
-			100, 10.0f, 5.0f, 6.0f,
-			Vector2(0, 5), Vector2(1, 6),
-			Vector2(0, 5), Vector2(1, 10),
-			30, 50, 0.5f, 0.8f, 1, 1,
-			colors, scales, 10.0f, 20.0f,
-			TEXTURE->GetTexture(L"Snow"), false);
-
-		particle->StartEmission();
-	}
 }
 
 Program::~Program()
 {
-	//rect->Release();
-	//SAFE_DELETE(rect);
-	//SAFE_DELETE(mainCamera);
-	
 	TEXTURE->Release();
 	SCENE->Release();
 
@@ -108,13 +76,7 @@ Program::~Program()
 
 void Program::Update()
 {
-	//mainCamera->UpdateCamToDevice();
-	//rect->Update();
-
 	SCENE->Update();
-
-	//particle->Update();
-	//particle->GetTransform()->DefaultControl2();
 
 	if (INPUT->GetKeyDown(VK_F11))
 		isDebug = !isDebug;
@@ -122,19 +84,7 @@ void Program::Update()
 
 void Program::Render()
 {
-	//rect->Render();
 	SCENE->Render();
-
-	//sprite->Begin(D3DXSPRITE_ALPHABLEND);
-	//{
-	//	RECT rc = { 0, 0, 100, 100 };
-	//	sprite->Draw(TEXTURE->GetTexture(L"Mario"),
-	//		&rc, // 출력하고 싶은 크기 및 영역)
-	//		&D3DXVECTOR3(100 / 2, 100 / 2, 0), // 회전이 일어나는 중심점
-	//		&D3DXVECTOR3(WINSIZE_X / 2, WINSIZE_Y / 2, 0), // 그려지는 위치
-	//		0xffffffff);// 컬러값
-	//}
-	//sprite->End();
 
 	//Vector2 center = Vector2(0, 0);
 

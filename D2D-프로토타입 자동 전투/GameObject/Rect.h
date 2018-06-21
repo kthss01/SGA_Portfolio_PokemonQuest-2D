@@ -1,8 +1,6 @@
 #pragma once
 #include "GameObject.h"
 
-#define TEMPSIZE 10
-
 class Rect : public GameObject
 {
 private:
@@ -20,28 +18,26 @@ private:
 	class Camera* camera;
 	class AnimationClip* clips;
 
-	Transform* tempTrans[TEMPSIZE];
-
-	RectCollider* tempCollider;
-	bool colliderCheck;
-
+	bool isObject;
 	bool check;
 public:
 	Rect();
 	~Rect();
 
-	void Init(wstring shaderFile, const Vector2 uv, const Vector2 pivot = Vector2(0, 0));
+	void Init(wstring shaderFile, const Vector2 uv, 
+		const Vector2 size = Vector2(50, 50), const Vector2 pivot = Vector2(0, 0));
 	void Release();
 	void Update();
 	void Render();
 	void RenderRect();
 
 	void InitShader(wstring shaderFile);
-	void InitVertex(Vector2 uv, Vector2 pivot);
+	void InitVertex(Vector2 size, Vector2 uv, Vector2 pivot);
 	void InitBuffer();
 
 	void DrawInterface();
 
 	void SetCamera(Camera* camera) { this->camera = camera; }
 	void SetTexture(LPDIRECT3DTEXTURE9 tex) { pTex = tex; }
+	void SetTransform(Transform* transform) { this->transform = transform; }
 };

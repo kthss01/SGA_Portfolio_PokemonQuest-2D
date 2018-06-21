@@ -120,6 +120,12 @@
     <ClInclude Include="Manager\Timer\TimeManager.h">
       <Filter>헤더 파일</Filter>
     </ClInclude>
+    <ClInclude Include="Scene\ExploreScene\ExploreScene.h">
+      <Filter>헤더 파일</Filter>
+    </ClInclude>
+    <ClInclude Include="GameObject\TileMap.h">
+      <Filter>헤더 파일</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Math\Matrix.cpp">
@@ -216,6 +222,12 @@
       <Filter>소스 파일</Filter>
     </ClCompile>
     <ClCompile Include="Manager\Timer\TimeManager.cpp">
+      <Filter>소스 파일</Filter>
+    </ClCompile>
+    <ClCompile Include="Scene\ExploreScene\ExploreScene.cpp">
+      <Filter>소스 파일</Filter>
+    </ClCompile>
+    <ClCompile Include="GameObject\TileMap.cpp">
       <Filter>소스 파일</Filter>
     </ClCompile>
   </ItemGroup>

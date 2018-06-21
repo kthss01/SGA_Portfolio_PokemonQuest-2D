@@ -424,6 +424,9 @@ void Transform::DefaultControl2()
 	float deltaMove = 1000.0f * deltaTime; // c++ 에선 10.f 이렇게 써도 됨
 	float deltaAngle = 90.0f * D3DX_PI / 180.0f * deltaTime;
 
+	//float deltaMove = 5.0f;
+	//float deltaAngle = D3DX_PI / 180.0f * 1.0f;
+
 	if (Input::Get()->GetKey(VK_RBUTTON) == false) {
 		if (Input::Get()->GetKey('A'))
 			this->MovePositionSelf(Vector2(-deltaMove, 0));

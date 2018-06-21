@@ -44,6 +44,7 @@ public:
 	void Update(AniRepeatType playType);
 
 	void PushAnimationData(AnimationData data);
+	int GetAnimationDataSize() { return aniClip.size(); }
 	AnimationData GetCurrentData();
 };
 

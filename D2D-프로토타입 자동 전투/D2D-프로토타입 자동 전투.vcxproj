@@ -160,6 +160,7 @@
     <ClInclude Include="Common\ParticleEmitter.h" />
     <ClInclude Include="GameObject\GameObject.h" />
     <ClInclude Include="GameObject\Rect.h" />
+    <ClInclude Include="GameObject\TileMap.h" />
     <ClInclude Include="ImGui\imconfig.h" />
     <ClInclude Include="ImGui\imgui.h" />
     <ClInclude Include="ImGui\imgui_impl_dx9.h" />
@@ -174,6 +175,7 @@
     <ClInclude Include="Physics\Collision.h" />
     <ClInclude Include="Physics\RectCollider.h" />
     <ClInclude Include="Manager\SoundManager.h" />
+    <ClInclude Include="Scene\ExploreScene\ExploreScene.h" />
     <ClInclude Include="Scene\Scene.h" />
     <ClInclude Include="Scene\TestScene.h" />
     <ClInclude Include="Utilities\Json.h" />
@@ -197,6 +199,7 @@
     <ClCompile Include="Common\ParticleEmitter.cpp" />
     <ClCompile Include="GameObject\GameObject.cpp" />
     <ClCompile Include="GameObject\Rect.cpp" />
+    <ClCompile Include="GameObject\TileMap.cpp" />
     <ClCompile Include="ImGui\imgui.cpp" />
     <ClCompile Include="ImGui\imgui_demo.cpp" />
     <ClCompile Include="ImGui\imgui_draw.cpp" />
@@ -208,6 +211,7 @@
     <ClCompile Include="Physics\Collision.cpp" />
     <ClCompile Include="Physics\RectCollider.cpp" />
     <ClCompile Include="Manager\SoundManager.cpp" />
+    <ClCompile Include="Scene\ExploreScene\ExploreScene.cpp" />
     <ClCompile Include="Scene\Scene.cpp" />
     <ClCompile Include="Scene\TestScene.cpp" />
     <ClCompile Include="Utilities\Json.cpp" />
