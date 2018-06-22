@@ -23,8 +23,8 @@ void TileMap::Init(wstring shaderFile, const Vector2 uv, const Vector2 size, con
 
 	pTex = NULL;
 
-	curTile.x = 0;
-	curTile.y = 0;
+	//curTile.x = 0;
+	//curTile.y = 0;
 }
 
 void TileMap::Release()
@@ -40,16 +40,16 @@ void TileMap::Update()
 {
 	this->transform->DefaultControl2();
 
-	if (INPUT->GetKeyDown(VK_UP) && curTile.y > 0)
-		curTile.y -= 1.0f;
-	if (INPUT->GetKeyDown(VK_DOWN) && curTile.y < TILE_MAXFRAME_Y) 
-		curTile.y += 1.0f;
-	if (INPUT->GetKeyDown(VK_LEFT) && curTile.x > 0) 
-		curTile.x -= 1.0f;
-	if (INPUT->GetKeyDown(VK_RIGHT) && curTile.x < TILE_MAXFRAME_X)
-		curTile.x += 1.0f;
+	//if (INPUT->GetKeyDown(VK_UP) && curTile.y > 0)
+	//	curTile.y -= 1.0f;
+	//if (INPUT->GetKeyDown(VK_DOWN) && curTile.y < TILE_MAXFRAME_Y) 
+	//	curTile.y += 1.0f;
+	//if (INPUT->GetKeyDown(VK_LEFT) && curTile.x > 0) 
+	//	curTile.x -= 1.0f;
+	//if (INPUT->GetKeyDown(VK_RIGHT) && curTile.x < TILE_MAXFRAME_X)
+	//	curTile.x += 1.0f;
 
-	UpdateUV();
+	//UpdateUV();
 }
 
 void TileMap::Render()
@@ -205,17 +205,6 @@ void TileMap::InitVertex(Vector2 size, Vector2 uv, Vector2 pivot)
 			indices[count++] = (i * TILE_COL + j) * 4 + 1;
 			indices[count++] = (i * TILE_COL + j) * 4 + 3;
 			indices[count++] = (i * TILE_COL + j) * 4 + 2;
-
-			//tiles[i][j].x = i;
-			//tiles[i][j].y = j;
-			//
-			//tiles[i][j].position[0] = vertices[(i * TILE_COL + j) * 4].position;
-			//tiles[i][j].position[1] = vertices[(i * TILE_COL + j) * 4 + 1].position;
-			//tiles[i][j].position[2] = vertices[(i * TILE_COL + j) * 4 + 2].position;
-			//
-			//tiles[i][j].position[3] = vertices[(i * TILE_COL + j) * 4 + 1].position;
-			//tiles[i][j].position[4] = vertices[(i * TILE_COL + j) * 4 + 3].position;
-			//tiles[i][j].position[5] = vertices[(i * TILE_COL + j) * 4 + 2].position;
 		}
 	}
 
@@ -260,6 +249,17 @@ void TileMap::InitBuffer()
 	assert(SUCCEEDED(hr));
 }
 
+void TileMap::SetVertexBuffer()
+{
+	Vertex * pVertex = NULL;
+	HRESULT hr = vb->Lock(0, 0, (void**)&pVertex, 0);
+	assert(SUCCEEDED(hr));
+	memcpy(pVertex, this->vertices, stride * VERTEX_SIZE);
+	hr = vb->Unlock();
+	assert(SUCCEEDED(hr));
+}
+
+/*
 void TileMap::UpdateUV()
 {
 	Vector2 uv;
@@ -302,3 +302,4 @@ void TileMap::UpdateUV()
 	hr = vb->Unlock();
 	assert(SUCCEEDED(hr));
 }
+*/

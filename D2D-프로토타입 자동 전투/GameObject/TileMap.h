@@ -2,8 +2,8 @@
 
 #include "GameObject.h"
 
-#define TILE_ROW 100
-#define TILE_COL 100
+#define TILE_ROW 10
+#define TILE_COL 10
 
 #define TILE_WIDTH 25
 #define TILE_HEIGHT 25
@@ -48,7 +48,7 @@ private:
 
 	tagTile tiles[TILE_ROW][TILE_COL];
 
-	Vector2 curTile;
+	//Vector2 curTile;
 public:
 	TileMap();
 	~TileMap();
@@ -68,5 +68,7 @@ public:
 	void SetCamera(Camera* camera) { this->camera = camera; }
 	void SetTexture(LPDIRECT3DTEXTURE9 tex) { pTex = tex; }
 
-	void UpdateUV();
+	//void UpdateUV();
+	Vertex* GetVertices() { return vertices; }
+	void SetVertexBuffer();
 };

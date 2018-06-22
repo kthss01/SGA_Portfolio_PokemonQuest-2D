@@ -131,6 +131,14 @@ public:
 	Vector2 GetScale() const;
 	Matrix GetWorldRotateMatrix();
 
+	// 이거 일단 진행은 해봤는데 뭔가 문제가 있는거 같음
+	float GetZRadian() {
+		float radian = acos(axis[0].x);
+		if (axis[0].y < 0)
+			radian = -radian;
+		return radian;
+	}
+
 	D3DXQUATERNION GetWorldRotateQuaternion();
 
 	void DrawInterface();

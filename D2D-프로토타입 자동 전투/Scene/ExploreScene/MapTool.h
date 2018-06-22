@@ -2,8 +2,7 @@
 
 #include "Scene\Scene.h"
 
-class ExploreScene : public Scene
-{
+class MapTool : public Scene {
 private:
 	class Camera* mainCamera;
 
@@ -12,8 +11,8 @@ private:
 	LPD3DXFONT font;
 	bool isDebug;
 public:
-	ExploreScene();
-	~ExploreScene();
+	MapTool();
+	~MapTool();
 
 	void Init() override;
 	void Release() override;

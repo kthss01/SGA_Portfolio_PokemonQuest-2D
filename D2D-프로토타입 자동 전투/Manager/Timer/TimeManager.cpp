@@ -12,6 +12,7 @@ TimeManager::TimeManager()
 
 TimeManager::~TimeManager()
 {
+	SAFE_RELEASE(font);
 }
 
 TimeManager * TimeManager::Get()

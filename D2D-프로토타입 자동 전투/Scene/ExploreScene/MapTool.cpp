@@ -1,38 +1,36 @@
-#include "stdafx.h" 
-#include "ExploreScene.h"
+#include "stdafx.h"
+#include "MapTool.h"
 
 #include "GameObject\TileMap.h"
 #include "./Common/Camera.h"
 
-ExploreScene::ExploreScene()
+MapTool::MapTool()
 {
 }
 
-ExploreScene::~ExploreScene()
+MapTool::~MapTool()
 {
 }
 
-void ExploreScene::Init()
+void MapTool::Init()
 {
 	mainCamera = new Camera;
-	
+
 	LPDIRECT3DTEXTURE9 tileTex = TEXTURE->GetTexture(L"tile_forest");
 
 	tile = new TileMap;
 	tile->Init(L"./Shader/ColorTexture.fx", Vector2(1, 1),
-		Vector2(TILE_WIDTH, TILE_HEIGHT), 
+		Vector2(TILE_WIDTH, TILE_HEIGHT),
 		Vector2(
 			-TILE_ROW * TILE_WIDTH / 2,
 			-TILE_COL * TILE_HEIGHT / 2));
 	tile->SetTexture(tileTex);
 	tile->SetCamera(mainCamera);
 
-	DebugInit();
-
-	isDebug = false;
+	isDebug = true;
 }
 
-void ExploreScene::Release()
+void MapTool::Release()
 {
 	SAFE_RELEASE(tile);
 	SAFE_DELETE(tile);
@@ -42,7 +40,7 @@ void ExploreScene::Release()
 	SAFE_RELEASE(font);
 }
 
-void ExploreScene::Update()
+void MapTool::Update()
 {
 	mainCamera->UpdateCamToDevice();
 	tile->Update();
@@ -51,17 +49,12 @@ void ExploreScene::Update()
 		isDebug = !isDebug;
 }
 
-void ExploreScene::Render()
+void MapTool::Render()
 {
 	tile->Render();
-
-	if(isDebug)
-		DebugRender();
-
-
 }
 
-void ExploreScene::DebugInit()
+void MapTool::DebugInit()
 {
 	HRESULT hr = D3DXCreateFont(
 		D2D::GetDevice(),
@@ -81,7 +74,7 @@ void ExploreScene::DebugInit()
 	assert(SUCCEEDED(hr));
 }
 
-void ExploreScene::DebugRender()
+void MapTool::DebugRender()
 {
 	Vector2 mousePos;
 	RECT rc = { 10, 70, 0,0 };
@@ -155,42 +148,42 @@ void ExploreScene::DebugRender()
 		0xFFFF0000
 	);
 
-	rc.top += 20;
-	str = L"Current Radian : ";
-	str += to_wstring(tile->GetTransform()->GetZRadian());
-
-	// 멀티바이트면 DrawTextA
-	font->DrawTextW(
-		// 이미지 2D 좌표에서 띄우는걸 sprite라고 함
-		NULL,
-		str.c_str(),
-		-1,	// 전체 띄우려면 -1, 아니면 문자열 길이만큼 하면됨
-		&rc,
-		// DT_NOCLIP이 rc에 상관없이 출력하겠다는거
-		// 이거쓰면 rc의 10,10이 좌표 정도만 되는거
-		DT_LEFT | DT_NOCLIP, // 옵션, 왼쪽 정렬로 하겠다는거
-							 // 0x~~ 이거 귀찮으면 함수도 있음
-							 //D3DXCOLOR(1.0f, 1.0f, 1.0f, 1.0f)
-		0xFFFF0000
-	);
+	//rc.top += 20;
+	//str = L"Current Radian : ";
+	//str += to_wstring(tile->GetTransform()->GetZRadian());
+	//
+	//// 멀티바이트면 DrawTextA
+	//font->DrawTextW(
+	//	// 이미지 2D 좌표에서 띄우는걸 sprite라고 함
+	//	NULL,
+	//	str.c_str(),
+	//	-1,	// 전체 띄우려면 -1, 아니면 문자열 길이만큼 하면됨
+	//	&rc,
+	//	// DT_NOCLIP이 rc에 상관없이 출력하겠다는거
+	//	// 이거쓰면 rc의 10,10이 좌표 정도만 되는거
+	//	DT_LEFT | DT_NOCLIP, // 옵션, 왼쪽 정렬로 하겠다는거
+	//						 // 0x~~ 이거 귀찮으면 함수도 있음
+	//						 //D3DXCOLOR(1.0f, 1.0f, 1.0f, 1.0f)
+	//	0xFFFF0000
+	//);
 
 	// 마우스가 타일 위에 있을 때
-	if (mousePos.x >= 
+	if (mousePos.x >=
 		tilePos.x - (TILE_ROW * TILE_WIDTH / 2) * tileScale.x &&
-		mousePos.x <= 
+		mousePos.x <=
 		tilePos.x + (TILE_ROW * TILE_WIDTH / 2) * tileScale.x &&
-		mousePos.y >= 
+		mousePos.y >=
 		tilePos.y - (TILE_COL * TILE_HEIGHT / 2) * tileScale.y &&
-		mousePos.y <= 
+		mousePos.y <=
 		tilePos.y + (TILE_COL * TILE_HEIGHT / 2) * tileScale.y) {
-		
+
 		rc.top += 20;
 
 		POINT currentTile;
 		currentTile.x = (mousePos.x - tilePos.x +
 			(TILE_ROW * TILE_WIDTH / 2) * tileScale.x) /
 			(int)(TILE_WIDTH * tileScale.x);
-		currentTile.y = (mousePos.y - tilePos.y + 
+		currentTile.y = (mousePos.y - tilePos.y +
 			(TILE_COL * TILE_HEIGHT / 2) * tileScale.y) /
 			(int)(TILE_HEIGHT * tileScale.y);
 
