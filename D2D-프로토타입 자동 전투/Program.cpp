@@ -63,16 +63,16 @@ Program::Program()
 	}
 	// JSON Setting
 	{
-		root = new Json::Value();
-		readJson = new Json::Value();
-		float time = FRAME->GetElapsedTime();
-		Json::SetValue(*root, "test", time);
+		//root = new Json::Value();
+		//readJson = new Json::Value();
+		//float time = FRAME->GetElapsedTime();
+		//Json::SetValue(*root, "test", time);
 
-		WriteJsonData(L"Test.Json", root);
-		ReadJsonData(L"Test.Json", readJson);
+		//Json::WriteJsonData(L"Test.Json", root);
+		//Json::ReadJsonData(L"Test.Json", readJson);
 
-		float temp;
-		Json::GetValue(*readJson, "test", temp);
+		//float temp;
+		//Json::GetValue(*readJson, "test", temp);
 	}
 }
 
@@ -114,27 +114,4 @@ void Program::Render()
 	if (isDebug) {
 
 	}
-}
-
-void Program::WriteJsonData(wstring fileName, Json::Value * root)
-{
-	ofstream stream;
-	string temp = String::WStringToString(fileName);
-	stream.open(temp);
-	{
-		Json::StyledWriter writer;
-		stream << writer.write(*root);
-	}
-	stream.close();
-}
-
-void Program::ReadJsonData(wstring fileName, Json::Value * root)
-{
-	ifstream stream;
-	stream.open(fileName);
-	{
-		Json::Reader reader;
-		reader.parse(stream, *root);
-	}
-	stream.close();
 }

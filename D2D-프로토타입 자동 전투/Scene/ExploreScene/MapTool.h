@@ -23,6 +23,12 @@ private:
 	class Rect* panel;
 	class Rect* ui[5];
 
+	float currentSubTileNum;
+	Vector2 currentTileUV;
+
+	Json::Value* writeJsonTileMap;
+	Json::Value* readJsonTileMap;
+
 	LPD3DXFONT font;
 	bool isDebug;
 public:
@@ -40,4 +46,10 @@ public:
 
 	void DebugInit();
 	void DebugRender();
+
+	void MapInit();
+	void MapSave();
+	void MapLoad();
+
+
 };

@@ -25,6 +25,14 @@ void MapTool::Init()
 
 	DebugInit();
 
+	currentTileUV.x = TILE_INITFRAME_X;
+	currentTileUV.y = TILE_INITFRAME_Y;
+	
+	currentSubTileNum = 0;
+
+	writeJsonTileMap = new Json::Value();
+	readJsonTileMap = new Json::Value();
+
 	isDebug = true;
 }
 
@@ -43,6 +51,9 @@ void MapTool::Release()
 	SAFE_DELETE(panel);
 	for (int i = 0; i < 5; i++)
 		SAFE_DELETE(ui[i]);
+
+	SAFE_DELETE(readJsonTileMap);
+	SAFE_DELETE(writeJsonTileMap);
 }
 
 void MapTool::Update()
@@ -53,17 +64,127 @@ void MapTool::Update()
 	//panel->Update();
 
 	// 위치 및 크기 조정용
-	for (int i = 0; i < 1; i++)
-		ui[i]->Update();
-	if (INPUT->GetKeyDown(VK_TAB)) {
-		Vector2 pos = ui[0]->GetTransform()->GetWorldPosition();
-		Vector2 scale = ui[0]->GetTransform()->GetScale();
-		
-		//Vector2 pos = panel->GetTransform()->GetWorldPosition();
-		//Vector2 scale = panel->GetTransform()->GetScale();
-		//float radian = panel->GetTransform()->GetZRadian();
+	//for (int i = 0; i < 1; i++)
+	//	ui[i]->Update();
+	//if (INPUT->GetKeyDown(VK_TAB)) {
+	//	Vector2 pos = ui[0]->GetTransform()->GetWorldPosition();
+	//	Vector2 scale = ui[0]->GetTransform()->GetScale();
+	//	
+	//	//Vector2 pos = panel->GetTransform()->GetWorldPosition();
+	//	//Vector2 scale = panel->GetTransform()->GetScale();
+	//	//float radian = panel->GetTransform()->GetZRadian();
+	//
+	//	int temp = 0;
+	//}
 
-		int temp = 0;
+	// 마우스 클릭 시
+	if (INPUT->GetKeyDown(VK_LBUTTON)) {
+
+		// 타일 클릭 시
+		Vector2 mousePos;
+		Util::GetMousePosWithScreen(&mousePos);
+
+		// 서브타일 정보
+		Vector2 tilePos = subTile->GetTransform()->GetWorldPosition();
+		Vector2 tileScale = subTile->GetTransform()->GetScale();
+
+		// 마우스가 서브타일 위에 있을 때
+		if (mousePos.x >=
+			tilePos.x - (MAPTOOL_COL * MAPTOOL_WIDTH / 2) * tileScale.x &&
+			mousePos.x <=
+			tilePos.x + (MAPTOOL_COL * MAPTOOL_WIDTH / 2) * tileScale.x &&
+			mousePos.y >=
+			tilePos.y - (MAPTOOL_ROW * MAPTOOL_HEIGHT / 2) * tileScale.y &&
+			mousePos.y <=
+			tilePos.y + (MAPTOOL_ROW * MAPTOOL_HEIGHT / 2) * tileScale.y) {
+
+			POINT tempTile;
+			tempTile.x = (mousePos.y - tilePos.y +
+				(MAPTOOL_ROW * MAPTOOL_HEIGHT / 2) * tileScale.y) /
+				(MAPTOOL_HEIGHT * tileScale.y);
+			tempTile.y = (mousePos.x - tilePos.x +
+				(MAPTOOL_COL * MAPTOOL_WIDTH / 2) * tileScale.x) /
+				(MAPTOOL_WIDTH * tileScale.x);
+
+			this->currentTileUV = 
+				subTile->GetTileInfo(tempTile.x, tempTile.y).uv;
+		}
+
+		// ui 클릭 시
+		for (int i = 0; i < 5; i++) {
+			if (ui[i]->IsMouseCollision()) {
+				switch (i)
+				{
+				case 0: // new
+					MapInit();
+					break;
+				case 1: // save
+					MapSave();
+					break;
+				case 2: // load
+					MapLoad();
+					break;
+				case 3: // up
+					currentSubTileNum -= 3.0f;
+					if (currentSubTileNum >= TILE_MAXFRAME_X)
+						currentSubTileNum = 0;
+
+					for (int i = 0; i < MAPTOOL_ROW; i++) {
+						for (int j = 0; j < MAPTOOL_COL; j++) {
+							Vector2 temp = Vector2(currentSubTileNum + j, i);
+							subTile->ChangeTile(i, j, temp);
+						}
+					}
+					subTile->SetVertexBuffer();
+					break;
+				case 4: // down
+					currentSubTileNum += 3.0f;
+					if (currentSubTileNum < 0)
+						currentSubTileNum = TILE_MAXFRAME_X - 3;
+
+					for (int i = 0; i < MAPTOOL_ROW; i++) {
+						for (int j = 0; j < MAPTOOL_COL; j++) {
+							Vector2 temp = Vector2(currentSubTileNum + j, i); 
+							subTile->ChangeTile(i, j, temp);
+						}
+					}
+					subTile->SetVertexBuffer();
+					break;
+				}
+			}
+		}
+	}
+
+	if (INPUT->GetKey(VK_LBUTTON)) {
+		// 타일 클릭 시
+		Vector2 mousePos;
+		Util::GetMousePosWithScreen(&mousePos);
+
+		// 타일 정보
+		Vector2 tilePos = tile->GetTransform()->GetWorldPosition();
+		Vector2 tileScale = tile->GetTransform()->GetScale();
+
+		// 마우스가 타일 위에 있을 때
+		if (mousePos.x >=
+			tilePos.x - (TILE_COL * TILE_WIDTH / 2) * tileScale.x &&
+			mousePos.x <=
+			tilePos.x + (TILE_COL * TILE_WIDTH / 2) * tileScale.x &&
+			mousePos.y >=
+			tilePos.y - (TILE_ROW * TILE_HEIGHT / 2) * tileScale.y &&
+			mousePos.y <=
+			tilePos.y + (TILE_ROW * TILE_HEIGHT / 2) * tileScale.y) {
+
+			POINT currentTile;
+			currentTile.x = (mousePos.y - tilePos.y +
+				(TILE_ROW * TILE_HEIGHT / 2) * tileScale.y) /
+				(TILE_HEIGHT * tileScale.y);
+			currentTile.y = (mousePos.x - tilePos.x +
+				(TILE_COL * TILE_WIDTH / 2) * tileScale.x) /
+				(TILE_WIDTH * tileScale.x);
+
+			tile->ChangeTile(currentTile.x, currentTile.y,
+				this->currentTileUV);
+		}
 	}
 
 	if (INPUT->GetKeyDown(VK_F11))
@@ -88,7 +209,8 @@ void MapTool::TileInit()
 	LPDIRECT3DTEXTURE9 tileTex = TEXTURE->GetTexture(L"tile_forest");
 
 	tile = new TileMap;
-	tile->Init(L"./Shader/ColorTexture.fx", Vector2(1, 1),
+	tile->Init(L"./Shader/ColorTexture.fx", 
+		Vector2(TILE_INITFRAME_X, TILE_INITFRAME_Y),
 		TILE_ROW, TILE_COL, TILE_SIZE,
 		TILE_VERTEX_SIZE, TILE_INDEX_SIZE,
 		Vector2(TILE_WIDTH, TILE_HEIGHT),
@@ -108,7 +230,8 @@ void MapTool::SubTileInit()
 	LPDIRECT3DTEXTURE9 tileTex = TEXTURE->GetTexture(L"tile_forest");
 
 	subTile = new TileMap;
-	subTile->Init(L"./Shader/ColorTexture.fx", Vector2(1, 1),
+	subTile->Init(L"./Shader/ColorTexture.fx", 
+		Vector2(TILE_INITFRAME_X, TILE_INITFRAME_Y),
 		MAPTOOL_ROW, MAPTOOL_COL, MAPTOOL_SIZE,
 		MAPTOOL_VERTEX_SIZE, MAPTOOL_INDEX_SIZE,
 		Vector2(TILE_WIDTH, TILE_HEIGHT),
@@ -117,6 +240,14 @@ void MapTool::SubTileInit()
 			-MAPTOOL_COL * MAPTOOL_HEIGHT / 2));
 	subTile->SetTexture(tileTex);
 	subTile->SetCamera(mainCamera);
+
+	for (int i = 0; i < MAPTOOL_ROW; i++) {
+		for (int j = 0; j < MAPTOOL_COL; j++) {
+			Vector2 temp = Vector2(currentSubTileNum + j, i);
+			subTile->ChangeTile(i, j, temp);
+		}
+	}
+	subTile->SetVertexBuffer();
 
 	subTile->GetTransform()->SetScale(Vector2(1.5f, 1.2f));
 	subTile->GetTransform()->SetWorldPosition(Vector2(420.0f, 0.0f));
@@ -285,21 +416,21 @@ void MapTool::DebugRender()
 
 	// 마우스가 타일 위에 있을 때
 	if (mousePos.x >=
-		tilePos.x - (MAPTOOL_COL * MAPTOOL_HEIGHT / 2) * tileScale.x &&
+		tilePos.x - (MAPTOOL_COL * MAPTOOL_WIDTH / 2) * tileScale.x &&
 		mousePos.x <=
-		tilePos.x + (MAPTOOL_COL * MAPTOOL_HEIGHT / 2) * tileScale.x &&
+		tilePos.x + (MAPTOOL_COL * MAPTOOL_WIDTH / 2) * tileScale.x &&
 		mousePos.y >=
-		tilePos.y - (MAPTOOL_ROW * MAPTOOL_WIDTH / 2) * tileScale.y &&
+		tilePos.y - (MAPTOOL_ROW * MAPTOOL_HEIGHT / 2) * tileScale.y &&
 		mousePos.y <=
-		tilePos.y + (MAPTOOL_ROW * MAPTOOL_WIDTH / 2) * tileScale.y) {
+		tilePos.y + (MAPTOOL_ROW * MAPTOOL_HEIGHT / 2) * tileScale.y) {
 
 		rc.top += 20;
 		POINT currentTile;
 		currentTile.x = (mousePos.x - tilePos.x +
-			(MAPTOOL_COL * MAPTOOL_HEIGHT / 2) * tileScale.x) /
+			(MAPTOOL_COL * MAPTOOL_WIDTH / 2) * tileScale.x) /
 			(int)(MAPTOOL_HEIGHT * tileScale.x);
 		currentTile.y = (mousePos.y - tilePos.y +
-			(MAPTOOL_ROW * MAPTOOL_WIDTH / 2) * tileScale.y) /
+			(MAPTOOL_ROW * MAPTOOL_HEIGHT / 2) * tileScale.y) /
 			(int)(MAPTOOL_WIDTH * tileScale.y);
 
 		// currentTile
@@ -401,23 +532,23 @@ void MapTool::DebugRender()
 
 	// 마우스가 타일 위에 있을 때
 	if (mousePos.x >=
-		tilePos.x - (TILE_COL * TILE_HEIGHT / 2) * tileScale.x &&
+		tilePos.x - (TILE_COL * TILE_WIDTH / 2) * tileScale.x &&
 		mousePos.x <=
-		tilePos.x + (TILE_COL * TILE_HEIGHT / 2) * tileScale.x &&
+		tilePos.x + (TILE_COL * TILE_WIDTH / 2) * tileScale.x &&
 		mousePos.y >=
-		tilePos.y - (TILE_ROW * TILE_WIDTH / 2) * tileScale.y &&
+		tilePos.y - (TILE_ROW * TILE_HEIGHT / 2) * tileScale.y &&
 		mousePos.y <=
-		tilePos.y + (TILE_ROW * TILE_WIDTH / 2) * tileScale.y) {
+		tilePos.y + (TILE_ROW * TILE_HEIGHT / 2) * tileScale.y) {
 
 		rc.top += 20;
 
 		POINT currentTile;
 		currentTile.x = (mousePos.x - tilePos.x +
-		(TILE_COL * TILE_HEIGHT / 2) * tileScale.x) /
-		(int)(TILE_HEIGHT * tileScale.x);
+		(TILE_COL * TILE_WIDTH / 2) * tileScale.x) /
+		(int)(TILE_WIDTH * tileScale.x);
 		currentTile.y = (mousePos.y - tilePos.y +
-		(TILE_ROW * TILE_WIDTH / 2) * tileScale.y) /
-		(int)(TILE_WIDTH * tileScale.y);
+		(TILE_ROW * TILE_HEIGHT / 2) * tileScale.y) /
+		(int)(TILE_HEIGHT * tileScale.y);
 
 		// currentTile
 		{
@@ -444,4 +575,63 @@ void MapTool::DebugRender()
 		}
 	}
 	*/
+}
+
+void MapTool::MapInit()
+{
+	for (int i = 0; i < TILE_ROW; i++) {
+		for (int j = 0; j < TILE_COL; j++) {
+			tile->ChangeTile(i, j, 
+				Vector2(TILE_INITFRAME_X, TILE_INITFRAME_Y));
+		}
+	}
+	tile->SetVertexBuffer();
+}
+
+void MapTool::MapSave()
+{
+	for (int i = 0; i < TILE_ROW; i++) {
+		for (int j = 0; j < TILE_COL; j++) {
+			string str = "TileInfo_";
+			tagTile tileInfo = tile->GetTileInfo(i, j);
+			float block = tileInfo.block;
+			str += to_string(i) + "_" + to_string(j) + "_";
+
+			Json::SetValue(*writeJsonTileMap, str + "Block", block);
+			Json::SetValue(*writeJsonTileMap, str + "CenterX", tileInfo.center.x);
+			Json::SetValue(*writeJsonTileMap, str + "CenterY", tileInfo.center.y);
+			Json::SetValue(*writeJsonTileMap, str + "UVX", tileInfo.uv.x);
+			Json::SetValue(*writeJsonTileMap, str + "UVY", tileInfo.uv.y);
+		}
+	}
+
+	Json::WriteJsonData(L"Save/TileMap.Json", writeJsonTileMap);
+}
+
+void MapTool::MapLoad()
+{
+	Json::ReadJsonData(L"Save/TileMap.Json", readJsonTileMap);
+
+	for (int i = 0; i < TILE_ROW; i++) {
+		for (int j = 0; j < TILE_COL; j++) {
+			string str = "TileInfo_";
+			str += to_string(i) + "_" + to_string(j) + "_";
+
+			tagTile tileInfo;
+
+			float block;
+
+			Json::GetValue(*readJsonTileMap, str + "CenterX", tileInfo.center.x);
+			Json::GetValue(*readJsonTileMap, str + "CenterY", tileInfo.center.y);
+			Json::GetValue(*readJsonTileMap, str + "Block", block);
+			if (FLOATZERO(block)) tileInfo.block = false;
+			else tileInfo.block = true;
+			Json::GetValue(*readJsonTileMap, str + "UVX", tileInfo.uv.x);
+			Json::GetValue(*readJsonTileMap, str + "UVY", tileInfo.uv.y);
+			
+			tile->SetTileInfo(i, j, tileInfo);
+		}
+	}
+
+	tile->UpdateTileInfo();
 }

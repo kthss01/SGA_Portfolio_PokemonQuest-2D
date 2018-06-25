@@ -162,14 +162,6 @@ void TileMap::InitVertex(Vector2 size, Vector2 uv, Vector2 pivot)
 {
 	vertices = new Vertex[vertexSize];
 
-
-	uv.x = (TILE_INITFRAME_X + 1.0f - TILE_PADDING) / TILE_MAXFRAME_X;
-	uv.y = (TILE_INITFRAME_Y + 1.0f - TILE_PADDING) / TILE_MAXFRAME_Y;
-
-	Vector2 temp = Vector2(
-		TILE_INITFRAME_X / TILE_MAXFRAME_X,
-		TILE_INITFRAME_Y / TILE_MAXFRAME_Y);
-
 	for (int i = 0; i < row; i++) {
 		for (int j = 0; j < col; j++) {
 			for (int k = 0; k < 4; k++) {
@@ -179,26 +171,18 @@ void TileMap::InitVertex(Vector2 size, Vector2 uv, Vector2 pivot)
 						i * size.x + (k / 2) * size.x + pivot.x);
 
 				vertices[(i * col + j) * 4 + k].color = 0xffffffff;
-
-				switch (k) {
-				case 0:
-					// 좌상단
-					vertices[(i * col + j) * 4 + k].uv = temp;
-					break;
-				case 1:
-					// 우상단
-					vertices[(i * col + j) * 4 + k].uv = Vector2(uv.x, temp.y);
-					break;
-				case 2:
-					// 좌하단
-					vertices[(i * col + j) * 4 + k].uv = Vector2(temp.x, uv.y);
-					break;
-				case 3:
-					// 우하단
-					vertices[(i * col + j) * 4 + k].uv = uv;
-					break;
-				}
 			}
+
+			ChangeTile(i, j, uv, true);
+
+			// 중점 = 좌상단 + 우하단 / 2
+			tileInfo[i][j].center =
+				vertices[(i * col + j) * 4 + 0].position +
+					vertices[(i * col + j) * 4 + 3].position;
+			tileInfo[i][j].center.x /= 2;
+			tileInfo[i][j].center.y /= 2;
+				
+			tileInfo[i][j].block = false;
 		}
 	}
 
@@ -267,47 +251,51 @@ void TileMap::SetVertexBuffer()
 	assert(SUCCEEDED(hr));
 }
 
-/*
-void TileMap::UpdateUV()
+void TileMap::UpdateTileInfo()
 {
-	Vector2 uv;
-	uv.x = (curTile.x + 1.0f - TILE_PADDING) / TILE_MAXFRAME_X;
-	uv.y = (curTile.y + 1.0f - TILE_PADDING) / TILE_MAXFRAME_Y;
-
-	Vector2 temp = Vector2(
-		curTile.x / TILE_MAXFRAME_X,
-		curTile.y / TILE_MAXFRAME_Y);
-
-	for (int i = 0; i < row; i++) {
-		for (int j = 0; j < col; j++) {
-			for (int k = 0; k < 4; k++) {
-				switch (k) {
-				case 0:
-					// 좌상단
-					vertices[(i * col + j) * 4 + k].uv = temp;
-					break;
-				case 1:
-					// 우상단
-					vertices[(i * col + j) * 4 + k].uv = Vector2(uv.x, temp.y);
-					break;
-				case 2:
-					// 좌하단
-					vertices[(i * col + j) * 4 + k].uv = Vector2(temp.x, uv.y);
-					break;
-				case 3:
-					// 우하단
-					vertices[(i * col + j) * 4 + k].uv = uv;
-					break;
-				}
-			}
+	for (int i = 0; i < TILE_ROW; i++) {
+		for (int j = 0; j < TILE_COL; j++) {
+			ChangeTile(i, j, tileInfo[i][j].uv);
 		}
 	}
 
-	Vertex * pVertex = NULL;
-	HRESULT hr = vb->Lock(0, 0, (void**)&pVertex, 0);
-	assert(SUCCEEDED(hr));
-	memcpy(pVertex, vertices, stride * vertexSize);
-	hr = vb->Unlock();
-	assert(SUCCEEDED(hr));
+	this->SetVertexBuffer();
 }
-*/
+
+void TileMap::ChangeTile(int i, int j, Vector2 uv, bool isStart)
+{
+	tileInfo[i][j].uv = uv;
+
+	Vector2 startUV = Vector2(
+		tileInfo[i][j].uv.x / TILE_MAXFRAME_X,
+		tileInfo[i][j].uv.y / TILE_MAXFRAME_Y);
+	Vector2 endUV;
+	endUV.x = (tileInfo[i][j].uv.x + 1.0f - TILE_PADDING) / TILE_MAXFRAME_X;
+	endUV.y = (tileInfo[i][j].uv.y + 1.0f - TILE_PADDING) / TILE_MAXFRAME_Y;
+
+	for (int k = 0; k < 4; k++) {
+		switch (k) {
+		case 0:
+			// 좌상단
+			vertices[(i * col + j) * 4 + k].uv = startUV;
+			break;
+		case 1:
+			// 우상단
+			vertices[(i * col + j) * 4 + k].uv = 
+				Vector2(endUV.x, startUV.y);
+			break;
+		case 2:
+			// 좌하단
+			vertices[(i * col + j) * 4 + k].uv = 
+				Vector2(startUV.x, endUV.y);
+			break;
+		case 3:
+			// 우하단
+			vertices[(i * col + j) * 4 + k].uv = endUV;
+			break;
+		}
+	}
+
+	if(!isStart)
+		SetVertexBuffer();
+}

@@ -41,4 +41,6 @@ public:
 	void SetTexture(LPDIRECT3DTEXTURE9 tex) { pTex = tex; }
 	void SetTransform(Transform* transform) { this->transform = transform; }
 	void SetObject(bool isObject) { this->isObject = isObject; }
+
+	bool IsMouseCollision();
 };

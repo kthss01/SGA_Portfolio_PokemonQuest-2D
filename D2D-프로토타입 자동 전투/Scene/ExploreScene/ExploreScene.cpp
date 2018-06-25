@@ -55,7 +55,8 @@ void ExploreScene::TileInit()
 	LPDIRECT3DTEXTURE9 tileTex = TEXTURE->GetTexture(L"tile_forest");
 
 	tile = new TileMap;
-	tile->Init(L"./Shader/ColorTexture.fx", Vector2(1, 1),
+	tile->Init(L"./Shader/ColorTexture.fx", 
+		Vector2(TILE_INITFRAME_X, TILE_INITFRAME_Y),
 		TILE_ROW, TILE_COL, TILE_SIZE,
 		TILE_VERTEX_SIZE, TILE_INDEX_SIZE,
 		Vector2(TILE_WIDTH, TILE_HEIGHT),

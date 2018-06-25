@@ -25,7 +25,10 @@
 #define TILE_PADDING 0.05f
 
 struct tagTile {
+	Vector2 center;
+	Vector2 uv;
 
+	bool block;
 };
 
 class TileMap : public GameObject {
@@ -43,7 +46,7 @@ private:
 
 	class Camera* camera;
 
-	tagTile tiles[TILE_ROW][TILE_COL];
+	tagTile tileInfo[TILE_ROW][TILE_COL];
 
 	//Vector2 curTile;
 
@@ -73,4 +76,9 @@ public:
 	//void UpdateUV();
 	Vertex* GetVertices() { return vertices; }
 	void SetVertexBuffer();
+	void UpdateTileInfo();
+
+	void ChangeTile(int row, int col, Vector2 uv, bool isStart = false);
+	tagTile GetTileInfo(int row, int col) { return tileInfo[row][col]; }
+	void SetTileInfo(int row, int col, tagTile tileInfo) { this->tileInfo[row][col] = tileInfo; }
 };

@@ -281,3 +281,26 @@ void Rect::DrawInterface()
 	ImGui::End();
 #endif // IMGUI_USE
 }
+
+bool Rect::IsMouseCollision()
+{
+	Vector2 mouse;
+	Util::GetMousePos(&mouse);
+	check = Collision::IntersectTri(
+		vertice[0].position,
+		vertice[1].position,
+		vertice[2].position,
+		this->transform,
+		mouse
+	);
+
+	check |= Collision::IntersectTri(
+		vertice[0].position,
+		vertice[2].position,
+		vertice[3].position,
+		this->transform,
+		mouse
+	);
+
+	return check;
+}

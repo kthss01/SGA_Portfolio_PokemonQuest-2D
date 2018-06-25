@@ -21,7 +21,4 @@ public:
 
 	void Update();
 	void Render();
-
-	void WriteJsonData(wstring fileName, Json::Value* root);
-	void ReadJsonData(wstring fileName, Json::Value* root);
 };
