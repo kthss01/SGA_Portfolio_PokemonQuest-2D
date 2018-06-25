@@ -182,7 +182,7 @@ void TileMap::InitVertex(Vector2 size, Vector2 uv, Vector2 pivot)
 			tileInfo[i][j].center.x /= 2;
 			tileInfo[i][j].center.y /= 2;
 				
-			tileInfo[i][j].block = false;
+			tileInfo[i][j].block = this->CheckTileBlock(tileInfo[i][j].uv);
 		}
 	}
 
@@ -273,6 +273,8 @@ void TileMap::ChangeTile(int i, int j, Vector2 uv, bool isStart)
 	endUV.x = (tileInfo[i][j].uv.x + 1.0f - TILE_PADDING) / TILE_MAXFRAME_X;
 	endUV.y = (tileInfo[i][j].uv.y + 1.0f - TILE_PADDING) / TILE_MAXFRAME_Y;
 
+	tileInfo[i][j].block = this->CheckTileBlock(uv);
+
 	for (int k = 0; k < 4; k++) {
 		switch (k) {
 		case 0:
@@ -298,4 +300,53 @@ void TileMap::ChangeTile(int i, int j, Vector2 uv, bool isStart)
 
 	if(!isStart)
 		SetVertexBuffer();
+}
+
+bool TileMap::CheckTileBlock(Vector2 uv)
+{
+	// Ground만 false로 반환
+
+	if (FLOATEQUAL(uv.x, 5.0f) && FLOATEQUAL(uv.y, 1.0f)) return false;
+	if (FLOATEQUAL(uv.x, 16.0f) && FLOATEQUAL(uv.y, 1.0f)) return false;
+	if (FLOATEQUAL(uv.x, 19.0f) && FLOATEQUAL(uv.y, 1.0f)) return false;
+	if (FLOATEQUAL(uv.x, 22.0f) && FLOATEQUAL(uv.y, 1.0f)) return false;
+
+	if (uv.x >= 12.0f && uv.x < 15.0f) {
+		if (uv.y >= 0 && uv.y <= 3) return false;
+
+		if (uv.x <= 14.0f && 
+			uv.y >= 15.0f && uv.y <= 23.0f) return false;
+
+		if (FLOATEQUAL(uv.y, 4.0f)) {
+			if (FLOATEQUAL(uv.x, 12.0f))	return false;
+			if (FLOATEQUAL(uv.x, 13.0f))	return false;
+		}
+
+		if (FLOATEQUAL(uv.y, 5.0f)) {
+			if (FLOATEQUAL(uv.x, 12.0f))	return false;
+			if (FLOATEQUAL(uv.x, 14.0f))	return false;
+		}
+		if (FLOATEQUAL(uv.x, 13.0f) && FLOATEQUAL(uv.y, 6.0f)) return false;
+
+		if (FLOATEQUAL(uv.y, 7)) return false;
+		if (FLOATEQUAL(uv.x, 13.0f) && FLOATEQUAL(uv.y, 8.0f)) return false;
+		if (FLOATEQUAL(uv.x, 13.0f) && FLOATEQUAL(uv.y, 9.0f)) return false;
+
+		if (FLOATEQUAL(uv.y, 10.0f)) {
+			if (FLOATEQUAL(uv.x, 12.0f))	return false;
+			if (FLOATEQUAL(uv.x, 14.0f))	return false;
+		}
+
+		if (FLOATEQUAL(uv.x, 13.0f) && FLOATEQUAL(uv.y, 11.0f)) return false;
+		if (FLOATEQUAL(uv.x, 13.0f) && FLOATEQUAL(uv.y, 12.0f)) return false;
+
+		if (FLOATEQUAL(uv.y, 13.0f)) {
+			if (FLOATEQUAL(uv.x, 12.0f))	return false;
+			if (FLOATEQUAL(uv.x, 14.0f))	return false;
+		}
+
+		if (FLOATEQUAL(uv.x, 13.0f) && FLOATEQUAL(uv.y, 14.0f)) return false;
+	}
+
+	return true;
 }
