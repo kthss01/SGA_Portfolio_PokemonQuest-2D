@@ -3,6 +3,7 @@
 
 #include "Scene\TestScene.h"
 #include "Scene\ExploreScene\ExploreScene.h"
+#include "Scene\ExploreScene\MapTool.h"
 
 #include "GameObject\Rect.h"
 #include "./Common/Camera.h"
@@ -25,6 +26,15 @@ Program::Program()
 	// TEXTURE Setting
 	{
 		TEXTURE->AddTexture(L"tile_forest", L"Textures/tile_Forest.png");
+
+		// UI
+		TEXTURE->AddTexture(L"ui_panel", L"Textures/UI_Panel_Green.png");
+
+		TEXTURE->AddTexture(L"ui_new",  L"Textures/UI_New.png");
+		TEXTURE->AddTexture(L"ui_save", L"Textures/UI_Save.png");
+		TEXTURE->AddTexture(L"ui_load", L"Textures/UI_Load.png");
+		TEXTURE->AddTexture(L"ui_up",	L"Textures/UI_Up.png");
+		TEXTURE->AddTexture(L"ui_down", L"Textures/UI_Down.png");
 	}
 
 	// SPRITE Setting
@@ -38,13 +48,16 @@ Program::Program()
 		SCENE->AddScene("Test", test);
 		ExploreScene * explore = new ExploreScene;
 		SCENE->AddScene("Explore", explore);
+		MapTool * mapTool = new MapTool;
+		SCENE->AddScene("MapTool", mapTool);
 	}
 	
 	// ±âÅ¸ Setting
 	{
 		//SOUND->Play("Test");
 		//SCENE->ChangeScene("Test");
-		SCENE->ChangeScene("Explore");
+		//SCENE->ChangeScene("Explore");
+		SCENE->ChangeScene("MapTool");
 
 		isDebug = false;
 	}
@@ -72,6 +85,8 @@ Program::~Program()
 	SAFE_DELETE(root);
 
 	SAFE_DELETE(particle);
+
+	SAFE_RELEASE(sprite);
 }
 
 void Program::Update()

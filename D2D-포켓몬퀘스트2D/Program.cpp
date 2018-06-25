@@ -104,6 +104,8 @@ Program::~Program()
 	SAFE_DELETE(root);
 
 	SAFE_DELETE(particle);
+
+	SAFE_RELEASE(sprite);
 }
 
 void Program::Update()

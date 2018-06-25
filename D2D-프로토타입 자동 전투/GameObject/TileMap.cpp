@@ -11,11 +11,19 @@ TileMap::~TileMap()
 {
 }
 
-void TileMap::Init(wstring shaderFile, const Vector2 uv, const Vector2 size, const Vector2 pivot)
+void TileMap::Init(wstring shaderFile, const Vector2 uv, 
+	int row, int col, int mapSize, int vertexSize, int indexSize,
+	const Vector2 tileSize, const Vector2 pivot)
 {
+	this->row = row;
+	this->col = col;
+	this->mapSize = mapSize;
+	this->vertexSize = vertexSize;
+	this->indexSize = indexSize;
+
 	InitShader(shaderFile);
 
-	InitVertex(size, uv, pivot);
+	InitVertex(tileSize, uv, pivot);
 
 	InitBuffer();
 
@@ -100,7 +108,7 @@ void TileMap::RenderRect()
 
 				D2D::GetDevice()->DrawIndexedPrimitive(
 					D3DPT_TRIANGLELIST,
-					0, 0, VERTEX_SIZE, 0, TILE_SIZE * 2);
+					0, 0, vertexSize, 0, mapSize * 2);
 			}
 			this->pEffect->EndPass();
 		}
@@ -152,7 +160,7 @@ void TileMap::InitShader(wstring shaderFile)
 
 void TileMap::InitVertex(Vector2 size, Vector2 uv, Vector2 pivot)
 {
-	vertices = new Vertex[VERTEX_SIZE];
+	vertices = new Vertex[vertexSize];
 
 
 	uv.x = (TILE_INITFRAME_X + 1.0f - TILE_PADDING) / TILE_MAXFRAME_X;
@@ -162,49 +170,49 @@ void TileMap::InitVertex(Vector2 size, Vector2 uv, Vector2 pivot)
 		TILE_INITFRAME_X / TILE_MAXFRAME_X,
 		TILE_INITFRAME_Y / TILE_MAXFRAME_Y);
 
-	for (int i = 0; i < TILE_ROW; i++) {
-		for (int j = 0; j < TILE_COL; j++) {
+	for (int i = 0; i < row; i++) {
+		for (int j = 0; j < col; j++) {
 			for (int k = 0; k < 4; k++) {
-				vertices[(i * TILE_COL + j) * 4 + k].position =
+				vertices[(i * col + j) * 4 + k].position =
 					Vector2(
 						j * size.y + (k % 2) * size.y + pivot.y,
 						i * size.x + (k / 2) * size.x + pivot.x);
 
-				vertices[(i * TILE_COL + j) * 4 + k].color = 0xffffffff;
+				vertices[(i * col + j) * 4 + k].color = 0xffffffff;
 
 				switch (k) {
 				case 0:
 					// 좌상단
-					vertices[(i * TILE_COL + j) * 4 + k].uv = temp;
+					vertices[(i * col + j) * 4 + k].uv = temp;
 					break;
 				case 1:
 					// 우상단
-					vertices[(i * TILE_COL + j) * 4 + k].uv = Vector2(uv.x, temp.y);
+					vertices[(i * col + j) * 4 + k].uv = Vector2(uv.x, temp.y);
 					break;
 				case 2:
 					// 좌하단
-					vertices[(i * TILE_COL + j) * 4 + k].uv = Vector2(temp.x, uv.y);
+					vertices[(i * col + j) * 4 + k].uv = Vector2(temp.x, uv.y);
 					break;
 				case 3:
 					// 우하단
-					vertices[(i * TILE_COL + j) * 4 + k].uv = uv;
+					vertices[(i * col + j) * 4 + k].uv = uv;
 					break;
 				}
 			}
 		}
 	}
 
-	indices = new DWORD[INDEX_SIZE];
+	indices = new DWORD[indexSize];
 	int count = 0;
-	for (int i = 0; i < TILE_ROW; i++) {
-		for (int j = 0; j < TILE_COL; j++) {
-			indices[count++] = (i * TILE_COL + j) * 4;
-			indices[count++] = (i * TILE_COL + j) * 4 + 1;
-			indices[count++] = (i * TILE_COL + j) * 4 + 2;
+	for (int i = 0; i < row; i++) {
+		for (int j = 0; j < col; j++) {
+			indices[count++] = (i * col + j) * 4;
+			indices[count++] = (i * col + j) * 4 + 1;
+			indices[count++] = (i * col + j) * 4 + 2;
 
-			indices[count++] = (i * TILE_COL + j) * 4 + 1;
-			indices[count++] = (i * TILE_COL + j) * 4 + 3;
-			indices[count++] = (i * TILE_COL + j) * 4 + 2;
+			indices[count++] = (i * col + j) * 4 + 1;
+			indices[count++] = (i * col + j) * 4 + 3;
+			indices[count++] = (i * col + j) * 4 + 2;
 		}
 	}
 
@@ -215,7 +223,7 @@ void TileMap::InitVertex(Vector2 size, Vector2 uv, Vector2 pivot)
 void TileMap::InitBuffer()
 {
 	HRESULT hr = D2D::GetDevice()->CreateVertexBuffer(
-		stride * VERTEX_SIZE,
+		stride * vertexSize,
 		D3DUSAGE_WRITEONLY,		// dynamic 쓰게 되면
 		FVF,
 		D3DPOOL_MANAGED,		// 이걸로 해줘야함 default 해주면 data 남아있지 않음
@@ -227,12 +235,12 @@ void TileMap::InitBuffer()
 	Vertex * pVertex = NULL;
 	hr = vb->Lock(0, 0, (void**)&pVertex, 0);
 	assert(SUCCEEDED(hr));
-	memcpy(pVertex, vertices, stride * VERTEX_SIZE);
+	memcpy(pVertex, vertices, stride * vertexSize);
 	hr = vb->Unlock();
 	assert(SUCCEEDED(hr));
 
 	hr = D2D::GetDevice()->CreateIndexBuffer(
-		sizeof(DWORD) * INDEX_SIZE,
+		sizeof(DWORD) * indexSize,
 		D3DUSAGE_WRITEONLY,
 		D3DFMT_INDEX32,
 		D3DPOOL_DEFAULT,
@@ -244,7 +252,7 @@ void TileMap::InitBuffer()
 	void* pIndex;
 	hr = ib->Lock(0, 0, &pIndex, 0);
 	assert(SUCCEEDED(hr));
-	memcpy(pIndex, indices, sizeof(DWORD) * INDEX_SIZE);
+	memcpy(pIndex, indices, sizeof(DWORD) * indexSize);
 	hr = ib->Unlock();
 	assert(SUCCEEDED(hr));
 }
@@ -254,7 +262,7 @@ void TileMap::SetVertexBuffer()
 	Vertex * pVertex = NULL;
 	HRESULT hr = vb->Lock(0, 0, (void**)&pVertex, 0);
 	assert(SUCCEEDED(hr));
-	memcpy(pVertex, this->vertices, stride * VERTEX_SIZE);
+	memcpy(pVertex, this->vertices, stride * vertexSize);
 	hr = vb->Unlock();
 	assert(SUCCEEDED(hr));
 }
@@ -270,25 +278,25 @@ void TileMap::UpdateUV()
 		curTile.x / TILE_MAXFRAME_X,
 		curTile.y / TILE_MAXFRAME_Y);
 
-	for (int i = 0; i < TILE_ROW; i++) {
-		for (int j = 0; j < TILE_COL; j++) {
+	for (int i = 0; i < row; i++) {
+		for (int j = 0; j < col; j++) {
 			for (int k = 0; k < 4; k++) {
 				switch (k) {
 				case 0:
 					// 좌상단
-					vertices[(i * TILE_COL + j) * 4 + k].uv = temp;
+					vertices[(i * col + j) * 4 + k].uv = temp;
 					break;
 				case 1:
 					// 우상단
-					vertices[(i * TILE_COL + j) * 4 + k].uv = Vector2(uv.x, temp.y);
+					vertices[(i * col + j) * 4 + k].uv = Vector2(uv.x, temp.y);
 					break;
 				case 2:
 					// 좌하단
-					vertices[(i * TILE_COL + j) * 4 + k].uv = Vector2(temp.x, uv.y);
+					vertices[(i * col + j) * 4 + k].uv = Vector2(temp.x, uv.y);
 					break;
 				case 3:
 					// 우하단
-					vertices[(i * TILE_COL + j) * 4 + k].uv = uv;
+					vertices[(i * col + j) * 4 + k].uv = uv;
 					break;
 				}
 			}
@@ -298,7 +306,7 @@ void TileMap::UpdateUV()
 	Vertex * pVertex = NULL;
 	HRESULT hr = vb->Lock(0, 0, (void**)&pVertex, 0);
 	assert(SUCCEEDED(hr));
-	memcpy(pVertex, vertices, stride * VERTEX_SIZE);
+	memcpy(pVertex, vertices, stride * vertexSize);
 	hr = vb->Unlock();
 	assert(SUCCEEDED(hr));
 }

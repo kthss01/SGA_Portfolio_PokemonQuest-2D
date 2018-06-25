@@ -428,25 +428,30 @@ void Transform::DefaultControl2()
 	//float deltaAngle = D3DX_PI / 180.0f * 1.0f;
 
 	if (Input::Get()->GetKey(VK_RBUTTON) == false) {
-		if (Input::Get()->GetKey('A'))
+		if (Input::Get()->GetKeyDown('A'))
 			this->MovePositionSelf(Vector2(-deltaMove, 0));
-		else if (Input::Get()->GetKey('D'))
+		else if (Input::Get()->GetKeyDown('D'))
 			this->MovePositionSelf(Vector2(deltaMove, 0));
 
-		if (Input::Get()->GetKey('W'))
+		if (Input::Get()->GetKeyDown('W'))
 			this->MovePositionSelf(Vector2(0, -deltaMove));
-		else if (Input::Get()->GetKey('S'))
+		else if (Input::Get()->GetKeyDown('S'))
 			this->MovePositionSelf(Vector2(0, deltaMove));
 
-		if (Input::Get()->GetKey('Q'))
+		if (Input::Get()->GetKeyDown('Q'))
 			this->RotateSelf(-deltaAngle);
-		else if (Input::Get()->GetKey('E'))
+		else if (Input::Get()->GetKeyDown('E'))
 			this->RotateSelf(deltaAngle);
 
-		if (Input::Get()->GetKey('Z'))
-			this->SetScaling(Vector2(0.1f, 0.1f));
-		if (Input::Get()->GetKey('X'))
-			this->SetScaling(Vector2(-0.1f, -0.1f));
+		if (Input::Get()->GetKeyDown('Z'))
+			this->SetScaling(Vector2(0.0f, 0.1f));
+		if (Input::Get()->GetKeyDown('X'))
+			this->SetScaling(Vector2(0.0f, -0.1f));
+
+		if (Input::Get()->GetKeyDown('C'))
+			this->SetScaling(Vector2(0.1f, 0.0f));
+		if (Input::Get()->GetKeyDown('V'))
+			this->SetScaling(Vector2(-0.1f, 0.0f));
 	}
 
 }

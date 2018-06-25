@@ -40,4 +40,5 @@ public:
 	void SetCamera(Camera* camera) { this->camera = camera; }
 	void SetTexture(LPDIRECT3DTEXTURE9 tex) { pTex = tex; }
 	void SetTransform(Transform* transform) { this->transform = transform; }
+	void SetObject(bool isObject) { this->isObject = isObject; }
 };

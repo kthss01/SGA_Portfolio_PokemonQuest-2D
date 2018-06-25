@@ -20,6 +20,8 @@ public:
 	void Update() override;
 	void Render() override;
 
+	void TileInit();
+
 	void DebugInit();
 	void DebugRender();
 };
