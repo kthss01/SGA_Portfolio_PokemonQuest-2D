@@ -426,12 +426,12 @@ void MapTool::DebugRender()
 
 		rc.top += 20;
 		POINT currentTile;
-		currentTile.x = (mousePos.x - tilePos.x +
-			(MAPTOOL_COL * MAPTOOL_WIDTH / 2) * tileScale.x) /
-			(int)(MAPTOOL_HEIGHT * tileScale.x);
-		currentTile.y = (mousePos.y - tilePos.y +
+		currentTile.x = (mousePos.y - tilePos.y +
 			(MAPTOOL_ROW * MAPTOOL_HEIGHT / 2) * tileScale.y) /
 			(int)(MAPTOOL_WIDTH * tileScale.y);
+		currentTile.y = (mousePos.x - tilePos.x +
+			(MAPTOOL_COL * MAPTOOL_WIDTH / 2) * tileScale.x) /
+			(int)(MAPTOOL_HEIGHT * tileScale.x);
 
 		// currentTile
 		{
@@ -543,12 +543,12 @@ void MapTool::DebugRender()
 		rc.top += 20;
 
 		POINT currentTile;
-		currentTile.x = (mousePos.x - tilePos.x +
-		(TILE_COL * TILE_WIDTH / 2) * tileScale.x) /
-		(int)(TILE_WIDTH * tileScale.x);
-		currentTile.y = (mousePos.y - tilePos.y +
+		currentTile.x = (mousePos.y - tilePos.y +
 		(TILE_ROW * TILE_HEIGHT / 2) * tileScale.y) /
-		(int)(TILE_HEIGHT * tileScale.y);
+		(TILE_HEIGHT * tileScale.y);
+		currentTile.y = (mousePos.x - tilePos.x +
+		(TILE_COL * TILE_WIDTH / 2) * tileScale.x) /
+		(TILE_WIDTH * tileScale.x);
 
 		// currentTile
 		{

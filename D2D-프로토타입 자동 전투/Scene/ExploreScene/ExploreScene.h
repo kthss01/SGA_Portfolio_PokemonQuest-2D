@@ -9,6 +9,10 @@ private:
 
 	class TileMap* tile;
 
+	Json::Value* jsonTileMap;
+
+	class Pokemon* pokemon;
+
 	LPD3DXFONT font;
 	bool isDebug;
 public:
@@ -21,7 +25,10 @@ public:
 	void Render() override;
 
 	void TileInit();
+	void PokemonInit();
 
 	void DebugInit();
 	void DebugRender();
+
+	void MapLoad();
 };

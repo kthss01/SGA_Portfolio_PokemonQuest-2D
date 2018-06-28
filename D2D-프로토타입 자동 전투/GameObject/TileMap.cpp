@@ -262,6 +262,31 @@ void TileMap::UpdateTileInfo()
 	this->SetVertexBuffer();
 }
 
+void TileMap::UpdateTileCenterPos()
+{
+	Vector2 pos = transform->GetWorldPosition();
+	Vector2 scale = transform->GetScale();
+
+	for (int i = 0; i < TILE_ROW; i++) {
+		for (int j = 0; j < TILE_COL; j++) {
+			tileInfo[i][j].center.x =
+				pos.x +
+				(-(TILE_WIDTH * (float)TILE_ROW / 2)
+					+ (float)TILE_WIDTH / 2
+					+ j * TILE_WIDTH)
+				* scale.x;
+
+			tileInfo[i][j].center.y =
+				pos.y + // 현재 위치
+				(-(TILE_HEIGHT * (float)TILE_COL / 2) // 0 0 타일로 이동
+					+ (float)TILE_HEIGHT / 2 // 중점으로 이동
+					+ i * TILE_HEIGHT) // 타일 번호의 중점 계산
+				* scale.y; // 스케일값 계산
+				
+		}
+	}
+}
+
 void TileMap::ChangeTile(int i, int j, Vector2 uv, bool isStart)
 {
 	tileInfo[i][j].uv = uv;

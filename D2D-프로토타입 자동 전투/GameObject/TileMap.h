@@ -77,10 +77,13 @@ public:
 	Vertex* GetVertices() { return vertices; }
 	void SetVertexBuffer();
 	void UpdateTileInfo();
+	void UpdateTileCenterPos();
 
 	void ChangeTile(int row, int col, Vector2 uv, bool isStart = false);
 	tagTile GetTileInfo(int row, int col) { return tileInfo[row][col]; }
 	void SetTileInfo(int row, int col, tagTile tileInfo) { this->tileInfo[row][col] = tileInfo; }
 
 	bool CheckTileBlock(Vector2 uv);
+
+	Vector2 GetTileCenterPos(int row, int col) { return tileInfo[row][col].center; }
 };

@@ -29,8 +29,6 @@ private:
 
 	int index;
 
-	bool isPlay = false;
-
 	float PlayTime;
 	bool isReverse = false;
 public:
@@ -38,10 +36,10 @@ public:
 	~AnimationClip();
 
 	void Play();
-
-	bool IsPlay() { return isPlay; }
+	void Play(int direction, int directionSize = 8);
 
 	void Update(AniRepeatType playType);
+	bool Update(int direction, int directionSize = 8, AniRepeatType playType = AniRepeatType_Loop);
 
 	void PushAnimationData(AnimationData data);
 	int GetAnimationDataSize() { return aniClip.size(); }

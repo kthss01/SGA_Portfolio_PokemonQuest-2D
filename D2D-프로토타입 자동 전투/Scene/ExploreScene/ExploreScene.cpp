@@ -4,6 +4,8 @@
 #include "GameObject\TileMap.h"
 #include "./Common/Camera.h"
 
+#include "GameObject\Pokemon.h"
+
 ExploreScene::ExploreScene()
 {
 }
@@ -16,7 +18,11 @@ void ExploreScene::Init()
 {
 	mainCamera = new Camera;
 
+	this->jsonTileMap = new Json::Value();
+
 	TileInit();
+
+	PokemonInit();
 
 	DebugInit();
 
@@ -31,12 +37,19 @@ void ExploreScene::Release()
 	SAFE_DELETE(mainCamera);
 
 	SAFE_RELEASE(font);
+
+	SAFE_DELETE(jsonTileMap);
+
+	SAFE_RELEASE(pokemon);
+	SAFE_DELETE(pokemon);
 }
 
 void ExploreScene::Update()
 {
 	mainCamera->UpdateCamToDevice();
-	tile->Update();
+	//mainCamera->DefaultControl2();
+	//tile->Update();
+	pokemon->Update();
 
 	if (INPUT->GetKeyDown(VK_F11))
 		isDebug = !isDebug;
@@ -45,8 +58,9 @@ void ExploreScene::Update()
 void ExploreScene::Render()
 {
 	tile->Render();
+	pokemon->Render();
 
-	if(isDebug)
+	if (isDebug)
 		DebugRender();
 }
 
@@ -55,7 +69,7 @@ void ExploreScene::TileInit()
 	LPDIRECT3DTEXTURE9 tileTex = TEXTURE->GetTexture(L"tile_forest");
 
 	tile = new TileMap;
-	tile->Init(L"./Shader/ColorTexture.fx", 
+	tile->Init(L"./Shader/ColorTexture.fx",
 		Vector2(TILE_INITFRAME_X, TILE_INITFRAME_Y),
 		TILE_ROW, TILE_COL, TILE_SIZE,
 		TILE_VERTEX_SIZE, TILE_INDEX_SIZE,
@@ -66,9 +80,34 @@ void ExploreScene::TileInit()
 	tile->SetTexture(tileTex);
 	tile->SetCamera(mainCamera);
 
+	this->MapLoad();
+
 	// 타일 위치 및 크기 설정
 	tile->GetTransform()->SetScale(Vector2(0.9f, 0.9f));
 	tile->GetTransform()->SetWorldPosition(Vector2(-130.0f, -1.0f));
+
+	Vector2 center = tile->GetTileCenterPos(20, 12);
+
+	tile->UpdateTileCenterPos();
+
+	center = tile->GetTileCenterPos(20, 12);
+}
+
+void ExploreScene::PokemonInit()
+{
+
+	pokemon = new Pokemon;
+	int frameCnt[5];
+	frameCnt[STATE_IDLE] = 8;
+	frameCnt[STATE_ATTACK] = 8;
+	frameCnt[STATE_HURT] = 8;
+	frameCnt[STATE_MOVE] = 24;
+	frameCnt[STATE_SPECIAL_ATTACK] = 16;
+	pokemon->SetTileMap(tile);
+	pokemon->SetCamera(mainCamera);
+	pokemon->Init(L"pikachu", frameCnt, Vector2(13.0f, 0));
+
+	pokemon->GetTransform()->SetScale(Vector2(0.3f, 0.3f));
 }
 
 void ExploreScene::DebugInit()
@@ -127,25 +166,25 @@ void ExploreScene::DebugRender()
 	Vector2 tilePos = tile->GetTransform()->GetWorldPosition();
 	// tilePos
 	{
-	str = L"TilePos : ";
-	str += to_wstring(tilePos.x);
-	str += L" , ";
-	str += to_wstring(tilePos.y);
+		str = L"TilePos : ";
+		str += to_wstring(tilePos.x);
+		str += L" , ";
+		str += to_wstring(tilePos.y);
 
-	// 멀티바이트면 DrawTextA
-	font->DrawTextW(
-	// 이미지 2D 좌표에서 띄우는걸 sprite라고 함
-	NULL,
-	str.c_str(),
-	-1,	// 전체 띄우려면 -1, 아니면 문자열 길이만큼 하면됨
-	&rc,
-	// DT_NOCLIP이 rc에 상관없이 출력하겠다는거
-	// 이거쓰면 rc의 10,10이 좌표 정도만 되는거
-	DT_LEFT | DT_NOCLIP, // 옵션, 왼쪽 정렬로 하겠다는거
-	// 0x~~ 이거 귀찮으면 함수도 있음
-	//D3DXCOLOR(1.0f, 1.0f, 1.0f, 1.0f)
-	0xFFFF0000
-	);
+		// 멀티바이트면 DrawTextA
+		font->DrawTextW(
+			// 이미지 2D 좌표에서 띄우는걸 sprite라고 함
+			NULL,
+			str.c_str(),
+			-1,	// 전체 띄우려면 -1, 아니면 문자열 길이만큼 하면됨
+			&rc,
+			// DT_NOCLIP이 rc에 상관없이 출력하겠다는거
+			// 이거쓰면 rc의 10,10이 좌표 정도만 되는거
+			DT_LEFT | DT_NOCLIP, // 옵션, 왼쪽 정렬로 하겠다는거
+			// 0x~~ 이거 귀찮으면 함수도 있음
+			//D3DXCOLOR(1.0f, 1.0f, 1.0f, 1.0f)
+			0xFFFF0000
+		);
 	}
 
 	Vector2 tileScale = tile->GetTransform()->GetScale();
@@ -153,25 +192,25 @@ void ExploreScene::DebugRender()
 
 	// tileScale
 	{
-	str = L"TileScale : ";
-	str += to_wstring(tileScale.x);
-	str += L" , ";
-	str += to_wstring(tileScale.y);
+		str = L"TileScale : ";
+		str += to_wstring(tileScale.x);
+		str += L" , ";
+		str += to_wstring(tileScale.y);
 
-	// 멀티바이트면 DrawTextA
-	font->DrawTextW(
-	// 이미지 2D 좌표에서 띄우는걸 sprite라고 함
-	NULL,
-	str.c_str(),
-	-1,	// 전체 띄우려면 -1, 아니면 문자열 길이만큼 하면됨
-	&rc,
-	// DT_NOCLIP이 rc에 상관없이 출력하겠다는거
-	// 이거쓰면 rc의 10,10이 좌표 정도만 되는거
-	DT_LEFT | DT_NOCLIP, // 옵션, 왼쪽 정렬로 하겠다는거
-	// 0x~~ 이거 귀찮으면 함수도 있음
-	//D3DXCOLOR(1.0f, 1.0f, 1.0f, 1.0f)
-	0xFFFF0000
-	);
+		// 멀티바이트면 DrawTextA
+		font->DrawTextW(
+			// 이미지 2D 좌표에서 띄우는걸 sprite라고 함
+			NULL,
+			str.c_str(),
+			-1,	// 전체 띄우려면 -1, 아니면 문자열 길이만큼 하면됨
+			&rc,
+			// DT_NOCLIP이 rc에 상관없이 출력하겠다는거
+			// 이거쓰면 rc의 10,10이 좌표 정도만 되는거
+			DT_LEFT | DT_NOCLIP, // 옵션, 왼쪽 정렬로 하겠다는거
+			// 0x~~ 이거 귀찮으면 함수도 있음
+			//D3DXCOLOR(1.0f, 1.0f, 1.0f, 1.0f)
+			0xFFFF0000
+		);
 	}
 
 	// radian
@@ -196,46 +235,74 @@ void ExploreScene::DebugRender()
 
 	// 마우스가 타일 위에 있을 때
 	if (mousePos.x >=
-	tilePos.x - (TILE_COL * TILE_HEIGHT / 2) * tileScale.x &&
-	mousePos.x <=
-	tilePos.x + (TILE_COL * TILE_HEIGHT / 2) * tileScale.x &&
-	mousePos.y >=
-	tilePos.y - (TILE_ROW * TILE_WIDTH / 2) * tileScale.y &&
-	mousePos.y <=
-	tilePos.y + (TILE_ROW * TILE_WIDTH / 2) * tileScale.y) {
+		tilePos.x - (TILE_COL * TILE_HEIGHT / 2) * tileScale.x &&
+		mousePos.x <=
+		tilePos.x + (TILE_COL * TILE_HEIGHT / 2) * tileScale.x &&
+		mousePos.y >=
+		tilePos.y - (TILE_ROW * TILE_WIDTH / 2) * tileScale.y &&
+		mousePos.y <=
+		tilePos.y + (TILE_ROW * TILE_WIDTH / 2) * tileScale.y) {
 
-	rc.top += 20;
+		rc.top += 20;
 
-	POINT currentTile;
-	currentTile.x = (mousePos.x - tilePos.x +
-	(TILE_COL * TILE_HEIGHT / 2) * tileScale.x) /
-	(int)(TILE_HEIGHT * tileScale.x);
-	currentTile.y = (mousePos.y - tilePos.y +
-	(TILE_ROW * TILE_WIDTH / 2) * tileScale.y) /
-	(int)(TILE_WIDTH * tileScale.y);
+		POINT currentTile;
+		currentTile.x = (mousePos.y - tilePos.y +
+			(TILE_ROW * TILE_WIDTH / 2) * tileScale.y) /
+			(TILE_WIDTH * tileScale.y);
+		currentTile.y = (mousePos.x - tilePos.x +
+			(TILE_COL * TILE_HEIGHT / 2) * tileScale.x) /
+			(TILE_HEIGHT * tileScale.x);
 
-	// currentTile
-	{
-	str = L"Current Tile : (";
-	str += to_wstring(currentTile.x);
-	str += L" , ";
-	str += to_wstring(currentTile.y);
-	str += L")";
+		// currentTile
+		{
+			str = L"Current Tile : (";
+			str += to_wstring(currentTile.x);
+			str += L" , ";
+			str += to_wstring(currentTile.y);
+			str += L")";
 
-	// 멀티바이트면 DrawTextA
-	font->DrawTextW(
-	// 이미지 2D 좌표에서 띄우는걸 sprite라고 함
-	NULL,
-	str.c_str(),
-	-1,	// 전체 띄우려면 -1, 아니면 문자열 길이만큼 하면됨
-	&rc,
-	// DT_NOCLIP이 rc에 상관없이 출력하겠다는거
-	// 이거쓰면 rc의 10,10이 좌표 정도만 되는거
-	DT_LEFT | DT_NOCLIP, // 옵션, 왼쪽 정렬로 하겠다는거
-	// 0x~~ 이거 귀찮으면 함수도 있음
-	//D3DXCOLOR(1.0f, 1.0f, 1.0f, 1.0f)
-	0xFFFF0000
-	);
+			// 멀티바이트면 DrawTextA
+			font->DrawTextW(
+				// 이미지 2D 좌표에서 띄우는걸 sprite라고 함
+				NULL,
+				str.c_str(),
+				-1,	// 전체 띄우려면 -1, 아니면 문자열 길이만큼 하면됨
+				&rc,
+				// DT_NOCLIP이 rc에 상관없이 출력하겠다는거
+				// 이거쓰면 rc의 10,10이 좌표 정도만 되는거
+				DT_LEFT | DT_NOCLIP, // 옵션, 왼쪽 정렬로 하겠다는거
+				// 0x~~ 이거 귀찮으면 함수도 있음
+				//D3DXCOLOR(1.0f, 1.0f, 1.0f, 1.0f)
+				0xFFFF0000
+			);
+		}
 	}
+}
+
+void ExploreScene::MapLoad()
+{
+	Json::ReadJsonData(L"Save/TileMap.Json", jsonTileMap);
+
+	for (int i = 0; i < TILE_ROW; i++) {
+		for (int j = 0; j < TILE_COL; j++) {
+			string str = "TileInfo_";
+			str += to_string(i) + "_" + to_string(j) + "_";
+
+			tagTile tileInfo;
+
+			float block;
+
+			Json::GetValue(*jsonTileMap, str + "CenterX", tileInfo.center.x);
+			Json::GetValue(*jsonTileMap, str + "CenterY", tileInfo.center.y);
+			Json::GetValue(*jsonTileMap, str + "Block", block);
+			if (FLOATZERO(block)) tileInfo.block = false;
+			else tileInfo.block = true;
+			Json::GetValue(*jsonTileMap, str + "UVX", tileInfo.uv.x);
+			Json::GetValue(*jsonTileMap, str + "UVY", tileInfo.uv.y);
+
+			tile->SetTileInfo(i, j, tileInfo);
+		}
 	}
+
+	tile->UpdateTileInfo();
 }

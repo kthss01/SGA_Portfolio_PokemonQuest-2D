@@ -159,6 +159,7 @@
     <ClInclude Include="Common\Particle.h" />
     <ClInclude Include="Common\ParticleEmitter.h" />
     <ClInclude Include="GameObject\GameObject.h" />
+    <ClInclude Include="GameObject\Pokemon.h" />
     <ClInclude Include="GameObject\Rect.h" />
     <ClInclude Include="GameObject\TileMap.h" />
     <ClInclude Include="ImGui\imconfig.h" />
@@ -199,6 +200,7 @@
     <ClCompile Include="Common\Particle.cpp" />
     <ClCompile Include="Common\ParticleEmitter.cpp" />
     <ClCompile Include="GameObject\GameObject.cpp" />
+    <ClCompile Include="GameObject\Pokemon.cpp" />
     <ClCompile Include="GameObject\Rect.cpp" />
     <ClCompile Include="GameObject\TileMap.cpp" />
     <ClCompile Include="ImGui\imgui.cpp" />

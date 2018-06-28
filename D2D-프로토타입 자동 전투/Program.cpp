@@ -25,6 +25,7 @@ Program::Program()
 	}
 	// TEXTURE Setting
 	{
+		// Tile
 		TEXTURE->AddTexture(L"tile_forest", L"Textures/tile_Forest.png");
 
 		// UI
@@ -35,6 +36,15 @@ Program::Program()
 		TEXTURE->AddTexture(L"ui_load", L"Textures/UI_Load.png");
 		TEXTURE->AddTexture(L"ui_up",	L"Textures/UI_Up.png");
 		TEXTURE->AddTexture(L"ui_down", L"Textures/UI_Down.png");
+
+		// Pokemon
+		// Pikachu
+		TEXTURE->AddTexture(L"pikachu_idle", L"Textures/pokemon/pikachu/idle_8x1.png");
+		TEXTURE->AddTexture(L"pikachu_movement", L"Textures/pokemon/pikachu/movement_24x1.png");
+		TEXTURE->AddTexture(L"pikachu_hurt", L"Textures/pokemon/pikachu/hurt_8x1.png");
+		TEXTURE->AddTexture(L"pikachu_attack", L"Textures/pokemon/pikachu/attack_8x1.png");
+		TEXTURE->AddTexture(L"pikachu_special_attack", L"Textures/pokemon/pikachu/special_attack_16x1.png");
+
 	}
 
 	// SPRITE Setting
@@ -56,8 +66,8 @@ Program::Program()
 	{
 		//SOUND->Play("Test");
 		//SCENE->ChangeScene("Test");
-		//SCENE->ChangeScene("Explore");
-		SCENE->ChangeScene("MapTool");
+		SCENE->ChangeScene("Explore");
+		//SCENE->ChangeScene("MapTool");
 
 		isDebug = false;
 	}
