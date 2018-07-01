@@ -91,4 +91,6 @@ public:
 	void SetTileMap(TileMap* tile) { this->tile = tile; }
 
 	tagPokemonInfo GetPokemonInfo() { return pokemonInfo; }
+
+	AStar* GetAStar() { return aStar; }
 };

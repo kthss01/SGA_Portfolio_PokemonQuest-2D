@@ -5,6 +5,7 @@
 #include "./Common/Camera.h"
 
 #include "GameObject\Pokemon.h"
+#include "AStar.h"
 
 ExploreScene::ExploreScene()
 {
@@ -86,8 +87,12 @@ void ExploreScene::Render()
 	pokemon->Render();
 	enemy->Render();
 
-	if (isDebug)
+
+	if (isDebug) {
 		DebugRender();
+
+		pokemon->GetAStar()->DrawPath();
+	}
 }
 
 void ExploreScene::TileInit()

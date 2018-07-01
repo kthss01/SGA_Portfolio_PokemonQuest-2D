@@ -159,3 +159,30 @@ void AStar::PathFind()
 		}
 	}
 }
+
+void AStar::DrawPath(DWORD color)
+{
+	vector< pair<int, int> > path;
+	aStarTile* temp = _targetTile;
+	while (temp != NULL) {
+		path.push_back(make_pair(temp->x, temp->y));
+		temp = temp->parent;
+	}
+
+
+	LPASTARVERTEX vertices = new ASTARVERTEX[path.size()];
+
+	for (int i = 0; i < path.size(); i++) {
+		vertices[i].position = _map->GetTileCenterPos(
+			path[i].first, path[i].second);
+		vertices[i].color = color;
+	}
+
+	if (path.size() != 0) {
+		D2D::GetDevice()->SetFVF(ASTARVERTEX::FVF);
+		D2D::GetDevice()->DrawPrimitiveUP(
+			D3DPT_LINESTRIP, path.size()-1, vertices, sizeof(ASTARVERTEX));
+	}
+
+	delete[] vertices;
+}

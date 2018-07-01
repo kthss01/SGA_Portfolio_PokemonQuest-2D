@@ -15,6 +15,12 @@ struct aStarTile {
 
 class AStar {
 private:
+	typedef struct tagAStarVERTEX {
+		Vector2 position;
+		DWORD color;
+		enum { FVF = D3DFVF_XYZ | D3DFVF_DIFFUSE };
+	} ASTARVERTEX, *LPASTARVERTEX;
+
 	aStarTile _tile[TILE_ROW][TILE_COL];
 	vector<aStarTile*> _openList;
 	vector<aStarTile*> _closeList;
@@ -63,4 +69,6 @@ public:
 	}
 
 	void SetTileMap(TileMap* map) { _map = map; }
+
+	void DrawPath(DWORD color = 0xff000000);
 };

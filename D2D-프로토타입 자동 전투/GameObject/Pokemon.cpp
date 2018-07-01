@@ -237,6 +237,7 @@ void Pokemon::Render()
 
 	//transform->RenderGizmo(true);
 	//collider->RenderGizmo(transform);
+	//aStar->DrawPath();
 }
 
 void Pokemon::RenderRect()
