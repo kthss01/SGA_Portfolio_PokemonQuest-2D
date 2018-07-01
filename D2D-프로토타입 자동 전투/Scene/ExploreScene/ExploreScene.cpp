@@ -300,6 +300,32 @@ void ExploreScene::DebugRender()
 				0xFFFF0000
 			);
 		}
+
+		rc.top += 20;
+		
+		// tile block 여부
+		{
+			bool isBlock = tile->GetTileInfo(
+				currentTile.x, currentTile.y).block;
+
+			str = L"Tile Block: ";
+			str += isBlock ? L"True" : L"False";
+
+			// 멀티바이트면 DrawTextA
+			font->DrawTextW(
+				// 이미지 2D 좌표에서 띄우는걸 sprite라고 함
+				NULL,
+				str.c_str(),
+				-1,	// 전체 띄우려면 -1, 아니면 문자열 길이만큼 하면됨
+				&rc,
+				// DT_NOCLIP이 rc에 상관없이 출력하겠다는거
+				// 이거쓰면 rc의 10,10이 좌표 정도만 되는거
+				DT_LEFT | DT_NOCLIP, // 옵션, 왼쪽 정렬로 하겠다는거
+									 // 0x~~ 이거 귀찮으면 함수도 있음
+									 //D3DXCOLOR(1.0f, 1.0f, 1.0f, 1.0f)
+				0xFFFF0000
+			);
+		}
 	}
 }
 
