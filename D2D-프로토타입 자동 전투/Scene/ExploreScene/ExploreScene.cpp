@@ -46,6 +46,9 @@ void ExploreScene::Release()
 
 	SAFE_RELEASE(pokemon);
 	SAFE_DELETE(pokemon);
+
+	SAFE_RELEASE(enemy);
+	SAFE_DELETE(enemy);
 }
 
 void ExploreScene::Update()
@@ -66,6 +69,9 @@ void ExploreScene::Update()
 	//mainCamera->DefaultControl2();
 	//tile->Update();
 	pokemon->Update();
+	//enemy->Update();
+
+	FindEnemyTile();
 
 	if (INPUT->GetKeyDown('O'))
 		cameraFollow = !cameraFollow;
@@ -78,6 +84,7 @@ void ExploreScene::Render()
 {
 	tile->Render();
 	pokemon->Render();
+	enemy->Render();
 
 	if (isDebug)
 		DebugRender();
@@ -127,6 +134,22 @@ void ExploreScene::PokemonInit()
 	pokemon->Init(L"pikachu", frameCnt, Vector2(13.0f, 0));
 
 	pokemon->GetTransform()->SetScale(Vector2(0.3f, 0.3f));
+
+	enemy = new Pokemon;
+
+	frameCnt[STATE_IDLE] = 8;
+	frameCnt[STATE_ATTACK] = 8;
+	frameCnt[STATE_HURT] = 8;
+	frameCnt[STATE_MOVE] = 24;
+	frameCnt[STATE_SPECIAL_ATTACK] = 16;
+	enemy->SetTileMap(tile);
+	enemy->SetCamera(mainCamera);
+	enemy->Init(L"pikachu", frameCnt, Vector2(13.0f, 0),
+		{ 20,15 });
+
+	enemy->GetTransform()->SetScale(Vector2(0.3f, 0.3f));
+
+	FindEnemyTile();
 }
 
 void ExploreScene::DebugInit()
@@ -355,4 +378,11 @@ void ExploreScene::MapLoad()
 	}
 
 	tile->UpdateTileInfo();
+}
+
+void ExploreScene::FindEnemyTile()
+{
+	pokemon->SetEnemyTile(enemy->GetPokemonInfo().curTile);
+	
+	enemy->SetEnemyTile(pokemon->GetPokemonInfo().curTile);
 }

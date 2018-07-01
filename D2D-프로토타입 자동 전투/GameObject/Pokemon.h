@@ -61,11 +61,14 @@ private:
 	class Transform* tempTransform;
 
 	class AStar* aStar;
+
+	POINT enemyTile;
 public:
 	Pokemon();
 	~Pokemon();
 
-	void Init(wstring name, int* frameCnt, Vector2 pivot);
+	void Init(wstring name, int* frameCnt, Vector2 pivot,
+		POINT startPos = { 1,1 });
 	void Release();
 	void Update();
 	void Render();
@@ -83,5 +86,9 @@ public:
 	void Move();
 	void Attack();
 
+	void SetEnemyTile(POINT tile) { enemyTile = tile; }
+
 	void SetTileMap(TileMap* tile) { this->tile = tile; }
+
+	tagPokemonInfo GetPokemonInfo() { return pokemonInfo; }
 };

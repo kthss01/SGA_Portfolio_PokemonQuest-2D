@@ -12,6 +12,7 @@ private:
 	Json::Value* jsonTileMap;
 
 	class Pokemon* pokemon;
+	class Pokemon* enemy;
 
 	class Transform* tempTransform;
 	bool cameraFollow;
@@ -34,4 +35,6 @@ public:
 	void DebugRender();
 
 	void MapLoad();
+
+	void FindEnemyTile();
 };
