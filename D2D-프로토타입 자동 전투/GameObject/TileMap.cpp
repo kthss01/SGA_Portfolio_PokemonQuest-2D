@@ -331,21 +331,25 @@ bool TileMap::CheckTileBlock(Vector2 uv)
 {
 	// Ground만 false로 반환
 
-	if (FLOATEQUAL(uv.x, 5.0f) && FLOATEQUAL(uv.y, 1.0f)) return false;
+	if (FLOATEQUAL(uv.x, 4.0f) && FLOATEQUAL(uv.y, 1.0f)) return false;
 	if (FLOATEQUAL(uv.x, 16.0f) && FLOATEQUAL(uv.y, 1.0f)) return false;
 	if (FLOATEQUAL(uv.x, 19.0f) && FLOATEQUAL(uv.y, 1.0f)) return false;
 	if (FLOATEQUAL(uv.x, 22.0f) && FLOATEQUAL(uv.y, 1.0f)) return false;
 
 	if (uv.x >= 12.0f && uv.x < 15.0f) {
+		// 위에 한덩이
 		if (uv.y >= 0 && uv.y <= 3) return false;
 
+		// 위에 한덩이에서 오른쪽 하나 빠진애
 		if (uv.x <= 14.0f && 
 			uv.y >= 15.0f && uv.y <= 23.0f) return false;
 
+		// 아래 한덩이에서 오른쪽 라인 빠진애
 		if (FLOATEQUAL(uv.y, 4.0f)) {
 			if (FLOATEQUAL(uv.x, 12.0f))	return false;
 			if (FLOATEQUAL(uv.x, 13.0f))	return false;
 		}
+
 
 		if (FLOATEQUAL(uv.y, 5.0f)) {
 			if (FLOATEQUAL(uv.x, 12.0f))	return false;
@@ -354,6 +358,7 @@ bool TileMap::CheckTileBlock(Vector2 uv)
 		if (FLOATEQUAL(uv.x, 13.0f) && FLOATEQUAL(uv.y, 6.0f)) return false;
 
 		if (FLOATEQUAL(uv.y, 7)) return false;
+
 		if (FLOATEQUAL(uv.x, 13.0f) && FLOATEQUAL(uv.y, 8.0f)) return false;
 		if (FLOATEQUAL(uv.x, 13.0f) && FLOATEQUAL(uv.y, 9.0f)) return false;
 

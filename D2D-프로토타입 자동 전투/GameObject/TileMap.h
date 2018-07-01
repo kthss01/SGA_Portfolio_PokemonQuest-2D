@@ -86,4 +86,6 @@ public:
 	bool CheckTileBlock(Vector2 uv);
 
 	Vector2 GetTileCenterPos(int row, int col) { return tileInfo[row][col].center; }
+
+	tagTile(*GetTiles())[TILE_COL] {return tileInfo; }
 };

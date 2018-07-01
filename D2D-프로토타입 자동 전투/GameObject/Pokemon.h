@@ -58,6 +58,9 @@ private:
 	class TileMap* tile;
 
 	class Transform* targetTransform;
+	class Transform* tempTransform;
+
+	class AStar* aStar;
 public:
 	Pokemon();
 	~Pokemon();

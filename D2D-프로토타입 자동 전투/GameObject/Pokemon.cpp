@@ -5,6 +5,7 @@
 #include "./Animation/AnimationClip.h"
 #include "GameObject\TileMap.h"
 
+#include "Scene\ExploreScene\AStar.h"
 
 Pokemon::Pokemon()
 {
@@ -42,6 +43,7 @@ void Pokemon::Init(wstring name, int* frameCnt, Vector2 pivot)
 	}
 
 	targetTransform = new Transform;
+	tempTransform = new Transform;
 
 	pokemonInfo.name = name;
 	pokemonInfo.state = STATE_IDLE;
@@ -70,14 +72,21 @@ void Pokemon::Init(wstring name, int* frameCnt, Vector2 pivot)
 		pokemonInfo.pTex[i] = TEXTURE->GetTexture(str);
 	}
 	pokemonInfo.isDied = false;
-	pokemonInfo.moveSpeed = 5.0f;
+	pokemonInfo.moveSpeed = 10.0f;
 
-	pokemonInfo.curTile = { 0, 0 };
+	pokemonInfo.curTile = { 1, 1 };
 	pokemonInfo.targetTile = { -1, -1 };
 
-	transform->SetWorldPosition(
-		tile->GetTileCenterPos(
-			pokemonInfo.curTile.x, pokemonInfo.curTile.y));
+	Vector2 tileCenter = tile->GetTileCenterPos(
+		pokemonInfo.curTile.x, pokemonInfo.curTile.y);
+	Vector2 targetPos = tileCenter + Vector2(
+		0 * transform->GetScale().x,
+		-10.0f * transform->GetScale().y);
+
+	transform->SetWorldPosition(targetPos);
+
+	aStar = new AStar;
+	aStar->SetTileMap(this->tile);
 }
 
 void Pokemon::Release()
@@ -92,6 +101,9 @@ void Pokemon::Release()
 	SAFE_DELETE(collider);
 
 	SAFE_DELETE(targetTransform);
+	SAFE_DELETE(tempTransform);
+
+	SAFE_DELETE(aStar);
 }
 
 void Pokemon::Update()
@@ -138,13 +150,33 @@ void Pokemon::Update()
 		//	break;
 		//}
 		
-		// 도착하면 현재 타일로 변경
-		if(MovePosition(pokemonInfo.targetTile))
-			pokemonInfo.curTile = pokemonInfo.targetTile;
+		//// 도착하면 현재 타일로 변경
+		//if(MovePosition(pokemonInfo.targetTile))
+		//	pokemonInfo.curTile = pokemonInfo.targetTile;
+		//
+		//if (pokemonInfo.curTile.x == pokemonInfo.targetTile.x
+		//	&& pokemonInfo.curTile.y == pokemonInfo.targetTile.y) {
+		//	pokemonInfo.state = STATE_IDLE;
+		//	clips[pokemonInfo.state]->Play(pokemonInfo.dir);
+		//}
 
-		if (pokemonInfo.curTile.x == pokemonInfo.targetTile.x
-			&& pokemonInfo.curTile.y == pokemonInfo.targetTile.y) {
+		if (aStar->GetTargetTile() != NULL) {
+			pokemonInfo.targetTile = aStar->GetPosition();
+			POKEMON_DIRECTION dir = this->FindDirection(
+				pokemonInfo.curTile, pokemonInfo.targetTile);
+			if (dir != pokemonInfo.dir) {
+				pokemonInfo.dir = dir;
+				clips[pokemonInfo.state]->Play(pokemonInfo.dir);
+			}
+
+			if (MovePosition(pokemonInfo.targetTile)) {
+				pokemonInfo.curTile = pokemonInfo.targetTile;
+				aStar->UpdateTargetTile();
+			}
+		}
+		else {
 			pokemonInfo.state = STATE_IDLE;
+			pokemonInfo.curTile = pokemonInfo.targetTile;
 			clips[pokemonInfo.state]->Play(pokemonInfo.dir);
 		}
 
@@ -345,9 +377,48 @@ void Pokemon::InitBuffer()
 
 bool Pokemon::MovePosition(POINT targetTile)
 {
+	Vector2 tileCenter = tile->GetTileCenterPos(
+		targetTile.x, targetTile.y);
+	Vector2 targetPos = tileCenter + Vector2(
+		0 * transform->GetScale().x,
+		-10.0f * transform->GetScale().y);
+	targetTransform->SetWorldPosition(targetPos);
+
+	// 보간으로 이동
 	transform->Interpolate(
 		transform, targetTransform,
-		FRAME->GetElapsedTime() * 1.5f);
+		FRAME->GetElapsedTime() * pokemonInfo.moveSpeed);
+
+	// 그냥 이동
+	//float speed = pokemonInfo.moveSpeed 
+	//	* FRAME->GetElapsedTime();
+	//switch (pokemonInfo.dir)
+	//{
+	//case DIRECTION_BOTTOM:
+	//	transform->MovePositionSelf(Vector2(0, speed));
+	//	break;
+	//case DIRECTION_TOP:
+	//	transform->MovePositionSelf(Vector2(0, -speed));
+	//	break;
+	//case DIRECTION_LEFT:
+	//	transform->MovePositionSelf(Vector2(-speed, 0));
+	//	break;
+	//case DIRECTION_RIGHT:
+	//	transform->MovePositionSelf(Vector2(speed, 0));
+	//	break;
+	//case DIRECTION_LEFTBOTTOM:
+	//	transform->MovePositionSelf(Vector2(-speed, speed));
+	//	break;
+	//case DIRECTION_RIGHTBOTTOM:
+	//	transform->MovePositionSelf(Vector2(speed, speed));
+	//	break;
+	//case DIRECTION_LEFTTOP:
+	//	transform->MovePositionSelf(Vector2(-speed, -speed));
+	//	break;
+	//case DIRECTION_RIGHTTOP:
+	//	transform->MovePositionSelf(Vector2(speed, -speed));
+	//	break;
+	//}
 
 	float temp = 1.0f;
 	// 타겟에 일정거리내로 도착하면 true 아니면 false
@@ -359,6 +430,8 @@ bool Pokemon::MovePosition(POINT targetTile)
 		<= temp) {
 		transform->SetWorldPosition(
 			targetTransform->GetWorldPosition());
+		tempTransform->SetWorldPosition(
+			transform->GetWorldPosition());
 		return true;
 	}
 
@@ -435,6 +508,14 @@ void Pokemon::Move()
 				}
 				pokemonInfo.targetTile = targetTile;
 			
+				aStar->PathInit(
+					pokemonInfo.curTile.x,
+					pokemonInfo.curTile.y,
+					pokemonInfo.targetTile.x,
+					pokemonInfo.targetTile.y);
+
+				aStar->PathFind();
+
 				bool stateChange = false;
 				bool dirChange = false;
 
@@ -452,6 +533,10 @@ void Pokemon::Move()
 				
 				if(stateChange || dirChange)
 					clips[pokemonInfo.state]->Play(pokemonInfo.dir);
+
+				tempTransform->SetScale(transform->GetScale());
+				tempTransform->SetWorldPosition(
+					transform->GetWorldPosition());
 
 				targetTransform->SetScale(transform->GetScale());
 				Vector2 tileCenter = tile->GetTileCenterPos(

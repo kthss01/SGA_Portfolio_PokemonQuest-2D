@@ -187,6 +187,11 @@ void MapTool::Update()
 		}
 	}
 
+	// 타일 정보 최신화 (block 부분 변경을 위해서)
+	if (INPUT->GetKeyDown('P')) {
+		tile->UpdateTileInfo();
+	}
+
 	if (INPUT->GetKeyDown(VK_F11))
 		isDebug = !isDebug;
 }
