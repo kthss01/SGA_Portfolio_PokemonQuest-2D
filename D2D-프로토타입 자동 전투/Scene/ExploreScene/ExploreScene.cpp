@@ -46,6 +46,8 @@ void ExploreScene::Release()
 
 void ExploreScene::Update()
 {
+	mainCamera->SetWorldPosition(
+		pokemon->GetTransform()->GetWorldPosition());
 	mainCamera->UpdateCamToDevice();
 	//mainCamera->DefaultControl2();
 	//tile->Update();
@@ -136,6 +138,7 @@ void ExploreScene::DebugRender()
 	wstring str;
 
 	Vector2 mousePos;
+	
 	// mousePos
 	{
 		Util::GetMousePosWithScreen(&mousePos);
@@ -164,6 +167,10 @@ void ExploreScene::DebugRender()
 	// tile
 	rc.top += 20;
 	Vector2 tilePos = tile->GetTransform()->GetWorldPosition();
+	
+	tilePos.x -= this->mainCamera->GetWorldPosition().x;
+	tilePos.y -= this->mainCamera->GetWorldPosition().y;
+
 	// tilePos
 	{
 		str = L"TilePos : ";

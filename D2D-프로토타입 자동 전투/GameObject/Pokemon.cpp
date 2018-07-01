@@ -72,7 +72,7 @@ void Pokemon::Init(wstring name, int* frameCnt, Vector2 pivot)
 		pokemonInfo.pTex[i] = TEXTURE->GetTexture(str);
 	}
 	pokemonInfo.isDied = false;
-	pokemonInfo.moveSpeed = 10.0f;
+	pokemonInfo.moveSpeed = 5.0f;
 
 	pokemonInfo.curTile = { 1, 1 };
 	pokemonInfo.targetTile = { -1, -1 };
@@ -474,6 +474,9 @@ void Pokemon::Move()
 		Vector2 tilePos = tile->GetTransform()->GetWorldPosition();
 		Vector2 tileScale = tile->GetTransform()->GetScale();
 
+		tilePos.x -= this->camera->GetWorldPosition().x;
+		tilePos.y -= this->camera->GetWorldPosition().y;
+
 		// 마우스가 타일 위에 있을 때
 		if (mousePos.x >=
 			tilePos.x - (TILE_COL * TILE_HEIGHT / 2) * tileScale.x &&
@@ -498,6 +501,9 @@ void Pokemon::Move()
 					|| pokemonInfo.targetTile.y != targetTile.y) {
 					POINT currentTile;
 					Vector2 pos = transform->GetWorldPosition();
+					pos.x -= this->camera->GetWorldPosition().x;
+					pos.y -= this->camera->GetWorldPosition().y;
+
 					currentTile.x = (pos.y - tilePos.y +
 						(TILE_ROW * TILE_WIDTH / 2) * tileScale.y) /
 						(TILE_WIDTH * tileScale.y);
