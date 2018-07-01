@@ -13,6 +13,9 @@ private:
 
 	class Pokemon* pokemon;
 
+	class Transform* tempTransform;
+	bool cameraFollow;
+
 	LPD3DXFONT font;
 	bool isDebug;
 public:

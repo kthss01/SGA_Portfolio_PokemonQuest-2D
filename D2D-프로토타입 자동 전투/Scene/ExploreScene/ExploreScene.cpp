@@ -26,6 +26,9 @@ void ExploreScene::Init()
 
 	DebugInit();
 
+	tempTransform = new Transform;
+	cameraFollow = false;
+
 	isDebug = false;
 }
 
@@ -35,6 +38,7 @@ void ExploreScene::Release()
 	SAFE_DELETE(tile);
 
 	SAFE_DELETE(mainCamera);
+	SAFE_DELETE(tempTransform);
 
 	SAFE_RELEASE(font);
 
@@ -46,12 +50,25 @@ void ExploreScene::Release()
 
 void ExploreScene::Update()
 {
-	mainCamera->SetWorldPosition(
-		pokemon->GetTransform()->GetWorldPosition());
+	if (cameraFollow) {
+		//mainCamera->SetWorldPosition(
+		//	pokemon->GetTransform()->GetWorldPosition());
+		mainCamera->Interpolate(mainCamera, pokemon->GetTransform(),
+			FRAME->GetElapsedTime() * 1.0f);
+	}
+	else {
+		//mainCamera->SetWorldPosition(Vector2(0, 0));
+		mainCamera->Interpolate(mainCamera, tempTransform,
+			FRAME->GetElapsedTime() * 1.0f);
+	}
+
 	mainCamera->UpdateCamToDevice();
 	//mainCamera->DefaultControl2();
 	//tile->Update();
 	pokemon->Update();
+
+	if (INPUT->GetKeyDown('O'))
+		cameraFollow = !cameraFollow;
 
 	if (INPUT->GetKeyDown(VK_F11))
 		isDebug = !isDebug;
