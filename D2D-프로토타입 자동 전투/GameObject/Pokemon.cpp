@@ -31,6 +31,7 @@ void Pokemon::Init(wstring name, int* frameCnt, Vector2 pivot,
 	this->collider->SetBound(&center, &halfSize);
 
 	deltaTime = 0.0f;
+	delayTime = 0.0f;
 
 	AnimationData  data;
 	for (int i = 0; i < STATE_END; i++) {
@@ -72,8 +73,13 @@ void Pokemon::Init(wstring name, int* frameCnt, Vector2 pivot,
 		}
 		pokemonInfo.pTex[i] = TEXTURE->GetTexture(str);
 	}
+
 	pokemonInfo.isDied = false;
 	pokemonInfo.moveSpeed = 5.0f;
+	pokemonInfo.attackSpeed = 0.3f;
+	pokemonInfo.attackRange = 
+		(tile->GetTileCenterPos(0,0) 
+		- tile->GetTileCenterPos(1,1)).Length();
 
 	pokemonInfo.curTile = startPos;
 	pokemonInfo.targetTile = { -1, -1 };
@@ -88,6 +94,8 @@ void Pokemon::Init(wstring name, int* frameCnt, Vector2 pivot,
 
 	aStar = new AStar;
 	aStar->SetTileMap(this->tile);
+
+	isHurt = false;
 
 	deltaTime = 0;
 }
@@ -111,6 +119,8 @@ void Pokemon::Release()
 
 void Pokemon::Update()
 {
+	delayTime += FRAME->GetElapsedTime();
+
 	this->transform->DefaultControl2();
 	
 	bool aniEnd = clips[pokemonInfo.state]->Update(pokemonInfo.dir);
@@ -187,10 +197,21 @@ void Pokemon::Update()
 	case STATE_HURT:
 		break;
 	case STATE_ATTACK:
+		enemy->SetHurt(true);
+		if (delayTime > pokemonInfo.attackSpeed) {
+			delayTime = 0.0f;
+			enemy->SetHurt(false);
+			pokemonInfo.state = STATE_IDLE;
+			clips[pokemonInfo.state]->Play(pokemonInfo.dir);
+		}
+
 		break;
 	case STATE_SPECIAL_ATTACK:
 		break;
 	}
+
+	if (INPUT->GetKeyDown('M'))
+		isHurt = !isHurt;
 }
 
 void Pokemon::Render()
@@ -213,6 +234,8 @@ void Pokemon::Render()
 			clips[pokemonInfo.state]->GetCurrentData().currentFrame.x,
 			clips[pokemonInfo.state]->GetCurrentData().currentFrame.y,
 			0.0f, 0.0f));
+
+	this->pEffect->SetBool("isHurt", isHurt);
 
 	//// test
 	//this->pEffect->SetVector("maxFrame",
@@ -468,6 +491,13 @@ POKEMON_DIRECTION Pokemon::FindDirection(POINT curTile, POINT targetTile)
 	}
 }
 
+bool Pokemon::IsAttack()
+{
+	return (transform->GetWorldPosition()
+		- enemy->GetTransform()->GetWorldPosition()).Length()
+		<= pokemonInfo.attackRange;
+}
+
 void Pokemon::Move()
 {
 	//// 마우스 클릭으로 이동
@@ -561,14 +591,17 @@ void Pokemon::Move()
 
 	// 상대 포켓몬으로 이동
 	deltaTime += FRAME->GetElapsedTime();
-	if (deltaTime > 1.0f) {
+	if (deltaTime > 1.0f && !IsAttack()) {
 		deltaTime = 0;
 
 		POINT targetTile;
-		targetTile = enemyTile;
+		targetTile = enemy->GetPokemonInfo().curTile;
 
 		Vector2 tilePos = tile->GetTransform()->GetWorldPosition();
 		Vector2 tileScale = tile->GetTransform()->GetScale();
+
+		tilePos.x -= this->camera->GetWorldPosition().x;
+		tilePos.y -= this->camera->GetWorldPosition().y;
 
 		if (targetTile.x != pokemonInfo.curTile.x ||
 			targetTile.y != pokemonInfo.curTile.y) {
@@ -632,4 +665,38 @@ void Pokemon::Move()
 
 void Pokemon::Attack()
 {
+	if (IsAttack() && delayTime > pokemonInfo.attackSpeed) {
+		
+		delayTime = 0;
+
+		bool stateChange = false;
+		bool dirChange = false;
+
+		if (pokemonInfo.state != STATE_ATTACK) {
+			pokemonInfo.state = STATE_ATTACK;
+			stateChange = true;
+		}
+
+		POKEMON_DIRECTION dir = FindDirection(
+			pokemonInfo.curTile, enemy->GetPokemonInfo().curTile);
+		if (pokemonInfo.dir != dir) {
+			pokemonInfo.dir = dir;
+			dirChange = true;
+		}
+
+		if (stateChange || dirChange)
+			clips[pokemonInfo.state]->Play(pokemonInfo.dir);
+	}
+}
+
+void Pokemon::DrawAttackRange()
+{
+	Vector2 centerPos;
+	//centerPos = tile->GetTileCenterPos(
+	//	pokemonInfo.curTile.x, pokemonInfo.curTile.y);
+	centerPos = transform->GetWorldPosition();
+
+	GIZMO->Circle(centerPos, pokemonInfo.attackRange,
+		0xff0000ff);
+	
 }

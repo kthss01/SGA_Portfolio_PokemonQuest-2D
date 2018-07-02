@@ -30,12 +30,16 @@ struct tagPokemonInfo {
 	POKEMON_DIRECTION dir;
 
 	float moveSpeed;
+	float attackSpeed;
+	float attackRange;
 
 	POINT curTile;
 	POINT targetTile;
 
 	bool isDied;
 };
+
+#define CIRCLE_SEGMENTS 36
 
 class Pokemon : public GameObject
 {
@@ -49,6 +53,7 @@ private:
 
 	LPD3DXEFFECT pEffect;
 	float deltaTime;
+	float delayTime;
 
 	class Camera* camera;
 	class AnimationClip* clips[STATE_END];
@@ -62,7 +67,9 @@ private:
 
 	class AStar* aStar;
 
-	POINT enemyTile;
+	class Pokemon* enemy;
+
+	bool isHurt;
 public:
 	Pokemon();
 	~Pokemon();
@@ -83,14 +90,20 @@ public:
 	bool MovePosition(POINT targetTile);
 	POKEMON_DIRECTION FindDirection(POINT curTile, POINT targetTile);
 
+	bool IsAttack();
+
 	void Move();
 	void Attack();
 
-	void SetEnemyTile(POINT tile) { enemyTile = tile; }
-
+	void SetEnemy(Pokemon* enemy) { this->enemy = enemy; }
 	void SetTileMap(TileMap* tile) { this->tile = tile; }
+
+	void SetHurt(bool isHurt) { this->isHurt = isHurt; }
 
 	tagPokemonInfo GetPokemonInfo() { return pokemonInfo; }
 
 	AStar* GetAStar() { return aStar; }
+
+	void DrawAttackRange();
+
 };

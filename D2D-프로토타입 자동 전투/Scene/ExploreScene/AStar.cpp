@@ -169,7 +169,6 @@ void AStar::DrawPath(DWORD color)
 		temp = temp->parent;
 	}
 
-
 	LPASTARVERTEX vertices = new ASTARVERTEX[path.size()];
 
 	for (int i = 0; i < path.size(); i++) {
@@ -183,6 +182,6 @@ void AStar::DrawPath(DWORD color)
 		D2D::GetDevice()->DrawPrimitiveUP(
 			D3DPT_LINESTRIP, path.size()-1, vertices, sizeof(ASTARVERTEX));
 	}
-
+	
 	delete[] vertices;
 }

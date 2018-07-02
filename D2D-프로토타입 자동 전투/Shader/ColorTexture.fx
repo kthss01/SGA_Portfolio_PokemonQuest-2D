@@ -5,6 +5,9 @@ float4x4 matWorld;
 float4x4 matView;
 float4x4 matProjection;
 
+// 피격 받았는지 여부
+bool isHurt;
+
 // 쉐이더 자체에서 계산해도 됨
 // 외부값은 사실 flaot4로 들어가게됨
 float2 maxFrame;
@@ -82,7 +85,13 @@ float4 PS(PS_INPUT input) : COLOR0
     temp.x = input.uv.x / maxFrame.x + currentFrame.x / maxFrame.x;
     temp.y = input.uv.y / maxFrame.y + currentFrame.y / maxFrame.y;
 
-    return input.color * tex2D(tex_sampler, temp);
+    float4 color = float4(1.0f, 0, 0, 1.0f);
+
+    if (isHurt)
+        return color * tex2D(tex_sampler, temp);
+    else
+        return tex2D(tex_sampler, temp);
+
 }
 
 technique MyShader

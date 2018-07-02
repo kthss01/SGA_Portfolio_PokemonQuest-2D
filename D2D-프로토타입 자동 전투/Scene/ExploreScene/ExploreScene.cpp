@@ -69,6 +69,7 @@ void ExploreScene::Update()
 	mainCamera->UpdateCamToDevice();
 	//mainCamera->DefaultControl2();
 	//tile->Update();
+	
 	pokemon->Update();
 	//enemy->Update();
 
@@ -91,7 +92,11 @@ void ExploreScene::Render()
 	if (isDebug) {
 		DebugRender();
 
+		pokemon->DrawAttackRange();
 		pokemon->GetAStar()->DrawPath();
+
+		
+		//enemy->GetAStar()->DrawPath();
 	}
 }
 
@@ -387,7 +392,7 @@ void ExploreScene::MapLoad()
 
 void ExploreScene::FindEnemyTile()
 {
-	pokemon->SetEnemyTile(enemy->GetPokemonInfo().curTile);
+	pokemon->SetEnemy(enemy);
 	
-	enemy->SetEnemyTile(pokemon->GetPokemonInfo().curTile);
+	enemy->SetEnemy(pokemon);
 }
