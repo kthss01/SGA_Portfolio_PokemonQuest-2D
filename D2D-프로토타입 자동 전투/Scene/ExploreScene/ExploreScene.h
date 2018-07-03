@@ -13,6 +13,7 @@ private:
 
 	class Pokemon* pokemon;
 	class Pokemon* enemy;
+	class Pokemon* enemy2;
 
 	class Transform* tempTransform;
 	bool cameraFollow;

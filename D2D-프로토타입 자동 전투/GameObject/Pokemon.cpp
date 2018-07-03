@@ -112,9 +112,10 @@ void Pokemon::Init(wstring name, int* frameCnt, Vector2 pivot,
 	hp = new ProgressBar;
 	hp->SetCamera(camera);
 	hp->Init(L"ui_hp", L"ui_bar");
-	hp->SetPosition(transform->GetWorldPosition() 
-		+ Vector2(0,50 * transform->GetScale().y));
+
 	hp->SetScale(transform->GetScale());
+	hp->SetPosition(transform->GetWorldPosition()
+		+ Vector2(0, 65 * transform->GetScale().y));
 }
 
 void Pokemon::Release()
@@ -147,9 +148,12 @@ void Pokemon::Update()
 	
 	bool aniEnd = clips[pokemonInfo.state]->Update(pokemonInfo.dir);
 
+	// 참고 탐험씬에서도 위치 조정해주고 있음 
+	// pokemon update하지 않는 경우에 대해서 처리하기 위해서
 	hp->SetPosition(transform->GetWorldPosition()
 		+ Vector2(0, 65 * transform->GetScale().y));
 	//hp->SetScale(transform->GetScale());
+
 	hp->Update();
 
 	switch (pokemonInfo.state)
