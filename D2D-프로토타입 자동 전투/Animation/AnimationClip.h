@@ -15,7 +15,7 @@ struct AnimationData {
 	Vector2 maxFrame;	// 이미지에 대해서 몇장을 짜를건지
 						// 내가 이 애니메이션에서 다음 동작으로 넘어가는데 걸리는 시간
 						// frameRate에 영향을 받을꺼임
-	float time = 0.2f;
+	float time = 0.3f;
 };
 
 // 동작 하나 점프나 공격 이런게 모여 있는거
@@ -39,7 +39,7 @@ public:
 	void Play(int direction, int directionSize = 8);
 
 	void Update(AniRepeatType playType);
-	bool Update(int direction, int directionSize = 8, AniRepeatType playType = AniRepeatType_Loop);
+	void Update(int direction, int directionSize = 8, AniRepeatType playType = AniRepeatType_Loop);
 
 	void PushAnimationData(AnimationData data);
 	int GetAnimationDataSize() { return aniClip.size(); }

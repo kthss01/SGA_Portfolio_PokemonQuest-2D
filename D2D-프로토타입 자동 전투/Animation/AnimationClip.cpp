@@ -60,7 +60,7 @@ void AnimationClip::Update(AniRepeatType playType)
 	}
 }
 
-bool AnimationClip::Update(int direction, int directionSize, AniRepeatType playType)
+void AnimationClip::Update(int direction, int directionSize, AniRepeatType playType)
 {
 	float currentTime = FRAME->GetWorldTime();
 	AnimationData clip = aniClip[index];
@@ -78,8 +78,6 @@ bool AnimationClip::Update(int direction, int directionSize, AniRepeatType playT
 			//index %= aniClip.size();
 			if (index >= clip.maxFrame.x / directionSize * (direction + 1)) {
 				index = clip.maxFrame.x / directionSize * direction;
-
-				return true;
 			}
 			break;
 		case AniRepeatType_Reverse:
@@ -97,8 +95,6 @@ bool AnimationClip::Update(int direction, int directionSize, AniRepeatType playT
 		}
 		PlayTime = FRAME->GetWorldTime();
 	}
-
-	return false;
 }
 
 void AnimationClip::PushAnimationData(AnimationData data)

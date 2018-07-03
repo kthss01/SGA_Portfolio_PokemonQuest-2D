@@ -39,6 +39,9 @@ void Pokemon::Init(wstring name, int* frameCnt, wstring team,
 	for (int i = 0; i < STATE_END; i++) {
 		clips[i] = new AnimationClip;
 		for (int j = 0; j < frameCnt[i]; j++) {
+			if (frameCnt[i] == 32)
+				data.time = 0.15f;
+
 			data.keyName = to_wstring(i) + L"_" + to_wstring(j);
 			data.maxFrame = Vector2(frameCnt[i], 1.0f);
 			data.currentFrame = Vector2(j, 0.0f);
@@ -146,7 +149,7 @@ void Pokemon::Update()
 
 	//this->transform->DefaultControl2();
 	
-	bool aniEnd = clips[pokemonInfo.state]->Update(pokemonInfo.dir);
+	clips[pokemonInfo.state]->Update(pokemonInfo.dir);
 
 	// 참고 탐험씬에서도 위치 조정해주고 있음 
 	// pokemon update하지 않는 경우에 대해서 처리하기 위해서
@@ -683,7 +686,7 @@ void Pokemon::Move()
 			}
 
 			POKEMON_DIRECTION dir = FindDirection(
-				pokemonInfo.curTile, pokemonInfo.targetTile);
+				pokemonInfo.curTile, aStar->GetPosition());
 			if (pokemonInfo.dir != dir) {
 				pokemonInfo.dir = dir;
 				dirChange = true;

@@ -189,26 +189,82 @@ void ExploreScene::TileInit()
 
 void ExploreScene::PokemonInit()
 {
-
+	// player
 	pokemon = new Pokemon;
 	int frameCnt[5];
-	frameCnt[STATE_IDLE] = 8;
-	frameCnt[STATE_ATTACK] = 8;
+
+	//// pikachu
+	//frameCnt[STATE_IDLE] = 8;
+	//frameCnt[STATE_ATTACK] = 8;
+	//frameCnt[STATE_HURT] = 8;
+	//frameCnt[STATE_MOVE] = 24;
+	//frameCnt[STATE_SPECIAL_ATTACK] = 16;
+	//pokemon->SetTileMap(tile);
+	//pokemon->SetCamera(mainCamera);
+	//pokemon->Init(L"pikachu", frameCnt, L"player",
+	//	Vector2(13.0f, 0));
+
+	//// bulbasaur
+	//frameCnt[STATE_IDLE] = 8;
+	//frameCnt[STATE_ATTACK] = 24;
+	//frameCnt[STATE_HURT] = 8;
+	//frameCnt[STATE_MOVE] = 24;
+	//frameCnt[STATE_SPECIAL_ATTACK] = 16;
+	//pokemon->SetTileMap(tile);
+	//pokemon->SetCamera(mainCamera);
+	//pokemon->Init(L"bulbasaur", frameCnt, L"player", 
+	//	Vector2(13.0f, 0));
+
+	// charmander
+	//frameCnt[STATE_IDLE] = 8;
+	//frameCnt[STATE_ATTACK] = 24;
+	//frameCnt[STATE_HURT] = 8;
+	//frameCnt[STATE_MOVE] = 24;
+	//frameCnt[STATE_SPECIAL_ATTACK] = 8;
+	//pokemon->SetTileMap(tile);
+	//pokemon->SetCamera(mainCamera);
+	//pokemon->Init(L"charmander", frameCnt, L"player",
+	//	Vector2(13.0f, 0));
+
+	// squirtle
+	//frameCnt[STATE_IDLE] = 8;
+	//frameCnt[STATE_ATTACK] = 24;
+	//frameCnt[STATE_HURT] = 8;
+	//frameCnt[STATE_MOVE] = 24;
+	//frameCnt[STATE_SPECIAL_ATTACK] = 24;
+	//pokemon->SetTileMap(tile);
+	//pokemon->SetCamera(mainCamera);
+	//pokemon->Init(L"squirtle", frameCnt, L"player",
+	//	Vector2(13.0f, 0));
+
+	//// rattata
+	//frameCnt[STATE_IDLE] = 16;
+	//frameCnt[STATE_ATTACK] = 32;
+	//frameCnt[STATE_HURT] = 8;
+	//frameCnt[STATE_MOVE] = 24;
+	//frameCnt[STATE_SPECIAL_ATTACK] = 32;
+	//pokemon->SetTileMap(tile);
+	//pokemon->SetCamera(mainCamera);
+	//pokemon->Init(L"rattata", frameCnt, L"player",
+	//	Vector2(13.0f, 0));
+
+	// pidgey
+	frameCnt[STATE_IDLE] = 16;
+	frameCnt[STATE_ATTACK] = 24;
 	frameCnt[STATE_HURT] = 8;
 	frameCnt[STATE_MOVE] = 24;
 	frameCnt[STATE_SPECIAL_ATTACK] = 16;
 	pokemon->SetTileMap(tile);
 	pokemon->SetCamera(mainCamera);
-	pokemon->Init(L"pikachu", frameCnt, L"player", 
+	pokemon->Init(L"pidgey", frameCnt, L"player",
 		Vector2(13.0f, 0));
-	//pokemon->GetHpBar()->GetFront()->
-	//	SetTexture(TEXTURE->GetTexture(L"hp_player"));
-
 
 	pokemon->GetTransform()->SetScale(Vector2(0.2f, 0.2f));
 
-	// 
+	//pokemon->GetHpBar()->GetFront()->
+	//	SetTexture(TEXTURE->GetTexture(L"hp_player"));
 
+	// ally charmander
 	pokemon2 = new Pokemon;
 	frameCnt[STATE_IDLE] = 8;
 	frameCnt[STATE_ATTACK] = 24;
@@ -223,32 +279,54 @@ void ExploreScene::PokemonInit()
 	pokemon2->GetTransform()->SetScale(Vector2(0.2f, 0.2f));
 
 	/// enemy
-	// pikachu
 	enemy = new Pokemon;
 
-	frameCnt[STATE_IDLE] = 8;
-	frameCnt[STATE_ATTACK] = 8;
+	// pikachu
+	//frameCnt[STATE_IDLE] = 8;
+	//frameCnt[STATE_ATTACK] = 8;
+	//frameCnt[STATE_HURT] = 8;
+	//frameCnt[STATE_MOVE] = 24;
+	//frameCnt[STATE_SPECIAL_ATTACK] = 16;
+	//enemy->SetTileMap(tile);
+	//enemy->SetCamera(mainCamera);
+	//enemy->Init(L"pikachu", frameCnt, L"enemy", 
+	//	Vector2(13.0f, 0), { 20,15 });
+
+	// rattata
+	frameCnt[STATE_IDLE] = 16;
+	frameCnt[STATE_ATTACK] = 32;
 	frameCnt[STATE_HURT] = 8;
 	frameCnt[STATE_MOVE] = 24;
-	frameCnt[STATE_SPECIAL_ATTACK] = 16;
+	frameCnt[STATE_SPECIAL_ATTACK] = 32;
 	enemy->SetTileMap(tile);
 	enemy->SetCamera(mainCamera);
-	enemy->Init(L"pikachu", frameCnt, L"enemy", 
+	enemy->Init(L"rattata", frameCnt, L"enemy", 
 		Vector2(13.0f, 0), { 20,15 });
 
 	enemy->GetTransform()->SetScale(Vector2(0.2f, 0.2f));
 
-	// charmander
 	enemy2 = new Pokemon;
 
-	frameCnt[STATE_IDLE] = 8;
-	frameCnt[STATE_ATTACK] = 24;
+	// charmander
+	//frameCnt[STATE_IDLE] = 8;
+	//frameCnt[STATE_ATTACK] = 24;
+	//frameCnt[STATE_HURT] = 8;
+	//frameCnt[STATE_MOVE] = 24;
+	//frameCnt[STATE_SPECIAL_ATTACK] = 8;
+	//enemy2->SetTileMap(tile);
+	//enemy2->SetCamera(mainCamera);
+	//enemy2->Init(L"charmander", frameCnt, L"enemy",
+	//	Vector2(13.0f, 0), { 15,10 });
+	
+	// rattata
+	frameCnt[STATE_IDLE] = 16;
+	frameCnt[STATE_ATTACK] = 32;
 	frameCnt[STATE_HURT] = 8;
 	frameCnt[STATE_MOVE] = 24;
-	frameCnt[STATE_SPECIAL_ATTACK] = 8;
+	frameCnt[STATE_SPECIAL_ATTACK] = 32;
 	enemy2->SetTileMap(tile);
 	enemy2->SetCamera(mainCamera);
-	enemy2->Init(L"charmander", frameCnt, L"enemy",
+	enemy2->Init(L"rattata", frameCnt, L"enemy", 
 		Vector2(13.0f, 0), { 15,10 });
 
 	enemy2->GetTransform()->SetScale(Vector2(0.2f, 0.2f));
