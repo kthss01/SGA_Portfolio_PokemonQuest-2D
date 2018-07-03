@@ -54,6 +54,8 @@ void ProgressBar::SetPosition(Vector2 pos)
 
 void ProgressBar::SetScale(Vector2 scale)
 {
+	width = scale.x * 1.3f;
+
 	_front->GetTransform()->SetScale(Vector2(scale.x * 1.3f, scale.y));
 	_back->GetTransform()->SetScale(scale);
 }
@@ -63,5 +65,5 @@ void ProgressBar::SetFrontScale(float ratio)
 	Vector2 scale = _front->GetTransform()->GetScale();
 
 	_front->GetTransform()->SetScale(
-		Vector2(scale.x * ratio, scale.y));
+		Vector2(width * ratio, scale.y));
 }

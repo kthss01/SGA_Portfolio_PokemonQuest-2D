@@ -738,7 +738,7 @@ void Pokemon::Attack()
 void Pokemon::SetHp(float damage)
 {
 	pokemonInfo.curHp -= damage - pokemonInfo.defense;
-	if (pokemonInfo.curHp < 0) {
+	if (pokemonInfo.curHp <= 0) {
 		pokemonInfo.curHp = 0;
 		pokemonInfo.isDied = true;
 	}

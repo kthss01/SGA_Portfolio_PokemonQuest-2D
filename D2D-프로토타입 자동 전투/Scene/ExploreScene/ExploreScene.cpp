@@ -94,7 +94,7 @@ void ExploreScene::Update()
 	
 	pokemon->Update();
 	//enemy->Update();
-	//enemy2->Update();
+	enemy2->Update();
 
 	FindEnemyTile();
 
@@ -170,6 +170,7 @@ void ExploreScene::PokemonInit()
 
 	pokemon->GetTransform()->SetScale(Vector2(0.2f, 0.2f));
 
+	// pikachu
 	enemy = new Pokemon;
 
 	frameCnt[STATE_IDLE] = 8;
@@ -184,16 +185,17 @@ void ExploreScene::PokemonInit()
 
 	enemy->GetTransform()->SetScale(Vector2(0.2f, 0.2f));
 
+	// charmander
 	enemy2 = new Pokemon;
 
 	frameCnt[STATE_IDLE] = 8;
-	frameCnt[STATE_ATTACK] = 8;
+	frameCnt[STATE_ATTACK] = 24;
 	frameCnt[STATE_HURT] = 8;
 	frameCnt[STATE_MOVE] = 24;
-	frameCnt[STATE_SPECIAL_ATTACK] = 16;
+	frameCnt[STATE_SPECIAL_ATTACK] = 8;
 	enemy2->SetTileMap(tile);
 	enemy2->SetCamera(mainCamera);
-	enemy2->Init(L"pikachu", frameCnt, Vector2(13.0f, 0),
+	enemy2->Init(L"charmander", frameCnt, Vector2(13.0f, 0),
 		{ 15,10 });
 
 	enemy2->GetTransform()->SetScale(Vector2(0.2f, 0.2f));
@@ -431,12 +433,40 @@ void ExploreScene::MapLoad()
 
 void ExploreScene::FindEnemyTile()
 {
-	if (!enemy->GetIsDied())
-		pokemon->SetEnemy(enemy);
-	else
-		pokemon->SetEnemy(enemy2);
+	Pokemon* targetEnemy = FindNearPokemon();
+
+	if (pokemon->GetEnemy() == NULL 
+		|| pokemon->GetEnemy()->GetIsDied()
+		|| pokemon->GetEnemy() != targetEnemy) {
+		pokemon->SetEnemy(targetEnemy);
+	}
 	
 	enemy->SetEnemy(pokemon);
+	enemy2->SetEnemy(pokemon);
+}
+
+Pokemon * ExploreScene::FindNearPokemon(bool isEnemy)
+{
+	if(isEnemy) {
+		float dist;
+		if (enemy->GetIsDied()) dist = BIGNUM;
+		else
+			dist = (pokemon->GetTransform()->GetWorldPosition() -
+					enemy->GetTransform()->GetWorldPosition()).Length();
+		float dist2;
+		if (enemy2->GetIsDied()) dist2 = BIGNUM;
+		else
+			dist2 = (pokemon->GetTransform()->GetWorldPosition() -
+					enemy2->GetTransform()->GetWorldPosition()).Length();
+
+		if (dist <= dist2)
+			return enemy;
+		else
+			return enemy2;
+	}
+	else {
+		return pokemon;
+	}
 }
 
 void ExploreScene::UpdateCameraChange(Vector2 tileScale, Vector2 pokemonScale)
@@ -487,4 +517,5 @@ void ExploreScene::UpdatePokemonChange(Pokemon * pokemon, Vector2 scale)
 
 	pokemon->GetHpBar()->SetPosition(transform->GetWorldPosition()
 		+ Vector2(0, 65 * transform->GetScale().y));
+	pokemon->ChangeHpBar();
 }

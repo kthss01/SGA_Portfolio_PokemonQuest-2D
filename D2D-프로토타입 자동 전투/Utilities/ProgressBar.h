@@ -7,6 +7,8 @@ private:
 	class Rect* _back;
 
 	class Camera* camera;
+
+	float width;
 public:
 
 	HRESULT Init(const wchar_t* front, const wchar_t* back);

@@ -42,12 +42,18 @@ Program::Program()
 
 		// Pokemon
 		// Pikachu
-		TEXTURE->AddTexture(L"pikachu_idle", L"Textures/pokemon/pikachu/idle_8x1.png");
-		TEXTURE->AddTexture(L"pikachu_movement", L"Textures/pokemon/pikachu/movement_24x1.png");
-		TEXTURE->AddTexture(L"pikachu_hurt", L"Textures/pokemon/pikachu/hurt_8x1.png");
-		TEXTURE->AddTexture(L"pikachu_attack", L"Textures/pokemon/pikachu/attack_8x1.png");
-		TEXTURE->AddTexture(L"pikachu_special_attack", L"Textures/pokemon/pikachu/special_attack_16x1.png");
+		TEXTURE->AddTexture(L"pikachu_idle",				L"Textures/pokemon/pikachu/idle_8x1.png");
+		TEXTURE->AddTexture(L"pikachu_movement",			L"Textures/pokemon/pikachu/movement_24x1.png");
+		TEXTURE->AddTexture(L"pikachu_hurt",				L"Textures/pokemon/pikachu/hurt_8x1.png");
+		TEXTURE->AddTexture(L"pikachu_attack",				L"Textures/pokemon/pikachu/attack_8x1.png");
+		TEXTURE->AddTexture(L"pikachu_special_attack",		L"Textures/pokemon/pikachu/special_attack_16x1.png");
 
+		// Charmander
+		TEXTURE->AddTexture(L"charmander_idle",				L"Textures/pokemon/charmander/idle_8x1.png");
+		TEXTURE->AddTexture(L"charmander_movement",			L"Textures/pokemon/charmander/movement_24x1.png");
+		TEXTURE->AddTexture(L"charmander_hurt",				L"Textures/pokemon/charmander/hurt_8x1.png");
+		TEXTURE->AddTexture(L"charmander_attack",			L"Textures/pokemon/charmander/attack_24x1.png");
+		TEXTURE->AddTexture(L"charmander_special_attack",	L"Textures/pokemon/charmander/special_attack_8x1.png");
 	}
 
 	// SPRITE Setting

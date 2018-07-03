@@ -114,6 +114,7 @@ public:
 
 	AStar* GetAStar() { return aStar; }
 	bool GetIsDied() { return pokemonInfo.isDied; }
+	Pokemon* GetEnemy() { return enemy; }
 
 	void DrawAttackRange();
 	

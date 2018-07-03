@@ -39,6 +39,7 @@ public:
 	void MapLoad();
 
 	void FindEnemyTile();
+	Pokemon* FindNearPokemon(bool isEnemy = true);
 
 	void UpdateCameraChange(Vector2 tileScale, Vector2 pokemonScale);
 	void UpdatePokemonChange(class Pokemon* pokemon, Vector2 scale);
