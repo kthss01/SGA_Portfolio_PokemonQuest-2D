@@ -11,7 +11,10 @@ private:
 
 	Json::Value* jsonTileMap;
 
+	//class Rect* circle;
+
 	class Pokemon* pokemon;
+	class Pokemon* pokemon2;
 	class Pokemon* enemy;
 	class Pokemon* enemy2;
 
@@ -38,7 +41,7 @@ public:
 
 	void MapLoad();
 
-	void FindEnemyTile();
+	void FindPokemon();
 	Pokemon* FindNearPokemon(bool isEnemy = true);
 
 	void UpdateCameraChange(Vector2 tileScale, Vector2 pokemonScale);

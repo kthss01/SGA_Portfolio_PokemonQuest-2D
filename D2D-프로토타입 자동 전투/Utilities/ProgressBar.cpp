@@ -4,7 +4,7 @@
 #include "Common\Camera.h"
 #include "GameObject\Rect.h"
 
-HRESULT ProgressBar::Init(const wchar_t* front, const wchar_t* back)
+HRESULT ProgressBar::Init(wstring front, wstring back)
 {
 	_front = new Rect;
 	_front->Init(L"./Shader/ColorTexture.fx", Vector2(1, 1), 

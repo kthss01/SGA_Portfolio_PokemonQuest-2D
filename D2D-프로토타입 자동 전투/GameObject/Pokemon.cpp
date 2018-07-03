@@ -17,8 +17,8 @@ Pokemon::~Pokemon()
 {
 }
 
-void Pokemon::Init(wstring name, int* frameCnt, Vector2 pivot,
-	POINT startPos)
+void Pokemon::Init(wstring name, int* frameCnt, wstring team,
+	Vector2 pivot, POINT startPos)
 {
 	InitShader();
 	InitVertex(pivot);
@@ -111,7 +111,7 @@ void Pokemon::Init(wstring name, int* frameCnt, Vector2 pivot,
 
 	hp = new ProgressBar;
 	hp->SetCamera(camera);
-	hp->Init(L"ui_hp", L"ui_bar");
+	hp->Init(L"ui_hp_" + team, L"ui_bar");
 
 	hp->SetScale(transform->GetScale());
 	hp->SetPosition(transform->GetWorldPosition()
@@ -545,93 +545,93 @@ bool Pokemon::IsAttack()
 void Pokemon::Move()
 {
 	//// 마우스 클릭으로 이동
-	//if (INPUT->GetKeyDown(VK_LBUTTON)) {
-	//
-	//	Vector2 mousePos;
-	//	Util::GetMousePosWithScreen(&mousePos);
-	//	Vector2 tilePos = tile->GetTransform()->GetWorldPosition();
-	//	Vector2 tileScale = tile->GetTransform()->GetScale();
-	//
-	//	tilePos.x -= this->camera->GetWorldPosition().x;
-	//	tilePos.y -= this->camera->GetWorldPosition().y;
-	//
-	//	// 마우스가 타일 위에 있을 때
-	//	if (mousePos.x >=
-	//		tilePos.x - (TILE_COL * TILE_HEIGHT / 2) * tileScale.x &&
-	//		mousePos.x <=
-	//		tilePos.x + (TILE_COL * TILE_HEIGHT / 2) * tileScale.x &&
-	//		mousePos.y >=
-	//		tilePos.y - (TILE_ROW * TILE_WIDTH / 2) * tileScale.y &&
-	//		mousePos.y <=
-	//		tilePos.y + (TILE_ROW * TILE_WIDTH / 2) * tileScale.y) {
-	//
-	//		POINT targetTile;
-	//		targetTile.x = (mousePos.y - tilePos.y +
-	//			(TILE_ROW * TILE_WIDTH / 2) * tileScale.y) /
-	//			(TILE_WIDTH * tileScale.y);
-	//		targetTile.y = (mousePos.x - tilePos.x +
-	//			(TILE_COL * TILE_HEIGHT / 2) * tileScale.x) /
-	//			(TILE_HEIGHT * tileScale.x);
-	//
-	//		if (targetTile.x != pokemonInfo.curTile.x ||
-	//			targetTile.y != pokemonInfo.curTile.y) {
-	//			if (pokemonInfo.targetTile.x != targetTile.x
-	//				|| pokemonInfo.targetTile.y != targetTile.y) {
-	//				POINT currentTile;
-	//				Vector2 pos = transform->GetWorldPosition();
-	//				pos.x -= this->camera->GetWorldPosition().x;
-	//				pos.y -= this->camera->GetWorldPosition().y;
-	//
-	//				currentTile.x = (pos.y - tilePos.y +
-	//					(TILE_ROW * TILE_WIDTH / 2) * tileScale.y) /
-	//					(TILE_WIDTH * tileScale.y);
-	//				currentTile.y = (pos.x - tilePos.x +
-	//					(TILE_COL * TILE_HEIGHT / 2) * tileScale.x) /
-	//					(TILE_HEIGHT * tileScale.x);
-	//				pokemonInfo.curTile = currentTile;
-	//			}
-	//			pokemonInfo.targetTile = targetTile;
-	//		
-	//			aStar->PathInit(
-	//				pokemonInfo.curTile.x,
-	//				pokemonInfo.curTile.y,
-	//				pokemonInfo.targetTile.x,
-	//				pokemonInfo.targetTile.y);
-	//
-	//			aStar->PathFind();
-	//
-	//			bool stateChange = false;
-	//			bool dirChange = false;
-	//
-	//			if (pokemonInfo.state != STATE_MOVE) {
-	//				pokemonInfo.state = STATE_MOVE;
-	//				stateChange = true;
-	//			}
-	//
-	//			POKEMON_DIRECTION dir = FindDirection(
-	//				pokemonInfo.curTile, pokemonInfo.targetTile);
-	//			if (pokemonInfo.dir != dir) {
-	//				pokemonInfo.dir = dir;
-	//				dirChange = true;
-	//			}
-	//			
-	//			if(stateChange || dirChange)
-	//				clips[pokemonInfo.state]->Play(pokemonInfo.dir);
-	//
-	//			tempTransform->SetScale(transform->GetScale());
-	//			tempTransform->SetWorldPosition(
-	//				transform->GetWorldPosition());
-	//
-	//			targetTransform->SetScale(transform->GetScale());
-	//			Vector2 tileCenter = tile->GetTileCenterPos(
-	//				targetTile.x, targetTile.y);
-	//			Vector2 targetPos = tileCenter + Vector2(
-	//				0 * transform->GetScale().x,
-	//				-10.0f * transform->GetScale().y);
-	//			targetTransform->SetWorldPosition(targetPos);
-	//		}
-	//	}
-	//}
+	if (INPUT->GetKeyDown(VK_LBUTTON)) {
+	
+		Vector2 mousePos;
+		Util::GetMousePosWithScreen(&mousePos);
+		Vector2 tilePos = tile->GetTransform()->GetWorldPosition();
+		Vector2 tileScale = tile->GetTransform()->GetScale();
+	
+		tilePos.x -= this->camera->GetWorldPosition().x;
+		tilePos.y -= this->camera->GetWorldPosition().y;
+	
+		// 마우스가 타일 위에 있을 때
+		if (mousePos.x >=
+			tilePos.x - (TILE_COL * TILE_HEIGHT / 2) * tileScale.x &&
+			mousePos.x <=
+			tilePos.x + (TILE_COL * TILE_HEIGHT / 2) * tileScale.x &&
+			mousePos.y >=
+			tilePos.y - (TILE_ROW * TILE_WIDTH / 2) * tileScale.y &&
+			mousePos.y <=
+			tilePos.y + (TILE_ROW * TILE_WIDTH / 2) * tileScale.y) {
+	
+			POINT targetTile;
+			targetTile.x = (mousePos.y - tilePos.y +
+				(TILE_ROW * TILE_WIDTH / 2) * tileScale.y) /
+				(TILE_WIDTH * tileScale.y);
+			targetTile.y = (mousePos.x - tilePos.x +
+				(TILE_COL * TILE_HEIGHT / 2) * tileScale.x) /
+				(TILE_HEIGHT * tileScale.x);
+	
+			if (targetTile.x != pokemonInfo.curTile.x ||
+				targetTile.y != pokemonInfo.curTile.y) {
+				if (pokemonInfo.targetTile.x != targetTile.x
+					|| pokemonInfo.targetTile.y != targetTile.y) {
+					POINT currentTile;
+					Vector2 pos = transform->GetWorldPosition();
+					pos.x -= this->camera->GetWorldPosition().x;
+					pos.y -= this->camera->GetWorldPosition().y;
+	
+					currentTile.x = (pos.y - tilePos.y +
+						(TILE_ROW * TILE_WIDTH / 2) * tileScale.y) /
+						(TILE_WIDTH * tileScale.y);
+					currentTile.y = (pos.x - tilePos.x +
+						(TILE_COL * TILE_HEIGHT / 2) * tileScale.x) /
+						(TILE_HEIGHT * tileScale.x);
+					pokemonInfo.curTile = currentTile;
+				}
+				pokemonInfo.targetTile = targetTile;
+			
+				aStar->PathInit(
+					pokemonInfo.curTile.x,
+					pokemonInfo.curTile.y,
+					pokemonInfo.targetTile.x,
+					pokemonInfo.targetTile.y);
+	
+				aStar->PathFind();
+	
+				bool stateChange = false;
+				bool dirChange = false;
+	
+				if (pokemonInfo.state != STATE_MOVE) {
+					pokemonInfo.state = STATE_MOVE;
+					stateChange = true;
+				}
+	
+				POKEMON_DIRECTION dir = FindDirection(
+					pokemonInfo.curTile, pokemonInfo.targetTile);
+				if (pokemonInfo.dir != dir) {
+					pokemonInfo.dir = dir;
+					dirChange = true;
+				}
+				
+				if(stateChange || dirChange)
+					clips[pokemonInfo.state]->Play(pokemonInfo.dir);
+	
+				tempTransform->SetScale(transform->GetScale());
+				tempTransform->SetWorldPosition(
+					transform->GetWorldPosition());
+	
+				targetTransform->SetScale(transform->GetScale());
+				Vector2 tileCenter = tile->GetTileCenterPos(
+					targetTile.x, targetTile.y);
+				Vector2 targetPos = tileCenter + Vector2(
+					0 * transform->GetScale().x,
+					-10.0f * transform->GetScale().y);
+				targetTransform->SetWorldPosition(targetPos);
+			}
+		}
+	}
 
 	// 상대 포켓몬으로 이동
 	deltaTime += FRAME->GetElapsedTime();

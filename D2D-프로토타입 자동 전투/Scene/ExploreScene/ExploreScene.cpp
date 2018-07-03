@@ -4,6 +4,7 @@
 #include "GameObject\TileMap.h"
 #include "./Common/Camera.h"
 
+#include "GameObject\Rect.h"
 #include "GameObject\Pokemon.h"
 #include "AStar.h"
 
@@ -29,6 +30,12 @@ void ExploreScene::Init()
 
 	DebugInit();
 
+	//circle = new Rect;
+	//circle->Init(L"./Shader/ColorTexture.fx", Vector2(1, 1));
+	//circle->SetCamera(mainCamera);
+	//circle->SetTexture(TEXTURE->GetTexture(L"ui_circle"));
+	//circle->GetTransform()->SetScale(Vector2(0.5f, 0.3f));
+
 	tempTransform = new Transform;
 	cameraFollow = false;
 	isChange = false;
@@ -51,11 +58,17 @@ void ExploreScene::Release()
 	SAFE_RELEASE(pokemon);
 	SAFE_DELETE(pokemon);
 
+	SAFE_RELEASE(pokemon2);
+	SAFE_DELETE(pokemon2);
+
 	SAFE_RELEASE(enemy);
 	SAFE_DELETE(enemy);
 
 	SAFE_RELEASE(enemy2);
 	SAFE_DELETE(enemy2);
+
+	//SAFE_RELEASE(circle);
+	//SAFE_DELETE(circle);
 }
 
 void ExploreScene::Update()
@@ -91,12 +104,27 @@ void ExploreScene::Update()
 	mainCamera->UpdateCamToDevice();
 	//mainCamera->DefaultControl2();
 	//tile->Update();
+
+	//circle->Update();
+	//POKEMON_DIRECTION dir = pokemon->GetPokemonInfo().dir;
+	//// left
+	//if (dir % 2 == 0)
+	//	circle->GetTransform()->SetWorldPosition(
+	//		pokemon->GetTransform()->GetWorldPosition()
+	//		+ Vector2(0, 25));
+	//else
+	//	circle->GetTransform()->SetWorldPosition(
+	//		pokemon->GetTransform()->GetWorldPosition()
+	//		+ Vector2(10, 25));
+
 	
 	pokemon->Update();
+	//pokemon2->Update();
 	//enemy->Update();
 	enemy2->Update();
 
-	FindEnemyTile();
+	FindPokemon();
+
 
 	if (INPUT->GetKeyDown('O')) {
 		cameraFollow = !cameraFollow;
@@ -110,7 +138,12 @@ void ExploreScene::Update()
 void ExploreScene::Render()
 {
 	tile->Render();
+	
+	//circle->Render();
+	
 	pokemon->Render();
+	pokemon2->Render();
+
 	enemy->Render();
 	enemy2->Render();
 
@@ -166,10 +199,30 @@ void ExploreScene::PokemonInit()
 	frameCnt[STATE_SPECIAL_ATTACK] = 16;
 	pokemon->SetTileMap(tile);
 	pokemon->SetCamera(mainCamera);
-	pokemon->Init(L"pikachu", frameCnt, Vector2(13.0f, 0));
+	pokemon->Init(L"pikachu", frameCnt, L"player", 
+		Vector2(13.0f, 0));
+	//pokemon->GetHpBar()->GetFront()->
+	//	SetTexture(TEXTURE->GetTexture(L"hp_player"));
+
 
 	pokemon->GetTransform()->SetScale(Vector2(0.2f, 0.2f));
 
+	// 
+
+	pokemon2 = new Pokemon;
+	frameCnt[STATE_IDLE] = 8;
+	frameCnt[STATE_ATTACK] = 24;
+	frameCnt[STATE_HURT] = 8;
+	frameCnt[STATE_MOVE] = 24;
+	frameCnt[STATE_SPECIAL_ATTACK] = 8;
+	pokemon2->SetTileMap(tile);
+	pokemon2->SetCamera(mainCamera);
+	pokemon2->Init(L"charmander", frameCnt, L"ally",
+		Vector2(13.0f, 0), { 2, 19 });
+
+	pokemon2->GetTransform()->SetScale(Vector2(0.2f, 0.2f));
+
+	/// enemy
 	// pikachu
 	enemy = new Pokemon;
 
@@ -180,8 +233,8 @@ void ExploreScene::PokemonInit()
 	frameCnt[STATE_SPECIAL_ATTACK] = 16;
 	enemy->SetTileMap(tile);
 	enemy->SetCamera(mainCamera);
-	enemy->Init(L"pikachu", frameCnt, Vector2(13.0f, 0),
-		{ 20,15 });
+	enemy->Init(L"pikachu", frameCnt, L"enemy", 
+		Vector2(13.0f, 0), { 20,15 });
 
 	enemy->GetTransform()->SetScale(Vector2(0.2f, 0.2f));
 
@@ -195,12 +248,12 @@ void ExploreScene::PokemonInit()
 	frameCnt[STATE_SPECIAL_ATTACK] = 8;
 	enemy2->SetTileMap(tile);
 	enemy2->SetCamera(mainCamera);
-	enemy2->Init(L"charmander", frameCnt, Vector2(13.0f, 0),
-		{ 15,10 });
+	enemy2->Init(L"charmander", frameCnt, L"enemy",
+		Vector2(13.0f, 0), { 15,10 });
 
 	enemy2->GetTransform()->SetScale(Vector2(0.2f, 0.2f));
 
-	FindEnemyTile();
+	FindPokemon();
 }
 
 void ExploreScene::DebugInit()
@@ -431,7 +484,7 @@ void ExploreScene::MapLoad()
 	tile->UpdateTileInfo();
 }
 
-void ExploreScene::FindEnemyTile()
+void ExploreScene::FindPokemon()
 {
 	Pokemon* targetEnemy = FindNearPokemon();
 
@@ -441,6 +494,8 @@ void ExploreScene::FindEnemyTile()
 		pokemon->SetEnemy(targetEnemy);
 	}
 	
+	pokemon2->SetEnemy(enemy);
+
 	enemy->SetEnemy(pokemon);
 	enemy2->SetEnemy(pokemon);
 }
@@ -484,6 +539,8 @@ void ExploreScene::UpdateCameraChange(Vector2 tileScale, Vector2 pokemonScale)
 	tile->UpdateTileCenterPos();
 
 	UpdatePokemonChange(pokemon, pokemonScale);
+	UpdatePokemonChange(pokemon2, pokemonScale);
+
 	UpdatePokemonChange(enemy, pokemonScale);
 	UpdatePokemonChange(enemy2, pokemonScale);
 }

@@ -82,8 +82,8 @@ public:
 	Pokemon();
 	~Pokemon();
 
-	void Init(wstring name, int* frameCnt, Vector2 pivot,
-		POINT startPos = { 1,1 });
+	void Init(wstring name, int* frameCnt, wstring team,
+		Vector2 pivot, POINT startPos = { 1,1 });
 	void Release();
 	void Update();
 	void Render();

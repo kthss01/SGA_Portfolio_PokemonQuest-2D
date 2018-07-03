@@ -31,7 +31,9 @@ Program::Program()
 		// UI
 		TEXTURE->AddTexture(L"ui_panel", L"Textures/UI_Panel_Green.png");
 		
-		TEXTURE->AddTexture(L"ui_hp", L"Textures/hp.png");
+		TEXTURE->AddTexture(L"ui_hp_player", L"Textures/hp_player.png");
+		TEXTURE->AddTexture(L"ui_hp_ally", L"Textures/hp_ally.png");
+		TEXTURE->AddTexture(L"ui_hp_enemy", L"Textures/hp_enemy.png");
 		TEXTURE->AddTexture(L"ui_bar", L"Textures/bar.png");
 
 		TEXTURE->AddTexture(L"ui_new",  L"Textures/UI_New.png");
@@ -39,6 +41,8 @@ Program::Program()
 		TEXTURE->AddTexture(L"ui_load", L"Textures/UI_Load.png");
 		TEXTURE->AddTexture(L"ui_up",	L"Textures/UI_Up.png");
 		TEXTURE->AddTexture(L"ui_down", L"Textures/UI_Down.png");
+
+		TEXTURE->AddTexture(L"ui_circle", L"Textures/circle.png");
 
 		// Pokemon
 		// Pikachu

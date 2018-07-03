@@ -11,7 +11,7 @@ private:
 	float width;
 public:
 
-	HRESULT Init(const wchar_t* front, const wchar_t* back);
+	HRESULT Init(wstring front, wstring back);
 	void Release();
 	void Update();
 	void Render();
@@ -21,4 +21,6 @@ public:
 	void SetPosition(Vector2 pos);
 	void SetScale(Vector2 scale);
 	void SetFrontScale(float ratio);
+
+	Rect* GetFront() { return _front; }
 };
