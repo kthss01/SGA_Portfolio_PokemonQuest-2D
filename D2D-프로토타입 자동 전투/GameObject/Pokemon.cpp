@@ -86,6 +86,11 @@ void Pokemon::Init(wstring name, int* frameCnt, Vector2 pivot,
 	pokemonInfo.curTile = startPos;
 	pokemonInfo.targetTile = { -1, -1 };
 
+	pokemonInfo.attack = 5;
+	pokemonInfo.defense = 0;
+	pokemonInfo.maxHp = 25;
+	pokemonInfo.curHp = 25;
+
 	// 위치 init
 	Vector2 tileCenter = tile->GetTileCenterPos(
 		pokemonInfo.curTile.x, pokemonInfo.curTile.y);
@@ -134,6 +139,8 @@ void Pokemon::Release()
 
 void Pokemon::Update()
 {
+	if (pokemonInfo.isDied) return;
+
 	delayTime += FRAME->GetElapsedTime();
 
 	//this->transform->DefaultControl2();
@@ -148,6 +155,9 @@ void Pokemon::Update()
 	switch (pokemonInfo.state)
 	{
 	case STATE_IDLE:
+		if (isHurt)
+			isHurt = false;
+
 		Move();
 		Attack();
 		break;
@@ -222,6 +232,8 @@ void Pokemon::Update()
 		enemy->SetHurt(true);
 		if (delayTime > pokemonInfo.attackSpeed) {
 			delayTime = 0.0f;
+			enemy->SetHp(pokemonInfo.attack);
+			enemy->ChangeHpBar();
 			enemy->SetHurt(false);
 			pokemonInfo.state = STATE_IDLE;
 			clips[pokemonInfo.state]->Play(pokemonInfo.dir);
@@ -238,6 +250,8 @@ void Pokemon::Update()
 
 void Pokemon::Render()
 {
+	if (pokemonInfo.isDied) return;
+
 	// 알파값 제거
 	D2D::GetDevice()->SetRenderState(D3DRS_ALPHABLENDENABLE, TRUE);
 	D2D::GetDevice()->SetRenderState(D3DRS_DESTBLEND, D3DBLEND_INVSRCALPHA);
@@ -516,6 +530,9 @@ POKEMON_DIRECTION Pokemon::FindDirection(POINT curTile, POINT targetTile)
 
 bool Pokemon::IsAttack()
 {
+	if (enemy->GetIsDied())
+		return false;
+
 	return (transform->GetWorldPosition()
 		- enemy->GetTransform()->GetWorldPosition()).Length()
 		<= pokemonInfo.attackRange;
@@ -714,6 +731,15 @@ void Pokemon::Attack()
 	}
 }
 
+void Pokemon::SetHp(float damage)
+{
+	pokemonInfo.curHp -= damage - pokemonInfo.defense;
+	if (pokemonInfo.curHp < 0) {
+		pokemonInfo.curHp = 0;
+		pokemonInfo.isDied = true;
+	}
+}
+
 void Pokemon::DrawAttackRange()
 {
 	Vector2 centerPos;
@@ -731,4 +757,9 @@ void Pokemon::CaculateAttackRange()
 	pokemonInfo.attackRange =
 		(tile->GetTileCenterPos(0, 0)
 			- tile->GetTileCenterPos(1, 1)).Length();
+}
+
+void Pokemon::ChangeHpBar()
+{
+	hp->SetFrontScale(pokemonInfo.curHp / pokemonInfo.maxHp);
 }

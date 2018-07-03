@@ -18,4 +18,5 @@ public:
 
 	void SetPosition(Vector2 pos);
 	void SetScale(Vector2 scale);
+	void SetFrontScale(float ratio);
 };

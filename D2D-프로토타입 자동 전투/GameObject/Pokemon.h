@@ -33,6 +33,12 @@ struct tagPokemonInfo {
 	float attackSpeed;
 	float attackRange;
 
+	float attack;
+	float defense;
+
+	float maxHp;
+	float curHp;
+
 	POINT curTile;
 	POINT targetTile;
 
@@ -101,14 +107,18 @@ public:
 	void SetTileMap(TileMap* tile) { this->tile = tile; }
 
 	void SetHurt(bool isHurt) { this->isHurt = isHurt; }
+	void SetDie(bool isDied) { this->pokemonInfo.isDied = isDied; }
+	void SetHp(float damage);
 
 	tagPokemonInfo& GetPokemonInfo() { return pokemonInfo; }
 
 	AStar* GetAStar() { return aStar; }
+	bool GetIsDied() { return pokemonInfo.isDied; }
 
 	void DrawAttackRange();
 	
 	void CaculateAttackRange();
 
 	ProgressBar* GetHpBar() { return hp; }
+	void ChangeHpBar();
 };
