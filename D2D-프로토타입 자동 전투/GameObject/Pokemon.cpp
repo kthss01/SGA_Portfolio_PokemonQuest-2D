@@ -7,6 +7,8 @@
 
 #include "Scene\ExploreScene\AStar.h"
 
+#include "Utilities\ProgressBar.h"
+
 Pokemon::Pokemon()
 {
 }
@@ -47,6 +49,7 @@ void Pokemon::Init(wstring name, int* frameCnt, Vector2 pivot,
 	targetTransform = new Transform;
 	tempTransform = new Transform;
 
+	// pokemonInfo init
 	pokemonInfo.name = name;
 	pokemonInfo.state = STATE_IDLE;
 	pokemonInfo.dir = DIRECTION_BOTTOM;
@@ -77,13 +80,13 @@ void Pokemon::Init(wstring name, int* frameCnt, Vector2 pivot,
 	pokemonInfo.isDied = false;
 	pokemonInfo.moveSpeed = 5.0f;
 	pokemonInfo.attackSpeed = 0.3f;
-	pokemonInfo.attackRange = 
-		(tile->GetTileCenterPos(0,0) 
-		- tile->GetTileCenterPos(1,1)).Length();
+
+	CaculateAttackRange();
 
 	pokemonInfo.curTile = startPos;
 	pokemonInfo.targetTile = { -1, -1 };
 
+	// 위치 init
 	Vector2 tileCenter = tile->GetTileCenterPos(
 		pokemonInfo.curTile.x, pokemonInfo.curTile.y);
 	Vector2 targetPos = tileCenter + Vector2(
@@ -92,12 +95,21 @@ void Pokemon::Init(wstring name, int* frameCnt, Vector2 pivot,
 
 	transform->SetWorldPosition(targetPos);
 
+	// a star init
 	aStar = new AStar;
 	aStar->SetTileMap(this->tile);
 
+	// 기타 init
 	isHurt = false;
 
 	deltaTime = 0;
+
+	hp = new ProgressBar;
+	hp->SetCamera(camera);
+	hp->Init(L"ui_hp", L"ui_bar");
+	hp->SetPosition(transform->GetWorldPosition() 
+		+ Vector2(0,50 * transform->GetScale().y));
+	hp->SetScale(transform->GetScale());
 }
 
 void Pokemon::Release()
@@ -115,15 +127,23 @@ void Pokemon::Release()
 	SAFE_DELETE(tempTransform);
 
 	SAFE_DELETE(aStar);
+
+	SAFE_RELEASE(hp);
+	SAFE_DELETE(hp);
 }
 
 void Pokemon::Update()
 {
 	delayTime += FRAME->GetElapsedTime();
 
-	this->transform->DefaultControl2();
+	//this->transform->DefaultControl2();
 	
 	bool aniEnd = clips[pokemonInfo.state]->Update(pokemonInfo.dir);
+
+	hp->SetPosition(transform->GetWorldPosition()
+		+ Vector2(0, 65 * transform->GetScale().y));
+	//hp->SetScale(transform->GetScale());
+	hp->Update();
 
 	switch (pokemonInfo.state)
 	{
@@ -174,6 +194,8 @@ void Pokemon::Update()
 		//}
 
 		if (aStar->GetTargetTile() != NULL) {
+			deltaTime = 0;
+
 			pokemonInfo.targetTile = aStar->GetPosition();
 			POKEMON_DIRECTION dir = this->FindDirection(
 				pokemonInfo.curTile, pokemonInfo.targetTile);
@@ -261,6 +283,7 @@ void Pokemon::Render()
 	//transform->RenderGizmo(true);
 	//collider->RenderGizmo(transform);
 	//aStar->DrawPath();
+	hp->Render();
 }
 
 void Pokemon::RenderRect()
@@ -412,7 +435,7 @@ bool Pokemon::MovePosition(POINT targetTile)
 	targetTransform->SetWorldPosition(targetPos);
 
 	// 보간으로 이동
-	transform->Interpolate(
+	transform->PositionLerp(
 		transform, targetTransform,
 		FRAME->GetElapsedTime() * pokemonInfo.moveSpeed);
 
@@ -667,6 +690,8 @@ void Pokemon::Attack()
 {
 	if (IsAttack() && delayTime > pokemonInfo.attackSpeed) {
 		
+		aStar->SetTargetTile(NULL);
+
 		delayTime = 0;
 
 		bool stateChange = false;
@@ -699,4 +724,11 @@ void Pokemon::DrawAttackRange()
 	GIZMO->Circle(centerPos, pokemonInfo.attackRange,
 		0xff0000ff);
 	
+}
+
+void Pokemon::CaculateAttackRange()
+{
+	pokemonInfo.attackRange =
+		(tile->GetTileCenterPos(0, 0)
+			- tile->GetTileCenterPos(1, 1)).Length();
 }

@@ -7,6 +7,8 @@
 #include "GameObject\Pokemon.h"
 #include "AStar.h"
 
+#include "Utilities\ProgressBar.h"
+
 ExploreScene::ExploreScene()
 {
 }
@@ -29,6 +31,7 @@ void ExploreScene::Init()
 
 	tempTransform = new Transform;
 	cameraFollow = false;
+	isChange = false;
 
 	isDebug = false;
 }
@@ -57,13 +60,29 @@ void ExploreScene::Update()
 	if (cameraFollow) {
 		//mainCamera->SetWorldPosition(
 		//	pokemon->GetTransform()->GetWorldPosition());
+
 		mainCamera->Interpolate(mainCamera, pokemon->GetTransform(),
 			FRAME->GetElapsedTime() * 1.0f);
+
+		if (!isChange) {
+			isChange = true;
+
+			UpdateCameraChange(
+				Vector2(2.7f, 2.7f), Vector2(0.6f, 0.6f));
+		}
 	}
 	else {
 		//mainCamera->SetWorldPosition(Vector2(0, 0));
+
 		mainCamera->Interpolate(mainCamera, tempTransform,
 			FRAME->GetElapsedTime() * 1.0f);
+
+		if (!isChange) {
+			isChange = true;
+
+			UpdateCameraChange(
+				Vector2(0.9f, 0.9f), Vector2(0.2f, 0.2f));
+		}
 	}
 
 	mainCamera->UpdateCamToDevice();
@@ -71,12 +90,14 @@ void ExploreScene::Update()
 	//tile->Update();
 	
 	pokemon->Update();
-	//enemy->Update();
+	enemy->Update();
 
 	FindEnemyTile();
 
-	if (INPUT->GetKeyDown('O'))
+	if (INPUT->GetKeyDown('O')) {
 		cameraFollow = !cameraFollow;
+		isChange = false;
+	}
 
 	if (INPUT->GetKeyDown(VK_F11))
 		isDebug = !isDebug;
@@ -95,8 +116,8 @@ void ExploreScene::Render()
 		pokemon->DrawAttackRange();
 		pokemon->GetAStar()->DrawPath();
 
-		
-		//enemy->GetAStar()->DrawPath();
+		enemy->DrawAttackRange();
+		enemy->GetAStar()->DrawPath();
 	}
 }
 
@@ -143,7 +164,7 @@ void ExploreScene::PokemonInit()
 	pokemon->SetCamera(mainCamera);
 	pokemon->Init(L"pikachu", frameCnt, Vector2(13.0f, 0));
 
-	pokemon->GetTransform()->SetScale(Vector2(0.3f, 0.3f));
+	pokemon->GetTransform()->SetScale(Vector2(0.2f, 0.2f));
 
 	enemy = new Pokemon;
 
@@ -157,7 +178,7 @@ void ExploreScene::PokemonInit()
 	enemy->Init(L"pikachu", frameCnt, Vector2(13.0f, 0),
 		{ 20,15 });
 
-	enemy->GetTransform()->SetScale(Vector2(0.3f, 0.3f));
+	enemy->GetTransform()->SetScale(Vector2(0.2f, 0.2f));
 
 	FindEnemyTile();
 }
@@ -395,4 +416,51 @@ void ExploreScene::FindEnemyTile()
 	pokemon->SetEnemy(enemy);
 	
 	enemy->SetEnemy(pokemon);
+}
+
+void ExploreScene::UpdateCameraChange(Vector2 tileScale, Vector2 pokemonScale)
+{
+	tile->GetTransform()->SetScale(tileScale);
+	
+	// 스케일 보간 -> 이상함
+	//Transform temp;
+	//temp.SetScale(tileScale);
+	//
+	//tile->GetTransform()->ScaleLerp(
+	//	tile->GetTransform(), &temp, 
+	//	FRAME->GetElapsedTime());
+
+	tile->UpdateTileCenterPos();
+
+	UpdatePokemonChange(pokemon, pokemonScale);
+	UpdatePokemonChange(enemy, pokemonScale);
+}
+
+void ExploreScene::UpdatePokemonChange(Pokemon * pokemon, Vector2 scale)
+{
+	tagPokemonInfo pokemonInfo = pokemon->GetPokemonInfo();
+	Transform* transform = pokemon->GetTransform();
+
+	transform->SetScale(scale);
+
+	pokemon->GetHpBar()->SetScale(transform->GetScale());
+
+	// 스케일 보간 -> 이상함
+	//Transform temp;
+	//temp.SetScale(scale);
+	//
+	//transform->ScaleLerp(transform, &temp, 
+	//	FRAME->GetElapsedTime());
+
+	pokemon->CaculateAttackRange();
+
+	Vector2 tileCenter = tile->GetTileCenterPos(
+		pokemonInfo.curTile.x,
+		pokemonInfo.curTile.y);
+	Vector2 targetPos = tileCenter + Vector2(
+		0 * transform->GetScale().x,
+		-10.0f * transform->GetScale().y);
+
+	transform->SetWorldPosition(targetPos);
+
 }

@@ -69,6 +69,8 @@ private:
 
 	class Pokemon* enemy;
 
+	class ProgressBar* hp;
+
 	bool isHurt;
 public:
 	Pokemon();
@@ -100,10 +102,13 @@ public:
 
 	void SetHurt(bool isHurt) { this->isHurt = isHurt; }
 
-	tagPokemonInfo GetPokemonInfo() { return pokemonInfo; }
+	tagPokemonInfo& GetPokemonInfo() { return pokemonInfo; }
 
 	AStar* GetAStar() { return aStar; }
 
 	void DrawAttackRange();
+	
+	void CaculateAttackRange();
 
+	ProgressBar* GetHpBar() { return hp; }
 };

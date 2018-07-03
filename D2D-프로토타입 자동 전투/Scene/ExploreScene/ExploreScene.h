@@ -16,6 +16,7 @@ private:
 
 	class Transform* tempTransform;
 	bool cameraFollow;
+	bool isChange;
 
 	LPD3DXFONT font;
 	bool isDebug;
@@ -37,4 +38,7 @@ public:
 	void MapLoad();
 
 	void FindEnemyTile();
+
+	void UpdateCameraChange(Vector2 tileScale, Vector2 pokemonScale);
+	void UpdatePokemonChange(class Pokemon* pokemon, Vector2 scale);
 };

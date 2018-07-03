@@ -62,6 +62,8 @@ public:
 		return POINT();
 	}
 
+	void SetTargetTile(aStarTile* targetTile) { 
+		this->_targetTile = targetTile; }
 	aStarTile* GetTargetTile() { return _targetTile; }
 
 	void UpdateTargetTile() {
