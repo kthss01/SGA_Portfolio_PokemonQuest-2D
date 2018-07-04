@@ -86,12 +86,28 @@ Program::Program()
 		TEXTURE->AddTexture(L"pidgey_hurt",					L"Textures/pokemon/pidgey/hurt_8x1.png");
 		TEXTURE->AddTexture(L"pidgey_attack",				L"Textures/pokemon/pidgey/attack_24x1.png");
 		TEXTURE->AddTexture(L"pidgey_special_attack",		L"Textures/pokemon/pidgey/special_attack_16x1.png");
-
 	}
 
 	// SPRITE Setting
 	{
 		D3DXCreateSprite(D2D::GetDevice(), &sprite);
+	}
+
+	// JSON Setting
+	{
+		// GameManager의 pokemonInfo Json에서 읽어오기
+		GAME->ReadPokemonInfo();
+
+		//root = new Json::Value();
+		//readJson = new Json::Value();
+		//float time = FRAME->GetElapsedTime();
+		//Json::SetValue(*root, "test", time);
+		//
+		//Json::WriteJsonData(L"Test.Json", root);
+		//Json::ReadJsonData(L"Test.Json", readJson);
+		//
+		//float temp;
+		//Json::GetValue(*readJson, "test", temp);
 	}
 
 	// SCENE Setting
@@ -113,25 +129,14 @@ Program::Program()
 
 		isDebug = false;
 	}
-	// JSON Setting
-	{
-		//root = new Json::Value();
-		//readJson = new Json::Value();
-		//float time = FRAME->GetElapsedTime();
-		//Json::SetValue(*root, "test", time);
 
-		//Json::WriteJsonData(L"Test.Json", root);
-		//Json::ReadJsonData(L"Test.Json", readJson);
-
-		//float temp;
-		//Json::GetValue(*readJson, "test", temp);
-	}
 }
 
 Program::~Program()
 {
 	TEXTURE->Release();
 	SCENE->Release();
+	GAME->Release();
 
 	SAFE_DELETE(readJson);
 	SAFE_DELETE(root);

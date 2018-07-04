@@ -189,11 +189,12 @@ void ExploreScene::TileInit()
 
 void ExploreScene::PokemonInit()
 {
+	/*
 	// player
 	pokemon = new Pokemon;
 	int frameCnt[5];
 
-	//// pikachu
+	// pikachu
 	//frameCnt[STATE_IDLE] = 8;
 	//frameCnt[STATE_ATTACK] = 8;
 	//frameCnt[STATE_HURT] = 8;
@@ -204,7 +205,7 @@ void ExploreScene::PokemonInit()
 	//pokemon->Init(L"pikachu", frameCnt, L"player",
 	//	Vector2(13.0f, 0));
 
-	//// bulbasaur
+	// bulbasaur
 	//frameCnt[STATE_IDLE] = 8;
 	//frameCnt[STATE_ATTACK] = 24;
 	//frameCnt[STATE_HURT] = 8;
@@ -237,27 +238,27 @@ void ExploreScene::PokemonInit()
 	//pokemon->Init(L"squirtle", frameCnt, L"player",
 	//	Vector2(13.0f, 0));
 
-	//// rattata
-	//frameCnt[STATE_IDLE] = 16;
-	//frameCnt[STATE_ATTACK] = 32;
-	//frameCnt[STATE_HURT] = 8;
-	//frameCnt[STATE_MOVE] = 24;
-	//frameCnt[STATE_SPECIAL_ATTACK] = 32;
-	//pokemon->SetTileMap(tile);
-	//pokemon->SetCamera(mainCamera);
-	//pokemon->Init(L"rattata", frameCnt, L"player",
-	//	Vector2(13.0f, 0));
-
-	// pidgey
+	// rattata
 	frameCnt[STATE_IDLE] = 16;
-	frameCnt[STATE_ATTACK] = 24;
+	frameCnt[STATE_ATTACK] = 32;
 	frameCnt[STATE_HURT] = 8;
 	frameCnt[STATE_MOVE] = 24;
-	frameCnt[STATE_SPECIAL_ATTACK] = 16;
+	frameCnt[STATE_SPECIAL_ATTACK] = 32;
 	pokemon->SetTileMap(tile);
 	pokemon->SetCamera(mainCamera);
-	pokemon->Init(L"pidgey", frameCnt, L"player",
+	pokemon->Init(L"rattata", frameCnt, L"player",
 		Vector2(13.0f, 0));
+
+	// pidgey
+	//frameCnt[STATE_IDLE] = 16;
+	//frameCnt[STATE_ATTACK] = 24;
+	//frameCnt[STATE_HURT] = 8;
+	//frameCnt[STATE_MOVE] = 24;
+	//frameCnt[STATE_SPECIAL_ATTACK] = 16;
+	//pokemon->SetTileMap(tile);
+	//pokemon->SetCamera(mainCamera);
+	//pokemon->Init(L"pidgey", frameCnt, L"player",
+	//	Vector2(13.0f, 0));
 
 	pokemon->GetTransform()->SetScale(Vector2(0.2f, 0.2f));
 
@@ -300,7 +301,7 @@ void ExploreScene::PokemonInit()
 	frameCnt[STATE_SPECIAL_ATTACK] = 32;
 	enemy->SetTileMap(tile);
 	enemy->SetCamera(mainCamera);
-	enemy->Init(L"rattata", frameCnt, L"enemy", 
+	enemy->Init(L"rattata", frameCnt, L"enemy",
 		Vector2(13.0f, 0), { 20,15 });
 
 	enemy->GetTransform()->SetScale(Vector2(0.2f, 0.2f));
@@ -317,7 +318,7 @@ void ExploreScene::PokemonInit()
 	//enemy2->SetCamera(mainCamera);
 	//enemy2->Init(L"charmander", frameCnt, L"enemy",
 	//	Vector2(13.0f, 0), { 15,10 });
-	
+
 	// rattata
 	frameCnt[STATE_IDLE] = 16;
 	frameCnt[STATE_ATTACK] = 32;
@@ -326,9 +327,43 @@ void ExploreScene::PokemonInit()
 	frameCnt[STATE_SPECIAL_ATTACK] = 32;
 	enemy2->SetTileMap(tile);
 	enemy2->SetCamera(mainCamera);
-	enemy2->Init(L"rattata", frameCnt, L"enemy", 
+	enemy2->Init(L"rattata", frameCnt, L"enemy",
 		Vector2(13.0f, 0), { 15,10 });
 
+	enemy2->GetTransform()->SetScale(Vector2(0.2f, 0.2f));
+	*/
+
+	// player
+	pokemon = new Pokemon;
+	pokemon2 = new Pokemon;
+	enemy = new Pokemon;
+	enemy2 = new Pokemon;
+
+	// pikachu
+	// charmander
+	// bulbasaur
+	// squirtle
+	// rattata
+	// pidgey
+
+	pokemon->SetTileMap(tile);
+	pokemon2->SetTileMap(tile);
+	enemy->SetTileMap(tile);
+	enemy2->SetTileMap(tile);
+
+	pokemon->SetCamera(mainCamera);
+	pokemon2->SetCamera(mainCamera);
+	enemy->SetCamera(mainCamera);
+	enemy2->SetCamera(mainCamera);
+
+	pokemon->Init(L"pikachu", L"player");
+	pokemon2->Init(L"charmander", L"ally", { 2, 19 });
+	enemy->Init(GAME->GetPokemonName(3), L"enemy", { 20,15 });
+	enemy2->Init(GAME->GetPokemonName(4), L"enemy", { 15,10 });
+
+	pokemon->GetTransform()->SetScale(Vector2(0.2f, 0.2f));
+	pokemon2->GetTransform()->SetScale(Vector2(0.2f, 0.2f));
+	enemy->GetTransform()->SetScale(Vector2(0.2f, 0.2f));
 	enemy2->GetTransform()->SetScale(Vector2(0.2f, 0.2f));
 
 	FindPokemon();
@@ -625,7 +660,7 @@ void ExploreScene::UpdateCameraChange(Vector2 tileScale, Vector2 pokemonScale)
 
 void ExploreScene::UpdatePokemonChange(Pokemon * pokemon, Vector2 scale)
 {
-	tagPokemonInfo pokemonInfo = pokemon->GetPokemonInfo();
+	tagPokemonStatus pokemonInfo = pokemon->GetPokemonStatus();
 	Transform* transform = pokemon->GetTransform();
 
 	transform->SetScale(scale);
@@ -639,7 +674,7 @@ void ExploreScene::UpdatePokemonChange(Pokemon * pokemon, Vector2 scale)
 	//transform->ScaleLerp(transform, &temp, 
 	//	FRAME->GetElapsedTime());
 
-	pokemon->CaculateAttackRange();
+	pokemon->CalculateAttackRange();
 
 	Vector2 tileCenter = tile->GetTileCenterPos(
 		pokemonInfo.curTile.x,

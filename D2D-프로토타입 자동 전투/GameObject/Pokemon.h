@@ -1,49 +1,7 @@
 #pragma once
 #include "GameObject.h"
 
-enum POKEMON_STATE {
-	STATE_IDLE,
-	STATE_MOVE,
-	STATE_HURT,
-	STATE_ATTACK,
-	STATE_SPECIAL_ATTACK,
-	STATE_END
-};
-
-enum POKEMON_DIRECTION {
-	DIRECTION_BOTTOM,
-	DIRECTION_TOP,
-	DIRECTION_LEFT,
-	DIRECTION_RIGHT,
-	DIRECTION_LEFTBOTTOM,
-	DIRECTION_RIGHTBOTTOM,
-	DIRECTION_LEFTTOP,
-	DIRECTION_RIGHTTOP
-};
-
-struct tagPokemonInfo {
-	wstring name;
-	int frameCnt[STATE_END];
-	LPDIRECT3DTEXTURE9 pTex[STATE_END];
-
-	POKEMON_STATE state;
-	POKEMON_DIRECTION dir;
-
-	float moveSpeed;
-	float attackSpeed;
-	float attackRange;
-
-	float attack;
-	float defense;
-
-	float maxHp;
-	float curHp;
-
-	POINT curTile;
-	POINT targetTile;
-
-	bool isDied;
-};
+#include "PokemonInfo.h"
 
 #define CIRCLE_SEGMENTS 36
 
@@ -64,7 +22,7 @@ private:
 	class Camera* camera;
 	class AnimationClip* clips[STATE_END];
 
-	tagPokemonInfo pokemonInfo;
+	tagPokemonStatus pokemonStatus;
 
 	class TileMap* tile;
 
@@ -84,6 +42,8 @@ public:
 
 	void Init(wstring name, int* frameCnt, wstring team,
 		Vector2 pivot, POINT startPos = { 1,1 });
+	void Init(wstring name, wstring team,
+		POINT startPos = { 1,1 }, Vector2 pivot = Vector2(13.0f, 0.0f));
 	void Release();
 	void Update();
 	void Render();
@@ -107,18 +67,18 @@ public:
 	void SetTileMap(TileMap* tile) { this->tile = tile; }
 
 	void SetHurt(bool isHurt) { this->isHurt = isHurt; }
-	void SetDie(bool isDied) { this->pokemonInfo.isDied = isDied; }
+	void SetDie(bool isDied) { this->pokemonStatus.isDied = isDied; }
 	void SetHp(float damage);
 
-	tagPokemonInfo& GetPokemonInfo() { return pokemonInfo; }
+	tagPokemonStatus& GetPokemonStatus() { return pokemonStatus; }
 
 	AStar* GetAStar() { return aStar; }
-	bool GetIsDied() { return pokemonInfo.isDied; }
+	bool GetIsDied() { return pokemonStatus.isDied; }
 	Pokemon* GetEnemy() { return enemy; }
 
 	void DrawAttackRange();
 	
-	void CaculateAttackRange();
+	void CalculateAttackRange();
 
 	ProgressBar* GetHpBar() { return hp; }
 	void ChangeHpBar();
