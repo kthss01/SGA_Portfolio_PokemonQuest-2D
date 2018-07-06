@@ -162,6 +162,7 @@
     <ClInclude Include="GameObject\Pokemon.h" />
     <ClInclude Include="GameObject\PokemonInfo.h" />
     <ClInclude Include="GameObject\Rect.h" />
+    <ClInclude Include="GameObject\StageInfo.h" />
     <ClInclude Include="GameObject\TileMap.h" />
     <ClInclude Include="ImGui\imconfig.h" />
     <ClInclude Include="ImGui\imgui.h" />

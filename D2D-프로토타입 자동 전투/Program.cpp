@@ -51,6 +51,7 @@ Program::Program()
 		TEXTURE->AddTexture(L"pikachu_hurt",				L"Textures/pokemon/pikachu/hurt_8x1.png");
 		TEXTURE->AddTexture(L"pikachu_attack",				L"Textures/pokemon/pikachu/attack_8x1.png");
 		TEXTURE->AddTexture(L"pikachu_special_attack",		L"Textures/pokemon/pikachu/special_attack_16x1.png");
+		TEXTURE->AddTexture(L"pikachu_portrait",			L"Textures/pokemon/pikachu/portrait.png");
 
 		// Charmander
 		TEXTURE->AddTexture(L"charmander_idle",				L"Textures/pokemon/charmander/idle_8x1.png");
@@ -58,6 +59,7 @@ Program::Program()
 		TEXTURE->AddTexture(L"charmander_hurt",				L"Textures/pokemon/charmander/hurt_8x1.png");
 		TEXTURE->AddTexture(L"charmander_attack",			L"Textures/pokemon/charmander/attack_24x1.png");
 		TEXTURE->AddTexture(L"charmander_special_attack",	L"Textures/pokemon/charmander/special_attack_8x1.png");
+		TEXTURE->AddTexture(L"charmander_portrait",			L"Textures/pokemon/charmander/portrait.png");
 
 		// Bulbasaur
 		TEXTURE->AddTexture(L"bulbasaur_idle",				L"Textures/pokemon/bulbasaur/idle_8x1.png");
@@ -65,6 +67,7 @@ Program::Program()
 		TEXTURE->AddTexture(L"bulbasaur_hurt",				L"Textures/pokemon/bulbasaur/hurt_8x1.png");
 		TEXTURE->AddTexture(L"bulbasaur_attack",			L"Textures/pokemon/bulbasaur/attack_24x1.png");
 		TEXTURE->AddTexture(L"bulbasaur_special_attack",	L"Textures/pokemon/bulbasaur/special_attack_16x1.png");
+		TEXTURE->AddTexture(L"bulbasaur_portrait",			L"Textures/pokemon/bulbasaur/portrait.png");
 
 		// Squirtle
 		TEXTURE->AddTexture(L"squirtle_idle",				L"Textures/pokemon/squirtle/idle_8x1.png");
@@ -72,6 +75,7 @@ Program::Program()
 		TEXTURE->AddTexture(L"squirtle_hurt",				L"Textures/pokemon/squirtle/hurt_8x1.png");
 		TEXTURE->AddTexture(L"squirtle_attack",				L"Textures/pokemon/squirtle/attack_24x1.png");
 		TEXTURE->AddTexture(L"squirtle_special_attack",		L"Textures/pokemon/squirtle/special_attack_24x1.png");
+		TEXTURE->AddTexture(L"squirtle_portrait",			L"Textures/pokemon/squirtle/portrait.png");
 
 		// Rattata
 		TEXTURE->AddTexture(L"rattata_idle",				L"Textures/pokemon/rattata/idle_16x1.png");
@@ -79,6 +83,7 @@ Program::Program()
 		TEXTURE->AddTexture(L"rattata_hurt",				L"Textures/pokemon/rattata/hurt_8x1.png");
 		TEXTURE->AddTexture(L"rattata_attack",				L"Textures/pokemon/rattata/attack_32x1.png");
 		TEXTURE->AddTexture(L"rattata_special_attack",		L"Textures/pokemon/rattata/special_attack_32x1.png");
+		TEXTURE->AddTexture(L"rattata_portrait",			L"Textures/pokemon/rattata/portrait.png");
 
 		// Pidgey
 		TEXTURE->AddTexture(L"pidgey_idle",					L"Textures/pokemon/pidgey/idle_16x1.png");
@@ -86,6 +91,7 @@ Program::Program()
 		TEXTURE->AddTexture(L"pidgey_hurt",					L"Textures/pokemon/pidgey/hurt_8x1.png");
 		TEXTURE->AddTexture(L"pidgey_attack",				L"Textures/pokemon/pidgey/attack_24x1.png");
 		TEXTURE->AddTexture(L"pidgey_special_attack",		L"Textures/pokemon/pidgey/special_attack_16x1.png");
+		TEXTURE->AddTexture(L"pidgey_portrait",				L"Textures/pokemon/pidgey/portrait.png");
 	}
 
 	// SPRITE Setting

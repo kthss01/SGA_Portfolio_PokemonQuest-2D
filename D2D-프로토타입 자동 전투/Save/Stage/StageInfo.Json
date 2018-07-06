@@ -1,0 +1,50 @@
+{
+    "StageInfo_Count" : 1,
+
+    "StageInfo_Name_0" : "forest",
+
+    "StageInfo_forest_pokemon_0_posX" : 1,
+    "StageInfo_forest_pokemon_0_posY" : 1,  
+    "StageInfo_forest_pokemon_1_posX" : 1,
+    "StageInfo_forest_pokemon_1_posY" : 4,
+    "StageInfo_forest_pokemon_2_posX" : 4,
+    "StageInfo_forest_pokemon_2_posY" : 1,
+    "StageInfo_forest_pokemon_3_posX" : 4,
+    "StageInfo_forest_pokemon_3_posY" : 4,
+
+    "StageInfo_forest_enemyCount" : 8,
+    "StageInfo_forest_enemyKind" : 2,
+    "StageInfo_forest_enemyName_0" : "rattata",
+    "StageInfo_forest_enemyName_1" : "pidgey",
+
+    "StageInfo_forest_teamCount" : 2,
+
+    "StageInfo_forest_team_0_Count" : 4,
+    "StageInfo_forest_team_0_0_name" : "rattata",
+    "StageInfo_forest_team_0_0_posX" : 27,
+    "StageInfo_forest_team_0_0_posY" : 27,
+    "StageInfo_forest_team_0_1_name" : "rattata",
+    "StageInfo_forest_team_0_1_posX" : 27,
+    "StageInfo_forest_team_0_1_posY" : 30,
+    "StageInfo_forest_team_0_2_name" : "rattata",
+    "StageInfo_forest_team_0_2_posX" : 30,
+    "StageInfo_forest_team_0_2_posY" : 27,
+    "StageInfo_forest_team_0_3_name" : "rattata",
+    "StageInfo_forest_team_0_3_posX" : 30,
+    "StageInfo_forest_team_0_3_posY" : 30,
+
+    "StageInfo_forest_team_1_Count" : 4,
+    "StageInfo_forest_team_1_0_name" : "pidgey",
+    "StageInfo_forest_team_1_0_posX" : 11,
+    "StageInfo_forest_team_1_0_posY" : 1,
+    "StageInfo_forest_team_1_1_name" : "pidgey",
+    "StageInfo_forest_team_1_1_posX" : 14,
+    "StageInfo_forest_team_1_1_posY" : 1,
+    "StageInfo_forest_team_1_2_name" : "pidgey",
+    "StageInfo_forest_team_1_2_posX" : 11,
+    "StageInfo_forest_team_1_2_posY" : 4,
+    "StageInfo_forest_team_1_3_nama" : "pidgey",
+    "StageInfo_forest_team_1_3_posX" : 14,
+    "StageInfo_forest_team_1_3_posY" : 4
+
+}

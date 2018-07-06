@@ -82,4 +82,6 @@ public:
 
 	ProgressBar* GetHpBar() { return hp; }
 	void ChangeHpBar();
+
+	//void UpdateCurTileBlocked(bool isBlocked = true);
 };

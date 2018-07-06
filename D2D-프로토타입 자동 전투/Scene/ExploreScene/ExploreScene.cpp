@@ -23,8 +23,11 @@ void ExploreScene::Init()
 	mainCamera = new Camera;
 
 	this->jsonTileMap = new Json::Value();
+	jsonStageInfo = new Json::Value();
 
 	TileInit();
+
+	StageInit();
 
 	PokemonInit();
 
@@ -54,18 +57,32 @@ void ExploreScene::Release()
 	SAFE_RELEASE(font);
 
 	SAFE_DELETE(jsonTileMap);
+	SAFE_DELETE(jsonStageInfo);
 
-	SAFE_RELEASE(pokemon);
-	SAFE_DELETE(pokemon);
+	if (pokemon != NULL) {
+		for (int i = 0; i < PLAYERCOUNT; i++) {
+			SAFE_RELEASE(pokemon[i]);
+			SAFE_DELETE(pokemon[i]);
+		}
+		delete[] pokemon;
+	}
 
-	SAFE_RELEASE(pokemon2);
-	SAFE_DELETE(pokemon2);
+	if (enemy != NULL) {
+		for (int i = 0; i < MAX_ENEMYCOUNT; i++) {
+			SAFE_RELEASE(enemy[i]);
+			SAFE_DELETE(enemy[i]);
+		}
+		delete[] enemy;
+	}
 
-	SAFE_RELEASE(enemy);
-	SAFE_DELETE(enemy);
-
-	SAFE_RELEASE(enemy2);
-	SAFE_DELETE(enemy2);
+	//SAFE_RELEASE(pokemon);
+	//SAFE_DELETE(pokemon);
+	//SAFE_RELEASE(pokemon2);
+	//SAFE_DELETE(pokemon2);
+	//SAFE_RELEASE(enemy);
+	//SAFE_DELETE(enemy);
+	//SAFE_RELEASE(enemy2);
+	//SAFE_DELETE(enemy2);
 
 	//SAFE_RELEASE(circle);
 	//SAFE_DELETE(circle);
@@ -73,11 +90,14 @@ void ExploreScene::Release()
 
 void ExploreScene::Update()
 {
+	curTeam = stageInfo[curStage].curTeam;
+	teamCount = stageInfo[curStage].teams[curTeam].count;
+
 	if (cameraFollow) {
 		//mainCamera->SetWorldPosition(
 		//	pokemon->GetTransform()->GetWorldPosition());
 
-		mainCamera->Interpolate(mainCamera, pokemon->GetTransform(),
+		mainCamera->Interpolate(mainCamera, pokemon[0]->GetTransform(),
 			FRAME->GetElapsedTime() * 1.0f);
 
 		if (!isChange) {
@@ -118,13 +138,21 @@ void ExploreScene::Update()
 	//		+ Vector2(10, 25));
 
 	
-	pokemon->Update();
+	//pokemon->Update();
 	//pokemon2->Update();
 	//enemy->Update();
-	enemy2->Update();
+	//enemy2->Update();
+
+	for (int i = 0; i < PLAYERCOUNT; i++) {
+		pokemon[i]->Update();
+	}
+
+	for (int i = curTeam * teamCount; 
+		i < (curTeam + 1) * teamCount; i++) {
+		enemy[i]->Update();
+	}
 
 	FindPokemon();
-
 
 	if (INPUT->GetKeyDown('O')) {
 		cameraFollow = !cameraFollow;
@@ -141,20 +169,33 @@ void ExploreScene::Render()
 	
 	//circle->Render();
 	
-	pokemon->Render();
-	pokemon2->Render();
+	//pokemon->Render();
+	//pokemon2->Render();
+	//enemy->Render();
+	//enemy2->Render();
 
-	enemy->Render();
-	enemy2->Render();
+	for (int i = 0; i < PLAYERCOUNT; i++) {
+		pokemon[i]->Render();
+	}
+
+	for (int i = curTeam * teamCount;
+		i < (curTeam + 1) * teamCount; i++) {
+		enemy[i]->Render();
+	}
 
 	if (isDebug) {
 		DebugRender();
 
-		pokemon->DrawAttackRange();
-		pokemon->GetAStar()->DrawPath();
+		for (int i = 0; i < PLAYERCOUNT; i++) {
+			pokemon[i]->DrawAttackRange();
+			pokemon[i]->GetAStar()->DrawPath();
+		}
 
-		enemy->DrawAttackRange();
-		enemy->GetAStar()->DrawPath();
+		for (int i = curTeam * teamCount;
+			i < (curTeam + 1) * teamCount; i++) {
+			enemy[i]->DrawAttackRange();
+			enemy[i]->GetAStar()->DrawPath();
+		}
 	}
 }
 
@@ -185,6 +226,16 @@ void ExploreScene::TileInit()
 	tile->UpdateTileCenterPos();
 
 	center = tile->GetTileCenterPos(20, 12);
+}
+
+void ExploreScene::StageInit()
+{
+	StageLoad();
+
+	curStage = 0;
+
+	curTeam = stageInfo[curStage].curTeam;
+	teamCount = stageInfo[curStage].teams[curTeam].count;
 }
 
 void ExploreScene::PokemonInit()
@@ -334,10 +385,35 @@ void ExploreScene::PokemonInit()
 	*/
 
 	// player
-	pokemon = new Pokemon;
-	pokemon2 = new Pokemon;
-	enemy = new Pokemon;
-	enemy2 = new Pokemon;
+	//pokemon = new Pokemon;
+	//pokemon2 = new Pokemon;
+	//enemy = new Pokemon;
+	//enemy2 = new Pokemon;
+
+	//pokemon->SetTileMap(tile);
+	//pokemon2->SetTileMap(tile);
+	//enemy->SetTileMap(tile);
+	//enemy2->SetTileMap(tile);
+	//
+	//pokemon->SetCamera(mainCamera);
+	//pokemon2->SetCamera(mainCamera);
+	//enemy->SetCamera(mainCamera);
+	//enemy2->SetCamera(mainCamera);
+
+	pokemon = new Pokemon*[PLAYERCOUNT];
+
+	for (int i = 0; i < PLAYERCOUNT; i++) {
+		pokemon[i] = new Pokemon;
+		pokemon[i]->SetTileMap(tile);
+		pokemon[i]->SetCamera(mainCamera);
+	}
+
+	enemy = new Pokemon*[MAX_ENEMYCOUNT];
+	for (int i = 0; i < MAX_ENEMYCOUNT; i++) {
+		enemy[i] = new Pokemon;
+		enemy[i]->SetTileMap(tile);
+		enemy[i]->SetCamera(mainCamera);
+	}
 
 	// pikachu
 	// charmander
@@ -346,27 +422,45 @@ void ExploreScene::PokemonInit()
 	// rattata
 	// pidgey
 
-	pokemon->SetTileMap(tile);
-	pokemon2->SetTileMap(tile);
-	enemy->SetTileMap(tile);
-	enemy2->SetTileMap(tile);
+	//pokemon->Init(L"charmander", L"player");
+	//pokemon2->Init(L"pikachu", L"ally", { 2, 19 });
+	//enemy->Init(GAME->GetPokemonName(3), L"enemy", { 20,15 });
+	//enemy2->Init(GAME->GetPokemonName(4), L"enemy", { 15,10 });
+	//
+	//pokemon->GetTransform()->SetScale(Vector2(0.2f, 0.2f));
+	//pokemon2->GetTransform()->SetScale(Vector2(0.2f, 0.2f));
+	//enemy->GetTransform()->SetScale(Vector2(0.2f, 0.2f));
+	//enemy2->GetTransform()->SetScale(Vector2(0.2f, 0.2f));
 
-	pokemon->SetCamera(mainCamera);
-	pokemon2->SetCamera(mainCamera);
-	enemy->SetCamera(mainCamera);
-	enemy2->SetCamera(mainCamera);
-
-	pokemon->Init(L"pikachu", L"player");
-	pokemon2->Init(L"charmander", L"ally", { 2, 19 });
-	enemy->Init(GAME->GetPokemonName(3), L"enemy", { 20,15 });
-	enemy2->Init(GAME->GetPokemonName(4), L"enemy", { 15,10 });
-
-	pokemon->GetTransform()->SetScale(Vector2(0.2f, 0.2f));
-	pokemon2->GetTransform()->SetScale(Vector2(0.2f, 0.2f));
-	enemy->GetTransform()->SetScale(Vector2(0.2f, 0.2f));
-	enemy2->GetTransform()->SetScale(Vector2(0.2f, 0.2f));
+	PokemonSetting();
 
 	FindPokemon();
+}
+
+void ExploreScene::PokemonSetting()
+{
+	wstring pokemonName[] = {
+		L"pikachu", L"charmander", L"squirtle", L"bulbasaur" };
+
+	for (int i = 0; i < PLAYERCOUNT; i++) {
+		pokemon[i]->Init(pokemonName[i],
+			i == 0 ? L"player" : L"ally",
+			stageInfo[curStage].startPos[i]);
+		pokemon[i]->GetTransform()->SetScale(Vector2(0.2f, 0.2f));
+	}
+
+	tagStageInfo stage = stageInfo[curStage];
+	for (int i = 0; i < stage.enemyCount; i++) {
+		int teamCount = stage.teamCount;
+		int memberCount = stage.teams[
+			i / (stage.enemyCount / teamCount)].count;
+
+		enemy[i]->Init(
+			stage.teams[i / memberCount]
+			.name[i % memberCount], L"enemy",
+			stage.teams[i / memberCount].pos[i % memberCount]);
+		enemy[i]->GetTransform()->SetScale(Vector2(0.2f, 0.2f));
+	}
 }
 
 void ExploreScene::DebugInit()
@@ -571,7 +665,7 @@ void ExploreScene::DebugRender()
 
 void ExploreScene::MapLoad()
 {
-	Json::ReadJsonData(L"Save/TileMap.Json", jsonTileMap);
+	Json::ReadJsonData(L"Save/Stage/TileMap.Json", jsonTileMap);
 
 	for (int i = 0; i < TILE_ROW; i++) {
 		for (int j = 0; j < TILE_COL; j++) {
@@ -597,44 +691,187 @@ void ExploreScene::MapLoad()
 	tile->UpdateTileInfo();
 }
 
-void ExploreScene::FindPokemon()
+void ExploreScene::StageLoad()
 {
-	Pokemon* targetEnemy = FindNearPokemon();
+	Json::ReadJsonData(L"Save/Stage/StageInfo.Json", jsonStageInfo);
 
-	if (pokemon->GetEnemy() == NULL 
-		|| pokemon->GetEnemy()->GetIsDied()
-		|| pokemon->GetEnemy() != targetEnemy) {
-		pokemon->SetEnemy(targetEnemy);
+	string str = "StageInfo";
+
+	int stageCount;
+	Json::GetValue(*jsonStageInfo, str + "_Count", stageCount);
+
+	tagStageInfo stage;
+
+	for (int i = 0; i < stageCount; i++) {
+		string name;
+		Json::GetString(*jsonStageInfo,
+			str + "_Name_" + to_string(i), name);
+
+		stage.name = String::StringToWString(name);
+
+
+		string stageName = str + "_" + name;
+
+		// 내 포켓몬 스타트 위치
+		stage.pokemonCount = PLAYERCOUNT;
+		for (int j = 0; j < 4; j++) {
+			string temp = stageName+ "_pokemon_" +
+				to_string(j);
+			int x, y;
+
+			Json::GetValue(*jsonStageInfo, temp + "_posX", x);
+			Json::GetValue(*jsonStageInfo, temp + "_posY", y);
+
+			stage.startPos[j] = { x,y };
+		}
+
+		Json::GetValue(*jsonStageInfo, 
+			stageName + "_enemyCount", stage.enemyCount);
+		Json::GetValue(*jsonStageInfo, 
+			stageName + "_enemyKind", stage.enemyKind);
+
+		for (int j = 0; j < stage.enemyKind; j++) {
+			string temp = stageName + "_enemyName_";
+			string enemyName;
+			Json::GetString(*jsonStageInfo,
+				temp + to_string(j), enemyName);
+
+			stage.enemyName.push_back(
+				String::StringToWString(enemyName));
+		}
+		
+		Json::GetValue(*jsonStageInfo, stageName + "_teamCount",
+			stage.teamCount);
+		
+		for (int j = 0; j < stage.teamCount; j++) {
+			int memberCount;
+			string team = stageName + "_team_" + to_string(j);
+
+			Json::GetValue(*jsonStageInfo,
+				team + "_Count", memberCount);
+
+			tagTeamInfo teamInfo;
+			for (int k = 0; k < memberCount; k++) {
+				string member = team + "_" + to_string(k);
+				string memberName;
+
+				Json::GetString(*jsonStageInfo,
+					member + "_name", memberName);
+				teamInfo.name[k] = String::StringToWString(memberName);
+
+				int x, y;
+				Json::GetValue(*jsonStageInfo,
+					member + "_posX", x);
+				Json::GetValue(*jsonStageInfo,
+					member + "_posY", y);
+				teamInfo.pos[k] = { x,y };
+			}
+			stage.teams.push_back(teamInfo);
+		}
+
+		stageInfo.push_back(stage);
 	}
-	
-	pokemon2->SetEnemy(enemy);
-
-	enemy->SetEnemy(pokemon);
-	enemy2->SetEnemy(pokemon);
 }
 
-Pokemon * ExploreScene::FindNearPokemon(bool isEnemy)
+void ExploreScene::FindPokemon()
 {
-	if(isEnemy) {
-		float dist;
-		if (enemy->GetIsDied()) dist = BIGNUM;
-		else
-			dist = (pokemon->GetTransform()->GetWorldPosition() -
-					enemy->GetTransform()->GetWorldPosition()).Length();
-		float dist2;
-		if (enemy2->GetIsDied()) dist2 = BIGNUM;
-		else
-			dist2 = (pokemon->GetTransform()->GetWorldPosition() -
-					enemy2->GetTransform()->GetWorldPosition()).Length();
+	//Pokemon* targetEnemy = FindNearPokemon();
+	//
+	//// enemy 타겟이 설정되지 않았거나 현재 설정된 enemy가 죽엇거나
+	//// 현재 계산된 가장 가까운 enemy가 다르면 새로 설정
+	//if (pokemon->GetEnemy() == NULL 
+	//	|| pokemon->GetEnemy()->GetIsDied()
+	//	|| pokemon->GetEnemy() != targetEnemy) {
+	//	pokemon->SetEnemy(targetEnemy);
+	//}
+	//
+	//pokemon2->SetEnemy(enemy);
+	//
+	//enemy->SetEnemy(pokemon);
+	//enemy2->SetEnemy(pokemon);
 
-		if (dist <= dist2)
-			return enemy;
-		else
-			return enemy2;
+	for (int i = 0; i < PLAYERCOUNT; i++) {
+		Pokemon* targetPokemon = FindNearPokemon(pokemon[i], false);
+
+		if (targetPokemon == NULL) {
+			if (curTeam < stageInfo[curStage].teamCount) {
+				curTeam++;
+			}
+		}
+
+		pokemon[i]->SetEnemy(targetPokemon);
+	}
+
+	for (int i = curTeam * teamCount;
+		i < (curTeam + 1) * teamCount; i++) {
+		Pokemon* targetPokemon = FindNearPokemon(enemy[i], true);
+
+		enemy[i]->SetEnemy(targetPokemon);
+	}
+}
+
+Pokemon * ExploreScene::FindNearPokemon(Pokemon* curPokemon, bool isEnemy)
+{
+	//if(isEnemy) {
+	//	float dist;
+	//	if (enemy->GetIsDied()) dist = BIGNUM;
+	//	else
+	//		dist = (pokemon->GetTransform()->GetWorldPosition() -
+	//				enemy->GetTransform()->GetWorldPosition()).Length();
+	//	float dist2;
+	//	if (enemy2->GetIsDied()) dist2 = BIGNUM;
+	//	else
+	//		dist2 = (pokemon->GetTransform()->GetWorldPosition() -
+	//				enemy2->GetTransform()->GetWorldPosition()).Length();
+	//
+	//	if (dist <= dist2)
+	//		return enemy;
+	//	else
+	//		return enemy2;
+	//}
+	//else {
+	//	return pokemon;
+	//}
+
+	float minDist = BIGNUM;
+	int minIndex = 0;
+
+	Vector2 pos = curPokemon->GetTransform()->GetWorldPosition();
+
+	if (isEnemy) {
+		for (int i = 0; i < PLAYERCOUNT; i++) {
+			if (pokemon[i]->GetIsDied()) continue;
+
+			Vector2 pos2 = pokemon[i]->
+				GetTransform()->GetWorldPosition();
+			float dist = (pos - pos2).Length();
+
+			if (minDist > dist) {
+				minDist = dist;
+				minIndex = i;
+			}
+		}
 	}
 	else {
-		return pokemon;
+		for (int i = curTeam * teamCount;
+			i < (curTeam + 1) * teamCount; i++) {
+			if (enemy[i]->GetIsDied()) continue;
+
+			Vector2 pos2 = enemy[i]->
+				GetTransform()->GetWorldPosition();
+			float dist = (pos - pos2).Length();
+
+			if (minDist > dist) {
+				minDist = dist;
+				minIndex = i;
+			}
+		}
 	}
+
+	if (minDist == BIGNUM)
+		return NULL;
+	else
+		return isEnemy ? pokemon[minIndex] : enemy[minIndex];
 }
 
 void ExploreScene::UpdateCameraChange(Vector2 tileScale, Vector2 pokemonScale)
@@ -651,11 +888,21 @@ void ExploreScene::UpdateCameraChange(Vector2 tileScale, Vector2 pokemonScale)
 
 	tile->UpdateTileCenterPos();
 
-	UpdatePokemonChange(pokemon, pokemonScale);
-	UpdatePokemonChange(pokemon2, pokemonScale);
 
-	UpdatePokemonChange(enemy, pokemonScale);
-	UpdatePokemonChange(enemy2, pokemonScale);
+	//UpdatePokemonChange(pokemon, pokemonScale);
+	//UpdatePokemonChange(pokemon2, pokemonScale);
+	//
+	//UpdatePokemonChange(enemy, pokemonScale);
+	//UpdatePokemonChange(enemy2, pokemonScale);
+
+	for (int i = 0; i < PLAYERCOUNT; i++) {
+		UpdatePokemonChange(pokemon[i], pokemonScale);
+	}
+
+	for (int i = curTeam * teamCount;
+		i < (curTeam + 1) * teamCount; i++) {
+		UpdatePokemonChange(enemy[i], pokemonScale);
+	}
 }
 
 void ExploreScene::UpdatePokemonChange(Pokemon * pokemon, Vector2 scale)

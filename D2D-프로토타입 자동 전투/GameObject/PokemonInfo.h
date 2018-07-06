@@ -27,6 +27,8 @@ struct tagPokemonStatus {
 	int frameCnt[STATE_END];
 	LPDIRECT3DTEXTURE9 pTex[STATE_END];
 
+	LPDIRECT3DTEXTURE9 pPortraitTex;
+
 	POKEMON_STATE state = STATE_IDLE; // 초기 상태
 	POKEMON_DIRECTION dir = DIRECTION_BOTTOM; // 초기 방향
 
@@ -42,6 +44,8 @@ struct tagPokemonStatus {
 
 	float maxHp;
 	float curHp;
+
+	int level = 1;
 
 	POINT curTile;
 	POINT targetTile;
