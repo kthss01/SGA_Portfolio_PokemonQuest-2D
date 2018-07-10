@@ -61,7 +61,7 @@ public:
 	bool IsAttack();
 
 	void Move();
-	void Attack();
+	bool Attack();
 
 	void SetEnemy(Pokemon* enemy) { this->enemy = enemy; }
 	void SetTileMap(TileMap* tile) { this->tile = tile; }
@@ -83,5 +83,5 @@ public:
 	ProgressBar* GetHpBar() { return hp; }
 	void ChangeHpBar();
 
-	//void UpdateCurTileBlocked(bool isBlocked = true);
+	void UpdateCurTileBlocked(bool isBlocked = true);
 };

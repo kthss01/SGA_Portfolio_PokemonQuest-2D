@@ -187,7 +187,7 @@ void Pokemon::Init(wstring name, wstring team, POINT startPos, Vector2 pivot)
 	pokemonStatus.curTile = startPos;
 	pokemonStatus.targetTile = { -1, -1 };
 
-	//UpdateCurTileBlocked();
+	UpdateCurTileBlocked();
 
 	CalculateAttackRange();
 
@@ -246,9 +246,6 @@ void Pokemon::Update()
 
 	delayTime += FRAME->GetElapsedTime();
 
-	//// 현재 타일이 블락인지 아닌지 업데이트
-	//UpdateCurTileBlocked();
-
 	//this->transform->DefaultControl2();
 	
 	clips[pokemonStatus.state]->Update(pokemonStatus.dir);
@@ -272,7 +269,7 @@ void Pokemon::Update()
 		break;
 	case STATE_MOVE:
 		Move();
-		Attack();
+		//Attack();
 
 		//switch (pokemonInfo.dir)
 		//{
@@ -322,12 +319,14 @@ void Pokemon::Update()
 				pokemonStatus.dir = dir;
 				clips[pokemonStatus.state]->Play(pokemonStatus.dir);
 			}
-
-			if (MovePosition(pokemonStatus.targetTile)) {
-				//UpdateCurTileBlocked(false);
-				pokemonStatus.curTile = pokemonStatus.targetTile;
-				//UpdateCurTileBlocked();
-				aStar->UpdateTargetTile();
+			if (!Attack()) {
+				if (MovePosition(pokemonStatus.targetTile)) {
+				
+					UpdateCurTileBlocked(false);
+					pokemonStatus.curTile = pokemonStatus.targetTile;
+					UpdateCurTileBlocked();
+					aStar->UpdateTargetTile();
+				}
 			}
 		}
 		else {
@@ -340,12 +339,19 @@ void Pokemon::Update()
 	case STATE_HURT:
 		break;
 	case STATE_ATTACK:
-		enemy->SetHurt(true);
-		if (delayTime > pokemonStatus.attackSpeed) {
-			delayTime = 0.0f;
-			enemy->SetHp(pokemonStatus.attack);
-			enemy->ChangeHpBar();
-			enemy->SetHurt(false);
+		if (enemy != NULL) {
+			enemy->SetHurt(true);
+			if (delayTime > pokemonStatus.attackSpeed) {
+				delayTime = 0.0f;
+				enemy->SetHp(pokemonStatus.attack);
+				enemy->ChangeHpBar();
+				enemy->SetHurt(false);
+				pokemonStatus.state = STATE_IDLE;
+				clips[pokemonStatus.state]->Play(pokemonStatus.dir);
+			}
+		}
+		else
+		{
 			pokemonStatus.state = STATE_IDLE;
 			clips[pokemonStatus.state]->Play(pokemonStatus.dir);
 		}
@@ -773,19 +779,19 @@ void Pokemon::Move()
 					(TILE_COL * TILE_HEIGHT / 2) * tileScale.x) /
 					(TILE_HEIGHT * tileScale.x);
 
-				//UpdateCurTileBlocked(false);
+				UpdateCurTileBlocked(false);
 				pokemonStatus.curTile = currentTile;
-				//UpdateCurTileBlocked();
+				UpdateCurTileBlocked();
 			}
 			pokemonStatus.targetTile = targetTile;
 
-			//UpdateCurTileBlocked(false);
+			UpdateCurTileBlocked(false);
 			aStar->PathInit(
 				pokemonStatus.curTile.x,
 				pokemonStatus.curTile.y,
 				pokemonStatus.targetTile.x,
 				pokemonStatus.targetTile.y);
-			//UpdateCurTileBlocked();
+			UpdateCurTileBlocked();
 
 			aStar->PathFind();
 
@@ -822,7 +828,7 @@ void Pokemon::Move()
 	}
 }
 
-void Pokemon::Attack()
+bool Pokemon::Attack()
 {
 	if (IsAttack() && delayTime > pokemonStatus.attackSpeed) {
 		
@@ -847,7 +853,11 @@ void Pokemon::Attack()
 
 		if (stateChange || dirChange)
 			clips[pokemonStatus.state]->Play(pokemonStatus.dir);
+
+		return true;
 	}
+
+	return false;
 }
 
 void Pokemon::SetHp(float damage)
@@ -856,6 +866,7 @@ void Pokemon::SetHp(float damage)
 	if (pokemonStatus.curHp <= 0) {
 		pokemonStatus.curHp = 0;
 		pokemonStatus.isDied = true;
+		UpdateCurTileBlocked(false);
 	}
 }
 
@@ -886,10 +897,11 @@ void Pokemon::ChangeHpBar()
 	hp->SetFrontScale(pokemonStatus.curHp / pokemonStatus.maxHp);
 }
 
-//void Pokemon::UpdateCurTileBlocked(bool isBlocked)
-//{
-//	POINT pos = pokemonStatus.curTile;
-//	tagTile tileInfo = tile->GetTileInfo(pos.x, pos.y);
-//	tileInfo.block = isBlocked;
-//	tile->SetTileInfo(pos.x, pos.y, tileInfo);
-//}
+void Pokemon::UpdateCurTileBlocked(bool isBlocked)
+{
+	POINT pos = this->pokemonStatus.curTile;
+	tagTile tileInfo = tile->GetTileInfo(pos.x, pos.y);
+	tileInfo.block = isBlocked;
+	tile->SetTileInfo(pos.x, pos.y, tileInfo);
+}
+

@@ -234,8 +234,11 @@ void ExploreScene::StageInit()
 
 	curStage = 0;
 
+	//stageInfo[curStage].curTeam = 1;
+
 	curTeam = stageInfo[curStage].curTeam;
 	teamCount = stageInfo[curStage].teams[curTeam].count;
+
 }
 
 void ExploreScene::PokemonInit()
@@ -751,6 +754,7 @@ void ExploreScene::StageLoad()
 				team + "_Count", memberCount);
 
 			tagTeamInfo teamInfo;
+			teamInfo.count = memberCount;
 			for (int k = 0; k < memberCount; k++) {
 				string member = team + "_" + to_string(k);
 				string memberName;
@@ -794,8 +798,16 @@ void ExploreScene::FindPokemon()
 		Pokemon* targetPokemon = FindNearPokemon(pokemon[i], false);
 
 		if (targetPokemon == NULL) {
-			if (curTeam < stageInfo[curStage].teamCount) {
-				curTeam++;
+			if (curTeam < stageInfo[curStage].teamCount - 1) {
+				stageInfo[curStage].curTeam++;
+				curTeam = stageInfo[curStage].curTeam;
+
+				if(cameraFollow)
+					UpdateCameraChange(
+						Vector2(2.7f, 2.7f), Vector2(0.6f, 0.6f));
+				else 
+					UpdateCameraChange(
+						Vector2(0.9f, 0.9f), Vector2(0.2f, 0.2f));
 			}
 		}
 
@@ -896,11 +908,13 @@ void ExploreScene::UpdateCameraChange(Vector2 tileScale, Vector2 pokemonScale)
 	//UpdatePokemonChange(enemy2, pokemonScale);
 
 	for (int i = 0; i < PLAYERCOUNT; i++) {
+		if (pokemon[i]->GetIsDied()) continue;
 		UpdatePokemonChange(pokemon[i], pokemonScale);
 	}
 
 	for (int i = curTeam * teamCount;
 		i < (curTeam + 1) * teamCount; i++) {
+		if (enemy[i]->GetIsDied()) continue;
 		UpdatePokemonChange(enemy[i], pokemonScale);
 	}
 }
