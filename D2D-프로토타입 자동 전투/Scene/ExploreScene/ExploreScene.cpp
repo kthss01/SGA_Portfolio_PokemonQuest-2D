@@ -29,6 +29,8 @@ void ExploreScene::Init()
 
 	StageInit();
 
+	UIInit();
+
 	PokemonInit();
 
 	DebugInit();
@@ -39,9 +41,11 @@ void ExploreScene::Init()
 	//circle->SetTexture(TEXTURE->GetTexture(L"ui_circle"));
 	//circle->GetTransform()->SetScale(Vector2(0.5f, 0.3f));
 
-	tempTransform = new Transform;
+	tempCameraTransform = new Transform;
 	cameraFollow = false;
 	isChange = false;
+
+	curCameraTarget = pokemon[0]->GetTransform();
 
 	isDebug = false;
 }
@@ -52,7 +56,7 @@ void ExploreScene::Release()
 	SAFE_DELETE(tile);
 
 	SAFE_DELETE(mainCamera);
-	SAFE_DELETE(tempTransform);
+	SAFE_DELETE(tempCameraTransform);
 
 	SAFE_RELEASE(font);
 
@@ -75,6 +79,16 @@ void ExploreScene::Release()
 		delete[] enemy;
 	}
 
+	for (int i = 0; i < UI_SIZE; i++) {
+		SAFE_RELEASE(panel[i]);
+		SAFE_DELETE(panel[i]);
+
+		SAFE_RELEASE(portrait[i]);
+		SAFE_DELETE(portrait[i]);
+
+		SAFE_DELETE(tempPanelTransform[i]);
+	}
+
 	//SAFE_RELEASE(pokemon);
 	//SAFE_DELETE(pokemon);
 	//SAFE_RELEASE(pokemon2);
@@ -93,12 +107,49 @@ void ExploreScene::Update()
 	curTeam = stageInfo[curStage].curTeam;
 	teamCount = stageInfo[curStage].teams[curTeam].count;
 
+	float elapsedTime = FRAME->GetElapsedTime();
+	float frameSpeed = 3.0f;
+
+	// 개인 화면
 	if (cameraFollow) {
 		//mainCamera->SetWorldPosition(
 		//	pokemon->GetTransform()->GetWorldPosition());
 
-		mainCamera->Interpolate(mainCamera, pokemon[0]->GetTransform(),
-			FRAME->GetElapsedTime() * 1.0f);
+		mainCamera->Interpolate(mainCamera, curCameraTarget,
+			elapsedTime * 1.0f);
+
+		//for (int i = 0; i < UI_SIZE; i++) {
+		//	tempPanelTransform[i]->SetWorldPosition(
+		//		Vector2(-430 + i * 125, -300) +
+		//		this->mainCamera->GetWorldPosition());
+		//	tempPanelTransform[i]->SetScale(
+		//		Vector2(1.2f, 1.5f));
+		//	tempPortraitTransform[i]->SetScale(
+		//		Vector2(0.9f, 0.9f));
+		//	tempPortraitTransform[i]->SetWorldPosition(
+		//		tempPanelTransform[i]->GetWorldPosition()
+		//		+ Vector2(0, 15));
+		//}
+
+		for (int i = 0; i < UI_SIZE; i++) {
+			Transform * trans = panel[i]->GetTransform();
+			//trans->Interpolate(
+			//	trans, tempPanelTransform[i],
+			//	elapsedTime * frameSpeed);
+			//portrait[i]->GetTransform()->Interpolate(
+			//	portrait[i]->GetTransform(), tempPortraitTransform[i],
+			//	FRAME->GetElapsedTime() * frameSpeed);
+			trans->SetWorldPosition(
+				Vector2(-430 + i * 125, -300) +
+				this->mainCamera->GetWorldPosition());
+			trans->SetScale(Vector2(1.2f, 1.5f));
+
+			Transform* trans2 = portrait[i]->GetTransform();
+			trans2->SetScale(
+				Vector2(0.9f, 0.9f));
+			trans2->SetWorldPosition(
+				trans->GetWorldPosition() - Vector2(0, 15));
+		}
 
 		if (!isChange) {
 			isChange = true;
@@ -107,11 +158,44 @@ void ExploreScene::Update()
 				Vector2(2.7f, 2.7f), Vector2(0.6f, 0.6f));
 		}
 	}
+	// 전체 화면
 	else {
-		//mainCamera->SetWorldPosition(Vector2(0, 0));
+		mainCamera->SetWorldPosition(Vector2(0, 0));
 
-		mainCamera->Interpolate(mainCamera, tempTransform,
-			FRAME->GetElapsedTime() * 1.0f);
+		//mainCamera->Interpolate(mainCamera, tempCameraTransform,
+		//	elapsedTime * 1.0f);
+
+		//for (int i = 0; i < UI_SIZE; i++) {
+		//	tempPanelTransform[i]->SetWorldPosition(
+		//		Vector2(305 + (i % 2) * 135,
+		//			-280 + (i / 2) * 170 + (i / 4) * 50) +
+		//		this->mainCamera->GetWorldPosition());
+		//	tempPanelTransform[i]->SetScale(Vector2(1.3f, 1.65f));
+
+		//	tempPortraitTransform[i]->SetWorldPosition(
+		//		tempPanelTransform[i]->GetWorldPosition()
+		//		+ Vector2(0, 15));
+		//}
+
+		for (int i = 0; i < UI_SIZE; i++) {
+			Transform* trans = panel[i]->GetTransform();
+			//trans->Interpolate(
+			//	trans, tempPanelTransform[i],
+			//	elapsedTime * frameSpeed);
+			//portrait[i]->GetTransform()->Interpolate(
+			//	portrait[i]->GetTransform(), tempPortraitTransform[i],
+			//	FRAME->GetElapsedTime() * frameSpeed);
+			trans->SetWorldPosition(
+				Vector2(305 + (i % 2) * 135,
+				-280 + (i / 2) * 170 + (i / 4) * 50) +
+				this->mainCamera->GetWorldPosition());
+			trans->SetScale(Vector2(1.3f, 1.65f));
+
+			Transform* trans2 = portrait[i]->GetTransform();
+			trans2->SetScale(Vector2(1.0f, 1.0f));
+			trans2->SetWorldPosition(
+				trans->GetWorldPosition() - Vector2(0, 15));
+		}
 
 		if (!isChange) {
 			isChange = true;
@@ -137,6 +221,14 @@ void ExploreScene::Update()
 	//		pokemon->GetTransform()->GetWorldPosition()
 	//		+ Vector2(10, 25));
 
+	//for (int i = 0; i < UI_SIZE; i++) {
+	//	panel[i]->Update();
+	//}
+	//panel[0]->GetTransform()->DefaultControl2();
+	//if (INPUT->GetKeyDown('Y')) {
+	//	Transform* trans = panel[0]->GetTransform();
+	//	int temp = 0;
+	//}
 	
 	//pokemon->Update();
 	//pokemon2->Update();
@@ -153,6 +245,27 @@ void ExploreScene::Update()
 	}
 
 	FindPokemon();
+
+	if (INPUT->GetKeyDown(VK_LBUTTON)) {
+		for (int i = 0; i < UI_SIZE; i++) {
+			if (i < PLAYERCOUNT &&
+				panel[i]->IsMouseCollision()) {
+				curCameraTarget = pokemon[i]->GetTransform();
+			
+				pokemon[i]->GetHpBar()->GetFront()->SetTexture(
+					TEXTURE->GetTexture(L"ui_hp_player"));
+
+				panel[i]->SetTexture(TEXTURE->GetTexture(L"ui_panel"));
+				for (int j = 0; j < PLAYERCOUNT; j++) {
+					if (i == j) continue;
+					panel[j]->SetTexture(TEXTURE->GetTexture(L"ui_panel2"));
+					pokemon[j]->GetHpBar()->GetFront()->SetTexture(
+						TEXTURE->GetTexture(L"ui_hp_ally"));
+				}
+				break;
+			}
+		}
+	}
 
 	if (INPUT->GetKeyDown('O')) {
 		cameraFollow = !cameraFollow;
@@ -181,6 +294,11 @@ void ExploreScene::Render()
 	for (int i = curTeam * teamCount;
 		i < (curTeam + 1) * teamCount; i++) {
 		enemy[i]->Render();
+	}
+
+	for (int i = 0; i < UI_SIZE; i++) {
+		panel[i]->Render();
+		portrait[i]->Render();
 	}
 
 	if (isDebug) {
@@ -440,6 +558,78 @@ void ExploreScene::PokemonInit()
 	FindPokemon();
 }
 
+void ExploreScene::UIInit()
+{
+	for (int i = 0; i < UI_SIZE; i++) {
+		panel[i] = new Rect;
+		panel[i]->Init(L"./Shader/ColorTexture.fx", Vector2(1, 1));
+		if(i==0)
+			panel[i]->SetTexture(TEXTURE->GetTexture(L"ui_panel"));
+		else if(i < 4)
+			panel[i]->SetTexture(TEXTURE->GetTexture(L"ui_panel2"));
+		else
+			panel[i]->SetTexture(TEXTURE->GetTexture(L"ui_panel3"));
+
+		panel[i]->SetCamera(mainCamera);
+
+		Transform* trans = panel[i]->GetTransform();
+		trans->SetRotateLocal(D3DX_PI);
+
+		portrait[i] = new Rect;
+		portrait[i]->Init(L"./Shader/ColorTexture.fx", Vector2(1, 1));
+		portrait[i]->SetCamera(mainCamera);
+	}
+
+	//for (int i = 0; i < UI_SIZE; i++) {
+	//	Transform* trans = panel[i]->GetTransform();
+	//	trans->SetWorldPosition(
+	//		Vector2(305 + (i % 2) * 135,
+	//			-280 + (i / 2) * 170 + (i / 4) * 50));
+	//	trans->SetScale(Vector2(1.3f, 1.65f));
+	//
+	//	portrait[i]->GetTransform()->SetWorldPosition(
+	//		panel[i]->GetTransform()->GetWorldPosition()
+	//		+ Vector2(0, -15));
+	//}
+
+	//for (int i = 0; i < UI_SIZE; i++) {
+	//	Transform* trans = panel[i]->GetTransform();
+	//	trans->SetWorldPosition(
+	//		Vector2(-430 + i * 125, -300));
+	//	trans->SetScale(Vector2(1.2f, 1.5f));
+	//	
+	//	portrait[i]->GetTransform()->SetScale(
+	//		Vector2(0.9f, 0.9f));
+	//	portrait[i]->GetTransform()->SetWorldPosition(
+	//		panel[i]->GetTransform()->GetWorldPosition()
+	//		+ Vector2(0, -15));
+	//}
+
+	for (int i = 0; i < UI_SIZE; i++) {
+		tempPanelTransform[i] = new Transform;
+		//tempPortraitTransform[i] = new Transform;
+
+		tempPanelTransform[i]->SetWorldPosition(
+			Vector2(305 + (i % 2) * 135,
+				-280 + (i / 2) * 170 + (i / 4) * 50));
+		tempPanelTransform[i]->SetScale(Vector2(1.3f, 1.65f));
+
+		//tempPortraitTransform[i]->SetWorldPosition(
+		//	tempPanelTransform[i]->GetWorldPosition()
+		//	+ Vector2(0, 15));
+	}
+
+	//Transform* trans = panel[0]->GetTransform();
+	//trans->SetWorldPosition(Vector2(305, -270));
+	//trans->SetScale(Vector2(1.3f, 1.4f));
+	//trans->SetRotateLocal(D3DX_PI);
+
+	//trans = panel[1]->GetTransform();
+	//trans->SetWorldPosition(Vector2(440, -270));
+	//trans->SetScale(Vector2(1.3f, 1.4f));
+	//trans->SetRotateLocal(D3DX_PI);
+}
+
 void ExploreScene::PokemonSetting()
 {
 	wstring pokemonName[] = {
@@ -450,6 +640,9 @@ void ExploreScene::PokemonSetting()
 			i == 0 ? L"player" : L"ally",
 			stageInfo[curStage].startPos[i]);
 		pokemon[i]->GetTransform()->SetScale(Vector2(0.2f, 0.2f));
+
+		portrait[i]->SetTexture(
+			pokemon[i]->GetPokemonStatus().pPortraitTex);
 	}
 
 	tagStageInfo stage = stageInfo[curStage];
@@ -463,6 +656,15 @@ void ExploreScene::PokemonSetting()
 			.name[i % memberCount], L"enemy",
 			stage.teams[i / memberCount].pos[i % memberCount]);
 		enemy[i]->GetTransform()->SetScale(Vector2(0.2f, 0.2f));
+
+		//portrait[PLAYERCOUNT + i % 4]->SetTexture(
+		//	enemy[i]->GetPokemonStatus().pPortraitTex);
+	}
+
+	for (int i = curTeam * teamCount;
+		i < (curTeam + 1) * teamCount; i++) {
+		portrait[PLAYERCOUNT + i % 4]->SetTexture(
+			enemy[i]->GetPokemonStatus().pPortraitTex);
 	}
 }
 
@@ -801,6 +1003,12 @@ void ExploreScene::FindPokemon()
 			if (curTeam < stageInfo[curStage].teamCount - 1) {
 				stageInfo[curStage].curTeam++;
 				curTeam = stageInfo[curStage].curTeam;
+
+				for (int i = curTeam * teamCount;
+					i < (curTeam + 1) * teamCount; i++) {
+					portrait[PLAYERCOUNT + i % 4]->SetTexture(
+						enemy[i]->GetPokemonStatus().pPortraitTex);
+				}
 
 				if(cameraFollow)
 					UpdateCameraChange(

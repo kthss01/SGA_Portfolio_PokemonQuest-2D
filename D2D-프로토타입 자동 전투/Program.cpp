@@ -30,6 +30,8 @@ Program::Program()
 
 		// UI
 		TEXTURE->AddTexture(L"ui_panel", L"Textures/UI_Panel_Green.png");
+		TEXTURE->AddTexture(L"ui_panel2", L"Textures/UI_Panel_Blue.png");
+		TEXTURE->AddTexture(L"ui_panel3", L"Textures/UI_Panel_Red.png");
 		
 		TEXTURE->AddTexture(L"ui_hp_player", L"Textures/hp_player.png");
 		TEXTURE->AddTexture(L"ui_hp_ally", L"Textures/hp_ally.png");

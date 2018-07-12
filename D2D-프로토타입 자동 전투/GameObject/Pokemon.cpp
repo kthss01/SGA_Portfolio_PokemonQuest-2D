@@ -161,6 +161,10 @@ void Pokemon::Init(wstring name, wstring team, POINT startPos, Vector2 pivot)
 	// Get Texture
 	for (int i = 0; i < STATE_END; i++) {
 		wstring str = pokemonStatus.name;
+
+		pokemonStatus.pPortraitTex = TEXTURE->GetTexture(
+			str + L"_portrait");
+
 		switch (i)
 		{
 		case STATE_IDLE:
@@ -180,8 +184,6 @@ void Pokemon::Init(wstring name, wstring team, POINT startPos, Vector2 pivot)
 			break;
 		}
 		pokemonStatus.pTex[i] = TEXTURE->GetTexture(str);
-		pokemonStatus.pPortraitTex = TEXTURE->GetTexture(
-			str + L"_portrait");
 	}
 
 	pokemonStatus.curTile = startPos;

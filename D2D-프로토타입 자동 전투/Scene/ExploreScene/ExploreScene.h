@@ -3,6 +3,8 @@
 #include "Scene\Scene.h"
 #include "GameObject\StageInfo.h"
 
+#define UI_SIZE 8
+
 class ExploreScene : public Scene
 {
 private:
@@ -25,10 +27,17 @@ private:
 	//class Pokemon* enemy;
 	//class Pokemon* enemy2;
 
+	class Rect* panel[UI_SIZE];
+	class Rect* portrait[UI_SIZE];
+	class Transform* tempPanelTransform[UI_SIZE];
+	//class Transform* tempPortraitTransform[UI_SIZE];
+
+	class Transform* curCameraTarget;
+
 	class Pokemon** pokemon; // 일단 4명으로 고정
 	class Pokemon** enemy;
 
-	class Transform* tempTransform;
+	class Transform* tempCameraTransform;
 	bool cameraFollow;
 	bool isChange;
 
@@ -46,6 +55,7 @@ public:
 	void TileInit();
 	void StageInit();
 	void PokemonInit();
+	void UIInit();
 
 	void PokemonSetting();
 
