@@ -5,19 +5,22 @@
 
     "StageInfo_forest_pokemon_0_posX" : 17,
     "StageInfo_forest_pokemon_0_posY" : 14,  
-    "StageInfo_forest_pokemon_1_posX" : 21,
-    "StageInfo_forest_pokemon_1_posY" : 14,
+    "StageInfo_forest_pokemon_1_posX" : 24,
+    "StageInfo_forest_pokemon_1_posY" : 13,
     "StageInfo_forest_pokemon_2_posX" : 16,
     "StageInfo_forest_pokemon_2_posY" : 20,
     "StageInfo_forest_pokemon_3_posX" : 18,
     "StageInfo_forest_pokemon_3_posY" : 17,
 
-    "StageInfo_forest_enemyCount" : 8,
-    "StageInfo_forest_enemyKind" : 2,
+    "StageInfo_forest_enemyCount" : 12,
+    "StageInfo_forest_enemyKind" : 5,
     "StageInfo_forest_enemyName_0" : "rattata",
     "StageInfo_forest_enemyName_1" : "pidgey",
+    "StageInfo_forest_enemyName_2" : "caterpie",
+    "StageInfo_forest_enemyName_3" : "metapod",
+    "StageInfo_forest_enemyName_4" : "butterfree",
 
-    "StageInfo_forest_teamCount" : 2,
+    "StageInfo_forest_teamCount" : 3,
 
     "StageInfo_forest_team_0_Count" : 4,
     "StageInfo_forest_team_0_0_name" : "rattata",
@@ -45,6 +48,20 @@
     "StageInfo_forest_team_1_2_posY" : 29,
     "StageInfo_forest_team_1_3_name" : "pidgey",
     "StageInfo_forest_team_1_3_posX" : 26,
-    "StageInfo_forest_team_1_3_posY" : 26
+    "StageInfo_forest_team_1_3_posY" : 26,
+
+    "StageInfo_forest_team_2_Count" : 4,
+    "StageInfo_forest_team_2_0_name" : "caterpie",
+    "StageInfo_forest_team_2_0_posX" : 3,
+    "StageInfo_forest_team_2_0_posY" : 3,
+    "StageInfo_forest_team_2_1_name" : "caterpie",
+    "StageInfo_forest_team_2_1_posX" : 13,
+    "StageInfo_forest_team_2_1_posY" : 2,
+    "StageInfo_forest_team_2_2_name" : "metapod",
+    "StageInfo_forest_team_2_2_posX" : 17,
+    "StageInfo_forest_team_2_2_posY" : 29,
+    "StageInfo_forest_team_2_3_name" : "butterfree",
+    "StageInfo_forest_team_2_3_posX" : 26,
+    "StageInfo_forest_team_2_3_posY" : 26
 
 }

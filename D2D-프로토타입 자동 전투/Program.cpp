@@ -104,6 +104,30 @@ Program::Program()
 		TEXTURE->AddTexture(L"pidgey_attack",				L"Textures/pokemon/pidgey/attack_24x1.png");
 		TEXTURE->AddTexture(L"pidgey_special_attack",		L"Textures/pokemon/pidgey/special_attack_16x1.png");
 		TEXTURE->AddTexture(L"pidgey_portrait",				L"Textures/pokemon/pidgey/portrait.png");
+
+		// Caterpie
+		TEXTURE->AddTexture(L"caterpie_idle",				L"Textures/pokemon/caterpie/idle_24x1.png");
+		TEXTURE->AddTexture(L"caterpie_movement",			L"Textures/pokemon/caterpie/movement_24x1.png");
+		TEXTURE->AddTexture(L"caterpie_hurt",				L"Textures/pokemon/caterpie/hurt_8x1.png");
+		TEXTURE->AddTexture(L"caterpie_attack",				L"Textures/pokemon/caterpie/attack_32x1.png");
+		TEXTURE->AddTexture(L"caterpie_special_attack",		L"Textures/pokemon/caterpie/special_attack_24x1.png");
+		TEXTURE->AddTexture(L"caterpie_portrait",			L"Textures/pokemon/caterpie/portrait.png");
+
+		// Metapod
+		TEXTURE->AddTexture(L"metapod_idle",				L"Textures/pokemon/metapod/idle_24x1.png");
+		TEXTURE->AddTexture(L"metapod_movement",			L"Textures/pokemon/metapod/movement_24x1.png");
+		TEXTURE->AddTexture(L"metapod_hurt",				L"Textures/pokemon/metapod/hurt_8x1.png");
+		TEXTURE->AddTexture(L"metapod_attack",				L"Textures/pokemon/metapod/attack_32x1.png");
+		TEXTURE->AddTexture(L"metapod_special_attack",		L"Textures/pokemon/metapod/special_attack_8x1.png");
+		TEXTURE->AddTexture(L"metapod_portrait",			L"Textures/pokemon/metapod/portrait.png");
+
+		// Butterfree
+		TEXTURE->AddTexture(L"butterfree_idle",				L"Textures/pokemon/butterfree/idle_24x1.png");
+		TEXTURE->AddTexture(L"butterfree_movement",			L"Textures/pokemon/butterfree/movement_24x1.png");
+		TEXTURE->AddTexture(L"butterfree_hurt",				L"Textures/pokemon/butterfree/hurt_8x1.png");
+		TEXTURE->AddTexture(L"butterfree_attack",			L"Textures/pokemon/butterfree/attack_16x1.png");
+		TEXTURE->AddTexture(L"butterfree_special_attack",	L"Textures/pokemon/butterfree/special_attack_16x1.png");
+		TEXTURE->AddTexture(L"butterfree_portrait",			L"Textures/pokemon/butterfree/portrait.png");
 	}
 
 	// SPRITE Setting
