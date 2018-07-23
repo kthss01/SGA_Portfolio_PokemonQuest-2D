@@ -16,6 +16,7 @@ MapTool::~MapTool()
 void MapTool::Init()
 {
 	mainCamera = new Camera;
+	mainCamera->UpdateCamToDevice();
 
 	SubTileInit();
 
@@ -48,9 +49,14 @@ void MapTool::Release()
 
 	SAFE_RELEASE(font);
 
+	SAFE_RELEASE(panel);
 	SAFE_DELETE(panel);
-	for (int i = 0; i < 5; i++)
+	for (int i = 0; i < 5; i++) {
+		SAFE_RELEASE(ui[i]);
 		SAFE_DELETE(ui[i]);
+	}
+	SAFE_RELEASE(exitBtn);
+	SAFE_DELETE(exitBtn);
 
 	SAFE_DELETE(readJsonTileMap);
 	SAFE_DELETE(writeJsonTileMap);
@@ -77,8 +83,19 @@ void MapTool::Update()
 	//	int temp = 0;
 	//}
 
+	//exitBtn->Update();
+	//{
+	//	Transform* trans = exitBtn->GetTransform();
+	//	int temp = 0;
+	//}
+
 	// 마우스 클릭 시
 	if (INPUT->GetKeyDown(VK_LBUTTON)) {
+
+		if (exitBtn->IsMouseCollision()) {
+			SCENE->ChangeScene("Main");
+			return;
+		}
 
 		// 타일 클릭 시
 		Vector2 mousePos;
@@ -204,6 +221,7 @@ void MapTool::Render()
 	panel->Render();
 	for (int i = 0; i < 5; i++)
 		ui[i]->Render();
+	exitBtn->Render();
 
 	if (isDebug)
 		DebugRender();
@@ -313,6 +331,14 @@ void MapTool::UIInit()
 			break;
 		}
 	}
+
+	exitBtn = new Rect;
+	exitBtn->Init(L"./Shader/ColorTexture.fx", Vector2(1, 1));
+	exitBtn->SetCamera(mainCamera);
+
+	exitBtn->SetTexture(TEXTURE->GetTexture(L"ui_exit"));
+	exitBtn->GetTransform()->SetWorldPosition(
+		Vector2(300, -16.73f));
 }
 
 void MapTool::DebugInit()

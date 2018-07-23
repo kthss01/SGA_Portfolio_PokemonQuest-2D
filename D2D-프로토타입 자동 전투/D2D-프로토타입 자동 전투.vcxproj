@@ -182,6 +182,7 @@
     <ClInclude Include="Scene\ExploreScene\AStar.h" />
     <ClInclude Include="Scene\ExploreScene\ExploreScene.h" />
     <ClInclude Include="Scene\ExploreScene\MapTool.h" />
+    <ClInclude Include="Scene\MainScene\MainScene.h" />
     <ClInclude Include="Scene\Scene.h" />
     <ClInclude Include="Scene\TestScene.h" />
     <ClInclude Include="Utilities\Json.h" />
@@ -223,6 +224,7 @@
     <ClCompile Include="Scene\ExploreScene\AStar.cpp" />
     <ClCompile Include="Scene\ExploreScene\ExploreScene.cpp" />
     <ClCompile Include="Scene\ExploreScene\MapTool.cpp" />
+    <ClCompile Include="Scene\MainScene\MainScene.cpp" />
     <ClCompile Include="Scene\Scene.cpp" />
     <ClCompile Include="Scene\TestScene.cpp" />
     <ClCompile Include="Utilities\Json.cpp" />

@@ -22,6 +22,7 @@ private:
 
 	class Rect* panel;
 	class Rect* ui[5];
+	class Rect* exitBtn;
 
 	float currentSubTileNum;
 	Vector2 currentTileUV;

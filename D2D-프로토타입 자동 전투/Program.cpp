@@ -4,6 +4,7 @@
 #include "Scene\TestScene.h"
 #include "Scene\ExploreScene\ExploreScene.h"
 #include "Scene\ExploreScene\MapTool.h"
+#include "Scene\MainScene\MainScene.h"
 
 #include "GameObject\Rect.h"
 #include "./Common/Camera.h"
@@ -45,6 +46,15 @@ Program::Program()
 		TEXTURE->AddTexture(L"ui_down", L"Textures/UI_Down.png");
 
 		TEXTURE->AddTexture(L"ui_circle", L"Textures/circle.png");
+
+		// main_UI
+		TEXTURE->AddTexture(L"ui_bg", L"Textures/bg.jpg");
+		//TEXTURE->AddTexture(L"ui_poketball_1", L"Textures/poketballs/pokeballs_01.png");
+		//TEXTURE->AddTexture(L"ui_poketball_14", L"Textures/poketballs/pokeballs_14.png");
+		TEXTURE->AddTexture(L"ui_start", L"Textures/start.png");
+		TEXTURE->AddTexture(L"ui_tool", L"Textures/tool.png");
+		TEXTURE->AddTexture(L"ui_exit", L"Textures/exit4.png");
+		TEXTURE->AddTexture(L"ui_glasses", L"Textures/glasses2.png");
 
 		// Pokemon
 		// Pikachu
@@ -122,6 +132,8 @@ Program::Program()
 	{
 		TestScene * test = new TestScene;
 		SCENE->AddScene("Test", test);
+		MainScene * main = new MainScene;
+		SCENE->AddScene("Main", main);
 		ExploreScene * explore = new ExploreScene;
 		SCENE->AddScene("Explore", explore);
 		MapTool * mapTool = new MapTool;
@@ -132,6 +144,7 @@ Program::Program()
 	{
 		//SOUND->Play("Test");
 		//SCENE->ChangeScene("Test");
+		//SCENE->ChangeScene("Main");
 		SCENE->ChangeScene("Explore");
 		//SCENE->ChangeScene("MapTool");
 

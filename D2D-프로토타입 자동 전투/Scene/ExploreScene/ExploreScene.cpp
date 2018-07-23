@@ -21,6 +21,7 @@ ExploreScene::~ExploreScene()
 void ExploreScene::Init()
 {
 	mainCamera = new Camera;
+	mainCamera->UpdateCamToDevice();
 
 	this->jsonTileMap = new Json::Value();
 	jsonStageInfo = new Json::Value();
@@ -89,6 +90,12 @@ void ExploreScene::Release()
 		SAFE_DELETE(tempPanelTransform[i]);
 	}
 
+	SAFE_RELEASE(exitBtn);
+	SAFE_DELETE(exitBtn);
+
+	SAFE_RELEASE(glassesBtn);
+	SAFE_DELETE(glassesBtn);
+
 	//SAFE_RELEASE(pokemon);
 	//SAFE_DELETE(pokemon);
 	//SAFE_RELEASE(pokemon2);
@@ -150,6 +157,15 @@ void ExploreScene::Update()
 			trans2->SetWorldPosition(
 				trans->GetWorldPosition() - Vector2(0, 15));
 		}
+		exitBtn->GetTransform()->SetScale(Vector2(1, 1));
+		exitBtn->GetTransform()->SetWorldPosition(
+			mainCamera->GetWorldPosition() +
+			Vector2(455.5f, 327));
+
+		glassesBtn->GetTransform()->SetScale(Vector2(1, 1));
+		glassesBtn->GetTransform()->SetWorldPosition(
+			mainCamera->GetWorldPosition() +
+			Vector2(330.5f, 327));
 
 		if (!isChange) {
 			isChange = true;
@@ -197,6 +213,16 @@ void ExploreScene::Update()
 				trans->GetWorldPosition() - Vector2(0, 15));
 		}
 
+		exitBtn->GetTransform()->SetScale(
+			Vector2(0.5f, 0.5f));
+		exitBtn->GetTransform()->SetWorldPosition(
+			Vector2(439, 0));
+
+		glassesBtn->GetTransform()->SetScale(
+			Vector2(0.5f, 0.5f));
+		glassesBtn->GetTransform()->SetWorldPosition(
+			Vector2(305.4f, 0));
+
 		if (!isChange) {
 			isChange = true;
 
@@ -229,6 +255,18 @@ void ExploreScene::Update()
 	//	Transform* trans = panel[0]->GetTransform();
 	//	int temp = 0;
 	//}
+
+	//exitBtn->Update();
+	//{
+	//	Transform* trans = exitBtn->GetTransform();
+	//	int temp = 0;
+	//}
+
+	//glassesBtn->Update();
+	//{
+	//	Transform* trans = glassesBtn->GetTransform();
+	//	int temp = 0;
+	//}
 	
 	//pokemon->Update();
 	//pokemon2->Update();
@@ -247,6 +285,16 @@ void ExploreScene::Update()
 	FindPokemon();
 
 	if (INPUT->GetKeyDown(VK_LBUTTON)) {
+		if (exitBtn->IsMouseCollision()) {
+			SCENE->ChangeScene("Main");
+			return;
+		}
+
+		if (glassesBtn->IsMouseCollision()) {
+			cameraFollow = !cameraFollow;
+			isChange = false;
+		}
+
 		for (int i = 0; i < UI_SIZE; i++) {
 			if (i < PLAYERCOUNT &&
 				panel[i]->IsMouseCollision()) {
@@ -267,10 +315,10 @@ void ExploreScene::Update()
 		}
 	}
 
-	if (INPUT->GetKeyDown('O')) {
-		cameraFollow = !cameraFollow;
-		isChange = false;
-	}
+	//if (INPUT->GetKeyDown('O')) {
+	//	cameraFollow = !cameraFollow;
+	//	isChange = false;
+	//}
 
 	if (INPUT->GetKeyDown(VK_F11))
 		isDebug = !isDebug;
@@ -300,6 +348,8 @@ void ExploreScene::Render()
 		panel[i]->Render();
 		portrait[i]->Render();
 	}
+	exitBtn->Render();
+	glassesBtn->Render();
 
 	if (isDebug) {
 		DebugRender();
@@ -579,6 +629,26 @@ void ExploreScene::UIInit()
 		portrait[i]->Init(L"./Shader/ColorTexture.fx", Vector2(1, 1));
 		portrait[i]->SetCamera(mainCamera);
 	}
+
+	exitBtn = new Rect;
+	exitBtn->Init(L"./Shader/ColorTexture.fx", Vector2(1, 1));
+	exitBtn->SetCamera(mainCamera);
+	exitBtn->SetTexture(TEXTURE->GetTexture(L"ui_exit"));
+
+	exitBtn->GetTransform()->SetScale(
+		Vector2(0.5f, 0.5f));
+	exitBtn->GetTransform()->SetWorldPosition(
+		Vector2(439, 0));
+
+	glassesBtn = new Rect;
+	glassesBtn->Init(L"./Shader/ColorTexture.fx", Vector2(1, 1));
+	glassesBtn->SetCamera(mainCamera);
+	glassesBtn->SetTexture(TEXTURE->GetTexture(L"ui_glasses"));
+
+	glassesBtn->GetTransform()->SetScale(
+		Vector2(0.5f, 0.5f));
+	glassesBtn->GetTransform()->SetWorldPosition(
+		Vector2(305.4f, 0));
 
 	//for (int i = 0; i < UI_SIZE; i++) {
 	//	Transform* trans = panel[i]->GetTransform();

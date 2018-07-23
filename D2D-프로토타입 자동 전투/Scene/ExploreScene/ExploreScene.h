@@ -27,6 +27,9 @@ private:
 	//class Pokemon* enemy;
 	//class Pokemon* enemy2;
 
+	class Rect* exitBtn;
+	class Rect* glassesBtn;
+
 	class Rect* panel[UI_SIZE];
 	class Rect* portrait[UI_SIZE];
 	class Transform* tempPanelTransform[UI_SIZE];

@@ -149,6 +149,11 @@ Window::Window()
 	color[1] = 0.35f;
 	color[2] = 0.45f;
 	color[3] = 1.00f;
+
+	//color[0] = 1.00f;
+	//color[1] = 1.00f;
+	//color[2] = 1.00f;
+	//color[3] = 1.00f;
 }
 
 Window::~Window()
