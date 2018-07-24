@@ -13,12 +13,13 @@
     "StageInfo_forest_pokemon_3_posY" : 17,
 
     "StageInfo_forest_enemyCount" : 12,
-    "StageInfo_forest_enemyKind" : 5,
+    "StageInfo_forest_enemyKind" : 6,
     "StageInfo_forest_enemyName_0" : "rattata",
     "StageInfo_forest_enemyName_1" : "pidgey",
     "StageInfo_forest_enemyName_2" : "caterpie",
     "StageInfo_forest_enemyName_3" : "metapod",
     "StageInfo_forest_enemyName_4" : "butterfree",
+    "StageInfo_forest_enemyName_5" : "raticate",
 
     "StageInfo_forest_teamCount" : 3,
 
@@ -32,7 +33,7 @@
     "StageInfo_forest_team_0_2_name" : "rattata",
     "StageInfo_forest_team_0_2_posX" : 16,
     "StageInfo_forest_team_0_2_posY" : 30,
-    "StageInfo_forest_team_0_3_name" : "rattata",
+    "StageInfo_forest_team_0_3_name" : "raticate",
     "StageInfo_forest_team_0_3_posX" : 28,
     "StageInfo_forest_team_0_3_posY" : 28,
 

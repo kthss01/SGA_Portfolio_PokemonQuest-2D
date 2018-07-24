@@ -97,6 +97,14 @@ Program::Program()
 		TEXTURE->AddTexture(L"rattata_special_attack",		L"Textures/pokemon/rattata/special_attack_32x1.png");
 		TEXTURE->AddTexture(L"rattata_portrait",			L"Textures/pokemon/rattata/portrait.png");
 
+		// Raticate
+		TEXTURE->AddTexture(L"raticate_idle",				L"Textures/pokemon/raticate/idle_24x1.png");
+		TEXTURE->AddTexture(L"raticate_movement",			L"Textures/pokemon/raticate/movement_24x1.png");
+		TEXTURE->AddTexture(L"raticate_hurt",				L"Textures/pokemon/raticate/hurt_8x1.png");
+		TEXTURE->AddTexture(L"raticate_attack",				L"Textures/pokemon/raticate/attack_16x1.png");
+		TEXTURE->AddTexture(L"raticate_special_attack",		L"Textures/pokemon/raticate/special_attack_24x1.png");
+		TEXTURE->AddTexture(L"raticate_portrait",			L"Textures/pokemon/raticate/portrait.png");
+
 		// Pidgey
 		TEXTURE->AddTexture(L"pidgey_idle",					L"Textures/pokemon/pidgey/idle_16x1.png");
 		TEXTURE->AddTexture(L"pidgey_movement",				L"Textures/pokemon/pidgey/movement_24x1.png");
