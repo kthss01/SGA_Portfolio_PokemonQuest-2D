@@ -18,6 +18,8 @@ private:
 	class Camera* camera;
 	class AnimationClip* clips;
 
+	bool mixedColor;
+
 	bool isObject;
 	bool check;
 public:
@@ -43,4 +45,8 @@ public:
 	void SetObject(bool isObject) { this->isObject = isObject; }
 
 	bool IsMouseCollision();
+
+	void SetMixedColor(bool mixedColor) { this->mixedColor = mixedColor; }
+	void ChangeColor(DWORD color);
+	D3DXCOLOR GetColor() { return D3DXCOLOR(vertice[0].color); }
 };

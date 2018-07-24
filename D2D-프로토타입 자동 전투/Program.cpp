@@ -56,6 +56,8 @@ Program::Program()
 		TEXTURE->AddTexture(L"ui_exit", L"Textures/exit4.png");
 		TEXTURE->AddTexture(L"ui_glasses", L"Textures/glasses2.png");
 
+		TEXTURE->AddTexture(L"ui_fade", L"Textures/fade.png");
+
 		// Pokemon
 		// Pikachu
 		TEXTURE->AddTexture(L"pikachu_idle",				L"Textures/pokemon/pikachu/idle_8x1.png");
@@ -112,6 +114,22 @@ Program::Program()
 		TEXTURE->AddTexture(L"pidgey_attack",				L"Textures/pokemon/pidgey/attack_24x1.png");
 		TEXTURE->AddTexture(L"pidgey_special_attack",		L"Textures/pokemon/pidgey/special_attack_16x1.png");
 		TEXTURE->AddTexture(L"pidgey_portrait",				L"Textures/pokemon/pidgey/portrait.png");
+
+		// Pidgeot
+		TEXTURE->AddTexture(L"pidgeot_idle",				L"Textures/pokemon/pidgeot/idle_8x1.png");
+		TEXTURE->AddTexture(L"pidgeot_movement",			L"Textures/pokemon/pidgeot/movement_24x1.png");
+		TEXTURE->AddTexture(L"pidgeot_hurt",				L"Textures/pokemon/pidgeot/hurt_8x1.png");
+		TEXTURE->AddTexture(L"pidgeot_attack",				L"Textures/pokemon/pidgeot/attack_24x1.png");
+		TEXTURE->AddTexture(L"pidgeot_special_attack",		L"Textures/pokemon/pidgeot/special_attack_16x1.png");
+		TEXTURE->AddTexture(L"pidgeot_portrait",			L"Textures/pokemon/pidgeot/portrait.png");
+
+		// Pidgeot
+		TEXTURE->AddTexture(L"pidgeotto_idle",				L"Textures/pokemon/pidgeotto/idle_8x1.png");
+		TEXTURE->AddTexture(L"pidgeotto_movement",			L"Textures/pokemon/pidgeotto/movement_24x1.png");
+		TEXTURE->AddTexture(L"pidgeotto_hurt",				L"Textures/pokemon/pidgeotto/hurt_8x1.png");
+		TEXTURE->AddTexture(L"pidgeotto_attack",			L"Textures/pokemon/pidgeotto/attack_24x1.png");
+		TEXTURE->AddTexture(L"pidgeotto_special_attack",	L"Textures/pokemon/pidgeotto/special_attack_16x1.png");
+		TEXTURE->AddTexture(L"pidgeotto_portrait",			L"Textures/pokemon/pidgeotto/portrait.png");
 
 		// Caterpie
 		TEXTURE->AddTexture(L"caterpie_idle",				L"Textures/pokemon/caterpie/idle_24x1.png");
@@ -176,11 +194,29 @@ Program::Program()
 	{
 		//SOUND->Play("Test");
 		//SCENE->ChangeScene("Test");
-		//SCENE->ChangeScene("Main");
-		SCENE->ChangeScene("Explore");
+		SCENE->ChangeScene("Main");
+		//SCENE->ChangeScene("Explore");
 		//SCENE->ChangeScene("MapTool");
 
 		isDebug = false;
+	}
+
+	// fade in/out
+	{
+		mainCamera = new Camera;
+		mainCamera->UpdateCamToDevice();
+
+		fade = new Rect;
+		fade->Init(L"./Shader/ColorTexture.fx", Vector2(1, 1));
+		fade->SetCamera(mainCamera);
+		fade->GetTransform()->SetScale(
+			Vector2(10.3f, 7.7f));
+		fade->SetTexture(TEXTURE->GetTexture(L"ui_fade"));
+		fade->SetMixedColor(true);
+
+		fadeSwitch = 0;
+		fadeOut = D3DXCOLOR(1.0f,1.0f,1.0f,1.0f);
+		fadeIn =  D3DXCOLOR(1.0f,1.0f,1.0f,0.0f);
 	}
 
 }
@@ -197,14 +233,63 @@ Program::~Program()
 	SAFE_DELETE(particle);
 
 	SAFE_RELEASE(sprite);
+
+	SAFE_RELEASE(fade);
+	SAFE_DELETE(fade);
+
+	SAFE_DELETE(mainCamera);
 }
 
 void Program::Update()
 {
 	SCENE->Update();
 
+	D3DXCOLOR curColor;
+	float deltaTime = FRAME->GetElapsedTime();
+
+	switch (fadeSwitch)
+	{
+	// 정지 상태
+	case 0:
+		break;
+	// fade in
+	case 1:
+		curColor = fade->GetColor();
+		if (fadeIn.a != curColor.a) {
+			D3DXCOLOR color;
+			D3DXColorLerp(&color, &curColor, &fadeIn,
+				deltaTime);
+			fade->ChangeColor(color);
+		}
+		else
+			fadeSwitch = 0;
+		break;
+	// fade out
+	case 2:
+		curColor = fade->GetColor();
+		if (fadeOut.a != curColor.a) {
+			D3DXCOLOR color;
+			D3DXColorLerp(&color, &curColor, &fadeOut,
+				deltaTime);
+			fade->ChangeColor(color);
+		}
+		else
+			fadeSwitch = 0;
+		break;
+	}
+
 	if (INPUT->GetKeyDown(VK_F11))
 		isDebug = !isDebug;
+
+	if (INPUT->GetKeyDown('O')) {
+		//fade->ChangeColor(
+		//	D3DXCOLOR(1.0f, 1.0f, 1.0f, 0.5f));
+		//fade->ChangeColor(0x88ffffff);
+		fadeSwitch = 1;
+	}
+	if (INPUT->GetKeyDown('P')) {
+		fadeSwitch = 2;
+	}
 }
 
 void Program::Render()
@@ -220,6 +305,8 @@ void Program::Render()
 	//particle->Render();
 
 	FRAME->Render();
+
+	fade->Render();
 
 	if (isDebug) {
 

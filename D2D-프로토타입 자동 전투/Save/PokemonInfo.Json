@@ -1,5 +1,5 @@
 {
-    "PokemonInfo_Count" : 10,
+    "PokemonInfo_Count" : 12,
    
     "PokemonInfo_Name_0" : "pikachu", 
     "PokemonInfo_Name_1" : "charmander", 
@@ -11,6 +11,8 @@
     "PokemonInfo_Name_7" : "metapod",
     "PokemonInfo_Name_8" : "butterfree",
     "PokemonInfo_Name_9" : "raticate",
+    "PokemonInfo_Name_10" : "pidgeot",
+    "PokemonInfo_Name_11" : "pidgeotto",
 
     "PokemonInfo_pikachu_FrameCnt_IDLE" : 8,
     "PokemonInfo_pikachu_FrameCnt_MOVE" : 24,
@@ -140,5 +142,31 @@
     "PokemonInfo_raticate_attack" : 3,
     "PokemonInfo_raticate_defense" : 0,
     "PokemonInfo_raticate_maxHp" : 25,
-    "PokemonInfo_raticate_curHp" : 25
+    "PokemonInfo_raticate_curHp" : 25,
+
+    "PokemonInfo_pidgeot_FrameCnt_IDLE" : 8,
+    "PokemonInfo_pidgeot_FrameCnt_MOVE" : 24,
+    "PokemonInfo_pidgeot_FrameCnt_HURT" : 8,
+    "PokemonInfo_pidgeot_FrameCnt_ATTACK" : 24,
+    "PokemonInfo_pidgeot_FrameCnt_SPECIAL_ATTACK" : 16,
+    "PokemonInfo_pidgeot_moveSpeed" : 5.0,
+    "PokemonInfo_pidgeot_attackSpeed" : 0.4,
+    "PokemonInfo_pidgeot_attackRangeForTile" : 1,
+    "PokemonInfo_pidgeot_attack" : 3,
+    "PokemonInfo_pidgeot_defense" : 0,
+    "PokemonInfo_pidgeot_maxHp" : 25,
+    "PokemonInfo_pidgeot_curHp" : 25,
+
+    "PokemonInfo_pidgeotto_FrameCnt_IDLE" : 8,
+    "PokemonInfo_pidgeotto_FrameCnt_MOVE" : 24,
+    "PokemonInfo_pidgeotto_FrameCnt_HURT" : 8,
+    "PokemonInfo_pidgeotto_FrameCnt_ATTACK" : 24,
+    "PokemonInfo_pidgeotto_FrameCnt_SPECIAL_ATTACK" : 16,
+    "PokemonInfo_pidgeotto_moveSpeed" : 5.0,
+    "PokemonInfo_pidgeotto_attackSpeed" : 0.4,
+    "PokemonInfo_pidgeotto_attackRangeForTile" : 1,
+    "PokemonInfo_pidgeotto_attack" : 3,
+    "PokemonInfo_pidgeotto_defense" : 0,
+    "PokemonInfo_pidgeotto_maxHp" : 25,
+    "PokemonInfo_pidgeotto_curHp" : 25
 }

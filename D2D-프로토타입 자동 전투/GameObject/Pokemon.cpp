@@ -390,7 +390,7 @@ void Pokemon::Render()
 			clips[pokemonStatus.state]->GetCurrentData().currentFrame.y,
 			0.0f, 0.0f));
 
-	this->pEffect->SetBool("isHurt", isHurt);
+	this->pEffect->SetBool("mixedColor", isHurt);
 
 	//// test
 	//this->pEffect->SetVector("maxFrame",
@@ -501,10 +501,10 @@ void Pokemon::InitVertex(Vector2 pivot)
 	vertice[2].position = Vector2(size.x + pivot.x, -size.y + pivot.y);
 	vertice[3].position = Vector2(size.x + pivot.x, size.y + pivot.y);
 
-	vertice[0].color = 0xffffffff;
-	vertice[1].color = 0xffffffff;
-	vertice[2].color = 0xffffffff;
-	vertice[3].color = 0xffffffff;
+	vertice[0].color = 0xffff0000;
+	vertice[1].color = 0xffff0000;
+	vertice[2].color = 0xffff0000;
+	vertice[3].color = 0xffff0000;
 
 	vertice[0].uv = Vector2(0, uv.y);
 	vertice[1].uv = Vector2(0, 0);

@@ -42,6 +42,8 @@ void Rect::Init(wstring shaderFile, const Vector2 uv,
 	//	clips->PushAnimationData(data);
 	//}
 
+	mixedColor = false;
+
 	isObject = false;
 }
 
@@ -84,6 +86,8 @@ void Rect::Render()
 	this->pEffect->SetMatrix("matView", &camera->GetViewMatrix().ToDXMatrix());
 	this->pEffect->SetMatrix("matProjection", &camera->GetProjection().ToDXMatrix());
 
+	this->pEffect->SetBool("mixedColor", mixedColor);
+	
 	if (isObject) {
 		this->pEffect->SetVector("maxFrame",
 			&D3DXVECTOR4(
@@ -303,4 +307,20 @@ bool Rect::IsMouseCollision()
 	);
 
 	return check;
+}
+
+void Rect::ChangeColor(DWORD color)
+
+{
+	vertice[0].color = color;
+	vertice[1].color = color;
+	vertice[2].color = color;
+	vertice[3].color = color;
+
+	Vertex * pVertex = NULL;
+	HRESULT hr = vb->Lock(0, 0, (void**)&pVertex, 0);
+	assert(SUCCEEDED(hr));
+	memcpy(pVertex, vertice, stride * 4);
+	hr = vb->Unlock();
+	assert(SUCCEEDED(hr));
 }
