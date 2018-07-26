@@ -123,7 +123,7 @@ Program::Program()
 		TEXTURE->AddTexture(L"pidgeot_special_attack",		L"Textures/pokemon/pidgeot/special_attack_16x1.png");
 		TEXTURE->AddTexture(L"pidgeot_portrait",			L"Textures/pokemon/pidgeot/portrait.png");
 
-		// Pidgeot
+		// Pidgeotto
 		TEXTURE->AddTexture(L"pidgeotto_idle",				L"Textures/pokemon/pidgeotto/idle_8x1.png");
 		TEXTURE->AddTexture(L"pidgeotto_movement",			L"Textures/pokemon/pidgeotto/movement_24x1.png");
 		TEXTURE->AddTexture(L"pidgeotto_hurt",				L"Textures/pokemon/pidgeotto/hurt_8x1.png");
@@ -154,6 +154,30 @@ Program::Program()
 		TEXTURE->AddTexture(L"butterfree_attack",			L"Textures/pokemon/butterfree/attack_16x1.png");
 		TEXTURE->AddTexture(L"butterfree_special_attack",	L"Textures/pokemon/butterfree/special_attack_16x1.png");
 		TEXTURE->AddTexture(L"butterfree_portrait",			L"Textures/pokemon/butterfree/portrait.png");
+
+		// Weedle
+		TEXTURE->AddTexture(L"weedle_idle",					L"Textures/pokemon/weedle/idle_16x1.png");
+		TEXTURE->AddTexture(L"weedle_movement",				L"Textures/pokemon/weedle/movement_24x1.png");
+		TEXTURE->AddTexture(L"weedle_hurt",					L"Textures/pokemon/weedle/hurt_8x1.png");
+		TEXTURE->AddTexture(L"weedle_attack",				L"Textures/pokemon/weedle/attack_16x1.png");
+		TEXTURE->AddTexture(L"weedle_special_attack",		L"Textures/pokemon/weedle/special_attack_16x1.png");
+		TEXTURE->AddTexture(L"weedle_portrait",				L"Textures/pokemon/weedle/portrait.png");
+
+		// KaKuna
+		TEXTURE->AddTexture(L"kakuna_idle",					L"Textures/pokemon/kakuna/idle_8x1.png");
+		TEXTURE->AddTexture(L"kakuna_movement",				L"Textures/pokemon/kakuna/movement_16x1.png");
+		TEXTURE->AddTexture(L"kakuna_hurt",					L"Textures/pokemon/kakuna/hurt_8x1.png");
+		TEXTURE->AddTexture(L"kakuna_attack",				L"Textures/pokemon/kakuna/attack_48x1.png");
+		TEXTURE->AddTexture(L"kakuna_special_attack",		L"Textures/pokemon/kakuna/special_attack_8x1.png");
+		TEXTURE->AddTexture(L"kakuna_portrait",				L"Textures/pokemon/kakuna/portrait.png");
+
+		// Beedril
+		TEXTURE->AddTexture(L"beedril_idle",				L"Textures/pokemon/beedril/idle_24x1.png");
+		TEXTURE->AddTexture(L"beedril_movement",			L"Textures/pokemon/beedril/movement_24x1.png");
+		TEXTURE->AddTexture(L"beedril_hurt",				L"Textures/pokemon/beedril/hurt_8x1.png");
+		TEXTURE->AddTexture(L"beedril_attack",				L"Textures/pokemon/beedril/attack_88x1.png");
+		TEXTURE->AddTexture(L"beedril_special_attack",		L"Textures/pokemon/beedril/special_attack_8x1.png");
+		TEXTURE->AddTexture(L"beedril_portrait",			L"Textures/pokemon/beedril/portrait.png");
 	}
 
 	// SPRITE Setting
