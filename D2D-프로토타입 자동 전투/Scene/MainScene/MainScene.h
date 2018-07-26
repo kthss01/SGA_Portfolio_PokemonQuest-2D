@@ -10,6 +10,8 @@ private:
 	class Rect* bg;
 	class Rect* btn[2];
 
+	int sceneSwitch;
+	float deltaTime;
 public:
 	MainScene();
 	~MainScene();

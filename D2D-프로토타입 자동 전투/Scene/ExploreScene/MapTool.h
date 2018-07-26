@@ -30,6 +30,9 @@ private:
 	Json::Value* writeJsonTileMap;
 	Json::Value* readJsonTileMap;
 
+	bool isChangeScene;
+	float deltaTime;
+
 	LPD3DXFONT font;
 	bool isDebug;
 public:

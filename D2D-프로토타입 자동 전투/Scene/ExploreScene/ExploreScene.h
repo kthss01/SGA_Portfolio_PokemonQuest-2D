@@ -46,6 +46,9 @@ private:
 
 	LPD3DXFONT font;
 	bool isDebug;
+
+	bool isSceneChange;
+	float deltaTime;
 public:
 	ExploreScene();
 	~ExploreScene();

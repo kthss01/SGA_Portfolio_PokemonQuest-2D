@@ -238,9 +238,11 @@ Program::Program()
 		fade->SetTexture(TEXTURE->GetTexture(L"ui_fade"));
 		fade->SetMixedColor(true);
 
-		fadeSwitch = 0;
+		fadeSwitch = 1;
 		fadeOut = D3DXCOLOR(1.0f,1.0f,1.0f,1.0f);
 		fadeIn =  D3DXCOLOR(1.0f,1.0f,1.0f,0.0f);
+
+		GAME->SetFadeSwitch(&fadeSwitch);
 	}
 
 }
@@ -269,7 +271,8 @@ void Program::Update()
 	SCENE->Update();
 
 	D3DXCOLOR curColor;
-	float deltaTime = FRAME->GetElapsedTime();
+	//float deltaTime = FRAME->GetElapsedTime();
+	float deltaTime = 0.1f;
 
 	switch (fadeSwitch)
 	{
@@ -305,15 +308,15 @@ void Program::Update()
 	if (INPUT->GetKeyDown(VK_F11))
 		isDebug = !isDebug;
 
-	if (INPUT->GetKeyDown('O')) {
-		//fade->ChangeColor(
-		//	D3DXCOLOR(1.0f, 1.0f, 1.0f, 0.5f));
-		//fade->ChangeColor(0x88ffffff);
-		fadeSwitch = 1;
-	}
-	if (INPUT->GetKeyDown('P')) {
-		fadeSwitch = 2;
-	}
+	//if (INPUT->GetKeyDown('O')) {
+	//	//fade->ChangeColor(
+	//	//	D3DXCOLOR(1.0f, 1.0f, 1.0f, 0.5f));
+	//	//fade->ChangeColor(0x88ffffff);
+	//	fadeSwitch = 1;
+	//}
+	//if (INPUT->GetKeyDown('P')) {
+	//	fadeSwitch = 2;
+	//}
 }
 
 void Program::Render()

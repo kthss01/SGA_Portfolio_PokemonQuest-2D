@@ -35,6 +35,12 @@ void MapTool::Init()
 	readJsonTileMap = new Json::Value();
 
 	isDebug = true;
+
+	isChangeScene = false;
+	deltaTime = 0;
+
+	if (*GAME->GetFadeSwitch() == 2)
+		GAME->ChangeFadeSwitch(1);
 }
 
 void MapTool::Release()
@@ -93,8 +99,11 @@ void MapTool::Update()
 	if (INPUT->GetKeyDown(VK_LBUTTON)) {
 
 		if (exitBtn->IsMouseCollision()) {
-			SCENE->ChangeScene("Main");
-			return;
+			//SCENE->ChangeScene("Main");
+			//return;
+			GAME->ChangeFadeSwitch(2);
+			isChangeScene = true;
+			deltaTime = 0;
 		}
 
 		// 타일 클릭 시
@@ -211,6 +220,15 @@ void MapTool::Update()
 
 	if (INPUT->GetKeyDown(VK_F11))
 		isDebug = !isDebug;
+
+	if (isChangeScene) {
+		deltaTime += FRAME->GetElapsedTime();
+		if (deltaTime > 1.0f) {
+			isChangeScene = false;
+			SCENE->ChangeScene("Main");
+			return;
+		}
+	}
 }
 
 void MapTool::Render()

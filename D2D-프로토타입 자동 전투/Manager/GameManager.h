@@ -13,6 +13,7 @@ private:
 	~GameManager();
 
 	static GameManager* instance;
+	int* fadeSwitch;
 public:
 	static GameManager* Get();
 	static void Delete();
@@ -39,6 +40,10 @@ public:
 	}
 
 	void ReadPokemonInfo();
+
+	void SetFadeSwitch(int* fadeSwitch) { this->fadeSwitch = fadeSwitch; }
+	void ChangeFadeSwitch(int _fadeSwitch) { *fadeSwitch = _fadeSwitch; }
+	int* GetFadeSwitch() { return fadeSwitch; }
 };
 
 #define GAME GameManager::Get()

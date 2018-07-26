@@ -41,6 +41,13 @@ void MainScene::Init()
 	btn[0]->GetTransform()->SetWorldPosition(Vector2(332, -313));
 	btn[1]->GetTransform()->SetScale(Vector2(0.9f, 0.9f));
 	btn[1]->GetTransform()->SetWorldPosition(Vector2(451, -313));
+
+	sceneSwitch = 0;
+	deltaTime = 0;
+
+	if (GAME->GetFadeSwitch() != NULL && 
+		*GAME->GetFadeSwitch() == 2)
+		GAME->ChangeFadeSwitch(1);
 }
 
 void MainScene::Release()
@@ -74,11 +81,35 @@ void MainScene::Update()
 
 	if (INPUT->GetKeyDown(VK_LBUTTON)) {
 		if (btn[0]->IsMouseCollision()) {
-			SCENE->ChangeScene("Explore");
-			return;
+			GAME->ChangeFadeSwitch(2);
+			sceneSwitch = 1;
+			deltaTime = 0;
+			//SCENE->ChangeScene("Explore");
+			//return;
 		}
 		if (btn[1]->IsMouseCollision()) {
-			SCENE->ChangeScene("MapTool");
+			GAME->ChangeFadeSwitch(2);
+			sceneSwitch = 2;
+			deltaTime = 0;
+			//SCENE->ChangeScene("MapTool");
+			//return;
+		}
+	}
+
+	if (sceneSwitch != 0) {
+		deltaTime += FRAME->GetElapsedTime();
+
+		if (deltaTime > 1.0f) {
+			switch (sceneSwitch)
+			{
+			case 1:
+				SCENE->ChangeScene("Explore");
+				break;
+			case 2:
+				SCENE->ChangeScene("MapTool");
+				break;
+			}
+			sceneSwitch = 0;
 			return;
 		}
 	}

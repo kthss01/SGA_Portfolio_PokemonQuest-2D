@@ -49,6 +49,12 @@ void ExploreScene::Init()
 	curCameraTarget = pokemon[0]->GetTransform();
 
 	isDebug = false;
+
+	isSceneChange = false;
+	deltaTime = 0;
+
+	if (*GAME->GetFadeSwitch() == 2)
+		GAME->ChangeFadeSwitch(1);
 }
 
 void ExploreScene::Release()
@@ -286,8 +292,11 @@ void ExploreScene::Update()
 
 	if (INPUT->GetKeyDown(VK_LBUTTON)) {
 		if (exitBtn->IsMouseCollision()) {
-			SCENE->ChangeScene("Main");
-			return;
+			//SCENE->ChangeScene("Main");
+			//return;
+			GAME->ChangeFadeSwitch(2);
+			isSceneChange = true;
+			deltaTime = 0;
 		}
 
 		if (glassesBtn->IsMouseCollision()) {
@@ -322,6 +331,16 @@ void ExploreScene::Update()
 
 	if (INPUT->GetKeyDown(VK_F11))
 		isDebug = !isDebug;
+
+	if (isSceneChange) {
+		deltaTime += FRAME->GetElapsedTime();
+
+		if (deltaTime > 1.0f) {
+			isSceneChange = false;
+			SCENE->ChangeScene("Main");
+			return;
+		}
+	}
 }
 
 void ExploreScene::Render()
