@@ -282,26 +282,31 @@ void Program::Update()
 	// fade in
 	case 1:
 		curColor = fade->GetColor();
-		if (fadeIn.a != curColor.a) {
+		if (fabs(fadeIn.a - curColor.a) > 0.25f) {
 			D3DXCOLOR color;
 			D3DXColorLerp(&color, &curColor, &fadeIn,
 				deltaTime);
 			fade->ChangeColor(color);
 		}
-		else
+		else {
+			curColor.a = 0;
+			fade->ChangeColor(curColor);
 			fadeSwitch = 0;
+		}
 		break;
 	// fade out
 	case 2:
 		curColor = fade->GetColor();
-		if (fadeOut.a != curColor.a) {
+		if (fabs(fadeOut.a - curColor.a) > 0.25f) {
 			D3DXCOLOR color;
 			D3DXColorLerp(&color, &curColor, &fadeOut,
 				deltaTime);
 			fade->ChangeColor(color);
 		}
-		else
-			fadeSwitch = 0;
+		else {
+			curColor.a = 1.0f;
+			fade->ChangeColor(curColor); 0;
+		}
 		break;
 	}
 
